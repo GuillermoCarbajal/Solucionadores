@@ -10,7 +10,7 @@ def load_excelfile(filename):
         dfs: diccionario que contiene un data frame por cada hoja en la planilla
     '''
     # Crear un objeto ExcelFile
-    xls = pd.ExcelFile(filename)
+    xls = pd.ExcelFile(filename, engine="openpyxl")
 
     # Ver los nombres de las hojas
     print(xls.sheet_names)
