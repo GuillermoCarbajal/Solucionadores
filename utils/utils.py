@@ -2,22 +2,48 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
-def load_excelfile(filename):
+def conservar_filas_con_n_no_nulos(df_CDE, n=3):
     '''
-    Entrada:
-        filename: name of the excel file
-    Salida:
-        dfs: diccionario que contiene un data frame por cada hoja en la planilla
+    Elimina filas que tienen al menos n valores nulos
     '''
-    # Crear un objeto ExcelFile
-    xls = pd.ExcelFile(filename, engine="openpyxl")
+    M1, N1 = df_CDE.shape
+    df_CDE = df_CDE.dropna(thresh=n) 
+    M2, N2 = df_CDE.shape
+    print(f'La base tenía {M1} filas. Luego de eliminar las filas con al menos {n} campos nulos quedaron {M2} filas')
+    return df_CDE
 
-    # Ver los nombres de las hojas
-    print(xls.sheet_names)
+def get_filas_con_n_nulos(base, n):
 
-    # Cargar cada hoja como un DataFrame
-    dfs = {nombre: xls.parse(nombre) for nombre in xls.sheet_names}
-    return dfs
+    return base[base.isna().sum(axis=1) > n]
+
+def discretizar(df, nombre_original, nombre_nuevo, bin_size=5):
+    '''
+    Discretiza un valur continuo o entero
+    numbre original: nombre de la columna que contiene el valor a discretizar
+    nombre nuevo: 
+    bin_size = ancho de la discretización (Ej: edades cada 5 años)
+    '''
+    df=df.copy()  # compia para no perder el original
+    df[nombre_nuevo] = pd.to_numeric(df[nombre_original], errors="raise")
+    df[nombre_nuevo] = pd.cut(df[nombre_nuevo], bins=range(0, int(df[nombre_nuevo].max()) + bin_size, bin_size), right=False)
+
+    # usar el valor medio de cada intervalo
+    df[nombre_nuevo] = df[nombre_nuevo].apply(lambda x: x.mid)
+
+    return df
+
+def eliminar_duplicados(base):
+    filas_antes, _ = base.shape
+    base.drop_duplicates(inplace=True) 
+    filas_despues, _ = base.shape
+    print(f'Se eliminaron {filas_antes - filas_despues} filas duplicadas en la base. Ahora la base tiene {filas_despues} filas.')
+    return base
+
+def obtener_palabras_en_campo_que_contienen_substr(base, campo, substr):
+    filas = base[campo].apply(lambda x: substr in x if not pd.isnull(x) else False )
+    palabras = base[campo][filas==True]
+    palabras_unicas = palabras.unique()
+    return palabras_unicas
 
 def generar_estadistica_por_departamento(df_Mort):
 

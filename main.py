@@ -61,6 +61,12 @@ def getY(data, metodo='defuncion'):
         y = data["MIN_DIAS_IAE_MUERTE_"]<60
     elif metodo=='90dias':
         y = data["MIN_DIAS_IAE_MUERTE_"]<90
+    elif metodo=='CAT_SUI_':
+        y = data["CAT_SUI_"]==1
+    elif metodo=='CAT_MCEXSUI_':
+        y = data["CAT_MCEXSUI_"]==1
+    elif metodo=='MOTIVO_EXT_SUI_':
+        y=data["MOTIVO_EXT_SUI_"]==1
     return y    
 
 
@@ -76,7 +82,8 @@ def generate_preprocessing_pipeline(num_attribs, cat_attribs, classifier=None):
 
     else:
         num_pipeline = Pipeline([
-        ("standardize", StandardScaler()),
+        #("standardize", StandardScaler()),
+        ("pass", 'passthrough'),
         ])
 
     cat_pipeline = make_pipeline(
@@ -345,7 +352,7 @@ def run_experiment(args):
     path = args.path
 
     # Paso 1: cargo los datos
-    filename = 'IAE_procesada.csv'
+    filename = 'IAE_procesada_2a_entrega.csv'  
     data = pd.read_csv(filename)
     columnas = data.columns.to_list()
 
@@ -353,12 +360,12 @@ def run_experiment(args):
     use_class_weights = (not args.disable_class_weights)
     use_sample_weights = (not args.disable_sample_weights)
  
-    num_attribs = ["GRUPO_EDAD_", 'Sexo',"IAE_PREVIO_CORREGIDO","NUMERO_INTENTOS_",
+    num_attribs = ["GRUPO_EDAD_", 'Sexo',"NUMERO_INTENTOS_"]
     #            'DIAS_PROMEDIO_INTENTOS_','PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
-                'PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
+    #            'PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
     
     #cat_attribs = ["DECISION_", "METODO_IAE_PREVIO_"]
-    cat_attribs = ["METODO_IAE_PREVIO_"]
+    cat_attribs = ["METODO_IAE_PREVIO_","IAE_PREVIO_CORREGIDO"]
 
     #data[cat_attribs]=data[cat_attribs].astype("category")
     #data['PRESTADOR_DIFF_']=data['PRESTADOR_PUBLICO_'].astype(float)-data['PRESTADOR_PRIVADO_'].astype(float)
