@@ -75,5 +75,35 @@ def argegar_atributo_CAT_MCEXSUI(df_IAE_CDE, nombre='CAT_MCEXSUI_' ):
     return df_IAE_CDE
 
 
+def agregar_dias_IAE_a_muerte(df_IAE, nombre_nuevo_campo='DIAS_IAE_MUERTE_'):
+    
+    # días que transcurren desde el IAE hasta la muerte. Si la persona no murió se pone nan
+    df_IAE[nombre_nuevo_campo] = (df_IAE["FECHA_DEFUNCION"] - df_IAE["FECHA IAE"])
 
-     
+    return df_IAE   
+
+def agregar_datos_CDE_en_IAE(df_IAE, df_IAE_CDE, dataset):
+    
+    df_IAE["FECHA_DEFUNCION"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["fecha_defuncion"])
+    df_IAE["CAUSA_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["causa_basica_muerte_valor"])
+    df_IAE["DPTO_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["departamento_ocurrencia"])
+    df_IAE["EDAD_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["edad_fallecimiento_digitada"])
+    df_IAE["GRUPO_EDAD_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["grupo edades_"])
+    df_IAE["CAT_SUI_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["CAT_SUI_"])
+    df_IAE["CAT_MCEXSUI_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["CAT_MCEXSUI_"])
+
+    df_IAE = agregar_dias_IAE_a_muerte(df_IAE, 'DIAS_IAE_MUERTE_')
+    
+    if dataset==2:
+        df_IAE["CDE_lugar_ocurrencia"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["lugar_ocurrencia"])
+        df_IAE["CDE_departamento_ocurrencia"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["departamento_ocurrencia"])
+        df_IAE["CDE_estado_civil"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["estado_civil"])
+        df_IAE["CDE_etnia"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["etnia"])
+        df_IAE["CDE_mayor_nivel_educacion"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["mayor_nivel_educacion"])
+        df_IAE["MOTIVO_EXTERNO_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["motivo_externo"])
+        df_IAE["MOTIVO_EXT_SUI_"] = df_IAE["MOTIVO_EXTERNO_"]=='SUICIDIO'
+        df_IAE["ES_MOTIVO_EXTERNO_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["es_motivo_externo"])
+
+    return df_IAE
+
+  

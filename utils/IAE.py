@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from .utils import obtener_palabras_en_campo_que_contienen_substr
+from .utils import obtener_palabras_en_campo_que_contienen_substr, convertir_enteros_a_fecha
 
 def filtrar_IAES_por_fecha_registro(df_IAE, fecha_inicial, fecha_fin):
     '''
@@ -172,6 +172,29 @@ def acondicionar_campo_DECISION(df_IAE, campo_decision):
     #df_IAE[campo_decision].unique()
     return df_IAE
 
+def acondicionar_campo_agendo_consulta_en_7dias(df_IAE, campo_decision):
+    
+    # llamo al campo decision porque así se llamaba en la primera entrega (reutilizo codigo)
+    df_IAE = acondicionar_campo_DECISION(df_IAE, campo_decision)
+    
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('DESCARTDO','DESCARTADO',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('DECARTADA','DESCARTADA',regex=True)
+
+    
+
+    palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'DESCARTAD')
+    #print(palabras_a_reemplazar)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'DESCARTADA_POR_RASTREADOR')
+
+    palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'SIN COBERTURA')
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'SIN COBERTURA ASISTENCIAL')
+
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SEG PARTICULAR','SEGUIMIENTO PARTICULAR')
+
+    
+    
+    return df_IAE
+
 def agregar_campo_DECISION(df_IAE, campo_decision, nuevo_nombre):
     # se crea una nueva columna DECISION_ con 6 categorías.
     df_IAE[nuevo_nombre] = df_IAE[campo_decision].copy()
@@ -190,26 +213,43 @@ def agregar_si_intentos_en_CDE(df_IAE, df_IAE_CDE, nombre_nuevo_campo='DEFUNCION
     return df_IAE
 
 
-def agregar_datos_CDE_en_IAE(df_IAE, df_IAE_CDE, dataset):
+def corregir_fechas_enteras_prestadores(df_IAE):
+    campos_a_corregir = ['FECHA SEGUIMIENTO', 'FECHA LLAMADA PRESTADOR', 'AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO',
+                        'FECHA DE CONSULTA', 'CONCURRIO', 'SE LLAMO A USUARIO Y/O REFERENTE',
+                        'AGENDO NUEVA CONSULTA', 'FECHA DE NUEVA CONSULTA', 'INTERNACION',
+                        'FECHA ALTA', 'FECHA LLAMADA PRESTADOR.1', 'MSP', 'OBSERVACIONES',
+                        'UNNAMED: 26', 'FECHA DE LLAMADA AL PRESTADOR', 'MOTIVO']
+    campos_corregidos =  [   campo + '_' for campo in campos_a_corregir]
     
-    df_IAE["FECHA_DEFUNCION"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["fecha_defuncion"])
-    df_IAE["CAUSA_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["causa_basica_muerte_valor"])
-    df_IAE["DPTO_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["departamento_ocurrencia"])
-    df_IAE["EDAD_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["edad_fallecimiento_digitada"])
-    df_IAE["GRUPO_EDAD_MUERTE"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["grupo edades_"])
-    df_IAE["CAT_SUI_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["CAT_SUI_"])
-    df_IAE["CAT_MCEXSUI_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["CAT_MCEXSUI_"])
-    
-    if dataset==2:
-        df_IAE["MOTIVO_EXTERNO_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["motivo_externo"])
-        df_IAE["MOTIVO_EXT_SUI_"] = df_IAE["MOTIVO_EXTERNO_"]=='SUICIDIO'
-        df_IAE["ES_MOTIVO_EXTERNO_"] = df_IAE["CEDULA"].map(df_IAE_CDE.set_index("cedula")["es_motivo_externo"])
+    df_IAE[campos_corregidos] = df_IAE[campos_a_corregir].apply(convertir_enteros_a_fecha)
+
+    for campo, campo_corregido in zip(campos_a_corregir, campos_corregidos):
+        cambios = ~(df_IAE[campo].eq(df_IAE[campo_corregido]) |
+                   (df_IAE[campo].isna() & df_IAE[campo_corregido].isna()))
+        cantidad_cambio = np.sum(cambios)
+        print(f'En el campo {campo} se corrigieron {cantidad_cambio} fechas enteras')
 
     return df_IAE
 
-def agregar_dias_IAE_a_muerte(df_IAE, nombre_nuevo_campo='DIAS_IAE_MUERTE_'):
+def acondicionar_campos_prestadores(df_IAE):
+    campos_a_corregir = ['FECHA SEGUIMIENTO', 'FECHA LLAMADA PRESTADOR', 'AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO',
+                        'FECHA DE CONSULTA', 'CONCURRIO', 'SE LLAMO A USUARIO Y/O REFERENTE',
+                        'AGENDO NUEVA CONSULTA', 'FECHA DE NUEVA CONSULTA', 'INTERNACION',
+                        'FECHA ALTA', 'FECHA LLAMADA PRESTADOR.1', 'MSP', 'OBSERVACIONES',
+                        'UNNAMED: 26', 'FECHA DE LLAMADA AL PRESTADOR', 'MOTIVO']
+    campos_a_corregir =  [   campo + '_' for campo in campos_a_corregir]
+
+    for campo in campos_a_corregir:
+        # saco espacios adelante y atras y paso a mayúsculas
+        df_IAE[campo] = df_IAE[campo].where(df_IAE[campo].isna(),df_IAE[campo].astype(str).str.strip().str.upper())
+                                            
+    #df_IAE[campo_decision].unique()
+    return df_IAE
+
+def acondicionar_CONCURRIO(df_IAE, nombre_campo='CONCURRIO_', nombre_nuevo_campo='CONCURRIO_binario'):
     
-    # días que transcurren desde el IAE hasta la muerte. Si la persona no murió se pone nan
-    df_IAE[nombre_nuevo_campo] = (df_IAE["FECHA_DEFUNCION"] - df_IAE["FECHA IAE"])
+    es_fecha = pd.to_datetime(df_IAE[nombre_campo], errors="coerce").notna()
+    df_IAE[nombre_nuevo_campo] = df_IAE[nombre_campo].where(~es_fecha, "SI")
+    df_IAE['NO_CONCURRIO_CONSULTA_'] = df_IAE['CONCURRIO_']=='NO'
 
     return df_IAE
