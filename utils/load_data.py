@@ -1,6 +1,7 @@
 import pandas as pd 
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import yaml
 
 def load_excelfile(filename):
     '''
@@ -40,3 +41,13 @@ def load_databases(filename, entrega=1):
         print('Indique que entrega quiere levantar')
     
     return output
+
+
+def load_config(path):
+    with open(path, "r") as f:
+        return yaml.safe_load(f)
+
+
+def save_yaml(obj, path):
+    with open(path, "w") as f:
+        yaml.dump(obj, f)

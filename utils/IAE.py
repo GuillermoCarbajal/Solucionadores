@@ -15,7 +15,9 @@ def etiquetar_prestador(institucion):
     ''' 
     Si dice ASSE, POLICIAL, FUERZAS ARMADAS o CLINICAS etiqueto como Pública, si no Privada
     '''
-    if 'ASSE' in institucion or 'POLICIAL' in institucion or 'FUERZAS ARMADAS' in institucion or 'CLINICAS' in institucion:
+    if 'ASSE' in institucion or 'POLICIAL' in institucion or 'FUERZAS ARMADAS' in institucion \
+        or 'FF.AA' in institucion or 'CLINICAS' in institucion:
+        
         return 'Pública'
     else:
         return 'Privada'
@@ -38,18 +40,21 @@ def tipo_prestador_IAE(institucion):
     else:
         return etiquetar_prestador(institucion)
 
-def agregar_tipo_prestador_IAE(df_IAE, dataset):
+def agregar_tipo_prestador_IAE(df_IAE, campo_prestador='PRESTADOR RECODIFICADO', nombre_nuevo_campo='Tipo_prestador_IAE_'):
     # Se crea una nueva columna con los tipos de prestador
-    if dataset==2:
-        df_IAE['Tipo_prestador_IAE_'] = df_IAE['PRESTADOR'].copy()
-        df_IAE['Tipo_prestador_IAE_'] = df_IAE['PRESTADOR'].apply(lambda x: tipo_prestador_IAE(x) if pd.notnull(x) else np.nan)
-    else:
-        df_IAE['Tipo_prestador_IAE_'] = df_IAE['PRESTADOR RECODIFICADO'].copy()
-        df_IAE['Tipo_prestador_IAE_'] = df_IAE['PRESTADOR RECODIFICADO'].apply(lambda x: tipo_prestador_IAE(x) if pd.notnull(x) else np.nan)
+    #if dataset==2:
+    #    df_IAE[nombre_nuevo_campo] = df_IAE['PRESTADOR'].copy()
+    #    df_IAE[nombre_nuevo_campo] = df_IAE['PRESTADOR'].apply(lambda x: tipo_prestador_IAE(x) if pd.notnull(x) else np.nan)
+    #else:
+    #    df_IAE[nombre_nuevo_campo] = df_IAE['PRESTADOR RECODIFICADO'].copy()
+    #    df_IAE[nombre_nuevo_campo] = df_IAE['PRESTADOR RECODIFICADO'].apply(lambda x: tipo_prestador_IAE(x) if pd.notnull(x) else np.nan)
+
+    df_IAE[nombre_nuevo_campo] = df_IAE[campo_prestador].copy()
+    df_IAE[nombre_nuevo_campo] = df_IAE[campo_prestador].apply(lambda x: tipo_prestador_IAE(x) if pd.notnull(x) else np.nan)
 
     # Se crea una variable booleana que indica si tiene asociado al menos un prestador público o no 
-    df_IAE['PRESTADOR_PUBLICO_'] = df_IAE['Tipo_prestador_IAE_'].apply(lambda x: 'Pública' in x if pd.notnull(x) else np.nan)
-    df_IAE['PRESTADOR_PRIVADO_'] = df_IAE['Tipo_prestador_IAE_'].apply(lambda x: 'Privada' in x if pd.notnull(x) else np.nan) 
+    df_IAE['PRESTADOR_PUBLICO_'] = df_IAE[nombre_nuevo_campo].apply(lambda x: 'Pública' in x if pd.notnull(x) else np.nan)
+    df_IAE['PRESTADOR_PRIVADO_'] = df_IAE[nombre_nuevo_campo].apply(lambda x: 'Privada' in x if pd.notnull(x) else np.nan) 
 
     return df_IAE
 
@@ -190,7 +195,7 @@ def acondicionar_campo_agendo_consulta_en_7dias(df_IAE, campo_decision):
     df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'SIN COBERTURA ASISTENCIAL')
 
     df_IAE[campo_decision] = df_IAE[campo_decision].replace('SEG PARTICULAR','SEGUIMIENTO PARTICULAR')
-
+    df_IAE['DESCARTADA_POR_RASTREADOR'] = df_IAE[campo_decision]  == 'DESCARTADA_POR_RASTREADOR'
     
     
     return df_IAE
@@ -212,6 +217,19 @@ def agregar_si_intentos_en_CDE(df_IAE, df_IAE_CDE, nombre_nuevo_campo='DEFUNCION
 
     return df_IAE
 
+def agregar_si_es_IAE(df_IAE,  nombre_nuevo_campo='es_IAE_'):
+    df_IAE[nombre_nuevo_campo] = ~df_IAE["FECHA IAE"].isnull()
+    cantidad_intentos = np.sum(df_IAE[nombre_nuevo_campo])
+    print(f'{cantidad_intentos} de las {df_IAE.shape[0]} filas de la base IAE son intentos') 
+
+    return df_IAE
+
+def agregar_si_tiene_fecha_registro(df_IAE, nombre_nuevo_campo='tiene_registro_'):
+    df_IAE[nombre_nuevo_campo] = ~df_IAE["REGISTRO"].isnull()
+    cantidad_registros = np.sum(df_IAE[nombre_nuevo_campo])
+    print(f'{cantidad_registros} de las {df_IAE.shape[0]} filas de la base IAE tienen fecha de registro') 
+
+    return df_IAE
 
 def corregir_fechas_enteras_prestadores(df_IAE):
     campos_a_corregir = ['FECHA SEGUIMIENTO', 'FECHA LLAMADA PRESTADOR', 'AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO',

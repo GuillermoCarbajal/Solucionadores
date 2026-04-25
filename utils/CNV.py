@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd
 
-def agregar_datos_hijos_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
+def agregar_datos_hijos_cuando_intento(intento, df_IAE_CNV_agrupada):
     cedula = intento['CEDULA']
     if cedula not in df_IAE_CNV_agrupada.groups:
         cantidad_hijos = 0
@@ -13,7 +13,7 @@ def agregar_datos_hijos_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
         fechas_nacimientos = datos_cnv['anio_mes_nacimiento_hijo']
         total_hijos = fechas_nacimientos.shape[0]
         cantidad_hijos = np.sum(fechas_nacimientos < fecha_intento)
-        print(f'La persona tiene {total_hijos} en total y tenía {cantidad_hijos} en la fecha del intento')
+        #print(f'La persona tiene {total_hijos} en total y tenía {cantidad_hijos} en la fecha del intento')
         if cantidad_hijos>0:
             nacimientos_antes_intento = fechas_nacimientos[fechas_nacimientos<fecha_intento]
             edad_hijo_mayor = (fecha_intento - nacimientos_antes_intento.min())
@@ -35,7 +35,9 @@ def agregar_datos_hijos_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
 
     return result
 
-def agregar_datos_CNV_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
+
+
+def agregar_datos_CNV_cuando_intento(intento, df_IAE_CNV_agrupada):
     cedula = intento['CEDULA']
     campos_CNV = [ 'cedula', 'anio_mes_nacimiento_hijo', 'nro_rese', 'estado_civil', 'pais_nac', 'pais_residencia', 
                 'mayor_nivel_estudio', 'sexo', 'peso', 'semanas_gestacion', 'orden', 'certdatospartocodocurrencia', 
@@ -53,7 +55,7 @@ def agregar_datos_CNV_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
         fechas_nacimientos = datos_cnv['anio_mes_nacimiento_hijo']
         cantidad_hijos = np.sum(fechas_nacimientos < fecha_intento)
         total_hijos = fechas_nacimientos.shape[0]
-        print(f'La persona tiene {total_hijos} en total y tenía {cantidad_hijos} en la fecha del intento')
+        #print(f'La persona tiene {total_hijos} en total y tenía {cantidad_hijos} en la fecha del intento')
         for campo in campos_CNV:
             
             if cantidad_hijos>0:
@@ -74,3 +76,61 @@ def agregar_datos_CNV_cuando_intento(intento, df_IAE, df_IAE_CNV_agrupada):
         result[k] = v
     
     return result
+
+
+def esta_persona_en_CNV(df_CNV, df_IAE):
+    
+    df_IAE["CNV_"] = df_IAE["CEDULA"].isin(df_CNV["cedula"]).astype(int)    
+    return df_IAE
+
+def esta_nro_rese_en_IAE(df_IAE_CNV, df_IAE):
+    
+    df_IAE["CNV_nro_rese_in_IAE_"] = df_IAE_CNV["nro_rese"].isin(df_IAE["CEDULA"]).astype(int) 
+
+    return df_IAE
+
+def incluir_otro_progrenitor_en_CNV(intento, df_IAE_CNV):
+    cedula = intento['cedula']
+    nro_rese = intento['nro_rese']
+
+    progenitores = df_IAE_CNV.loc[
+        df_IAE_CNV['nro_rese'] == nro_rese, 'cedula'
+    ]
+
+    otros = progenitores[progenitores != cedula]
+
+    if not otros.empty:
+        intento['otro_progenitor_'] = otros.iloc[0]
+
+    return intento
+
+def calcular_otro_progenitor(df):
+    df = df.copy()
+
+    def obtener_otro(s):
+        unicos = s.drop_duplicates()
+        if len(unicos) == 2:
+            return s.map({unicos.iloc[0]: unicos.iloc[1],
+                          unicos.iloc[1]: unicos.iloc[0]})
+        else:
+            return pd.Series([None] * len(s), index=s.index)
+
+    df["otro_progenitor_"] = (
+        df.groupby("nro_rese")["cedula"]
+        .transform(obtener_otro)
+    )
+
+    return df
+
+def incluir_otro_progrenitor(df_IAE, df_IAE_CNV):
+
+    df_IAE_CNV = calcular_otro_progenitor(df_IAE_CNV)
+
+    df_IAE["CNV_otro_progenitor_"] = df_IAE.merge(
+        df_IAE_CNV[["cedula", "otro_progenitor_"]],
+        left_on="CEDULA",
+        right_on="cedula",
+        how="left"
+    )["otro_progenitor_"]
+
+    return df_IAE

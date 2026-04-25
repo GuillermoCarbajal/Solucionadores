@@ -12,6 +12,9 @@ def min_o_nan(serie):
 def ultimo_no_nulo(serie):    
     return  serie.dropna().iloc[-1] if not serie.dropna().empty else None
 
+def ultimo(serie):    
+    return  serie.iloc[-1] if not serie.empty else None
+
 def penultimo_no_nulo(serie):    
     return  serie.dropna().iloc[-2] if len(serie.dropna())>1 else None
 
@@ -77,28 +80,31 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['PRESTADOR_RECODIFICADO'] = (campo_prestador, ultimo_no_nulo)
     agg_dict['PRESTADOR_PUBLICO_'] = ("PRESTADOR_PUBLICO_", moda_o_nan)
     agg_dict['PRESTADOR_PRIVADO_'] = ("PRESTADOR_PRIVADO_", moda_o_nan)
-    agg_dict['REGISTRO'] = ("REGISTRO", ultimo_no_nulo)
-    agg_dict['FECHA_IAE'] = ("FECHA IAE", ultimo_no_nulo)
-
+    agg_dict['REGISTRO_ultimo_no_nulo'] = ("REGISTRO", ultimo_no_nulo)
+    agg_dict['REGISTRO_ultimo'] = ("REGISTRO", ultimo)
+    agg_dict['REGISTRO_cantidad'] = ("REGISTRO", 'count')
+    agg_dict['FECHA_IAE_ultimo_no_nulo'] = ("FECHA IAE", ultimo_no_nulo)
+    agg_dict['FECHA_IAE_ultimo'] = ("FECHA IAE", ultimo)
+    agg_dict['FECHA_IAE_cantidad'] = ("FECHA IAE", 'count')
 
     agg_dict['NUMERO_INTENTOS_'] = ("FECHA IAE", 'count')
     agg_dict['DECISION_'] = (campo_decision, ultimo_no_nulo)
     if dataset==2:
-        agg_dict['FECHA SEGUIMIENTO_'] = ('FECHA SEGUIMIENTO_', ultimo_no_nulo)
-        agg_dict['FECHA LLAMADA PRESTADOR_'] = ('FECHA LLAMADA PRESTADOR_', ultimo_no_nulo)
-        agg_dict['AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_'] = ('AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_', ultimo_no_nulo)
-        agg_dict['FECHA DE CONSULTA_'] = ('FECHA DE CONSULTA_', ultimo_no_nulo)
-        agg_dict['CONCURRIO_'] = ('CONCURRIO_', ultimo_no_nulo)
-        agg_dict['SE LLAMO A USUARIO Y/O REFERENTE_'] = ('SE LLAMO A USUARIO Y/O REFERENTE_', ultimo_no_nulo)
-        agg_dict['AGENDO NUEVA CONSULTA_'] = ('AGENDO NUEVA CONSULTA_', ultimo_no_nulo)
-        agg_dict['FECHA DE NUEVA CONSULTA_'] = ('FECHA DE NUEVA CONSULTA_', ultimo_no_nulo)
-        agg_dict['INTERNACION_'] = ('INTERNACION_', ultimo_no_nulo)
-        agg_dict['FECHA ALTA_'] = ('FECHA ALTA_', ultimo_no_nulo)
-        agg_dict['FECHA LLAMADA PRESTADOR.1_'] = ('FECHA LLAMADA PRESTADOR.1_', ultimo_no_nulo)
-        agg_dict['MSP_'] = ('MSP_', ultimo_no_nulo)
-        agg_dict['FECHA DE LLAMADA AL PRESTADOR_'] = ('FECHA DE LLAMADA AL PRESTADOR_', ultimo_no_nulo)
-        agg_dict['CONCURRIO_binaria'] = ('CONCURRIO_binaria', ultimo_no_nulo)
-        agg_dict['NO_CONCURRIO_CONSULTA_'] = ('NO_CONCURRIO_CONSULTA_', ultimo_no_nulo)
+        agg_dict['FECHA SEGUIMIENTO_'] = ('FECHA SEGUIMIENTO_', ultimo)
+        agg_dict['FECHA LLAMADA PRESTADOR_'] = ('FECHA LLAMADA PRESTADOR_', ultimo)
+        agg_dict['AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_'] = ('AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_', ultimo)
+        agg_dict['FECHA DE CONSULTA_'] = ('FECHA DE CONSULTA_', ultimo)
+        agg_dict['CONCURRIO_'] = ('CONCURRIO_', ultimo)
+        agg_dict['SE LLAMO A USUARIO Y/O REFERENTE_'] = ('SE LLAMO A USUARIO Y/O REFERENTE_', ultimo)
+        agg_dict['AGENDO NUEVA CONSULTA_'] = ('AGENDO NUEVA CONSULTA_', ultimo)
+        agg_dict['FECHA DE NUEVA CONSULTA_'] = ('FECHA DE NUEVA CONSULTA_', ultimo)
+        agg_dict['INTERNACION_'] = ('INTERNACION_', ultimo)
+        agg_dict['FECHA ALTA_'] = ('FECHA ALTA_', ultimo)
+        agg_dict['FECHA LLAMADA PRESTADOR.1_'] = ('FECHA LLAMADA PRESTADOR.1_', ultimo)
+        agg_dict['MSP_'] = ('MSP_', ultimo)
+        agg_dict['FECHA DE LLAMADA AL PRESTADOR_'] = ('FECHA DE LLAMADA AL PRESTADOR_', ultimo)
+        agg_dict['CONCURRIO_binaria'] = ('CONCURRIO_binaria', ultimo)
+        agg_dict['NO_CONCURRIO_CONSULTA_'] = ('NO_CONCURRIO_CONSULTA_', ultimo)
 
 
 
@@ -117,21 +123,27 @@ def agregar_base_intentos(df_IAE, dataset):
         agg_dict['MOTIVO_EXTERNO_'] = ('MOTIVO_EXTERNO_', moda_o_nan)
         agg_dict['ES_MOTIVO_EXTERNO_'] = ('ES_MOTIVO_EXTERNO_', moda_o_nan)
     
-    agg_dict['CNV_cant_hijos_cuando_IAE_'] = ("CNV_cant_hijos_cuando_IAE", ultimo_no_nulo)
-    agg_dict['CNV_cant_hijos_cuando_IAE_'] = ("CNV_edad_hijo_mayor_cuando_IAE", ultimo_no_nulo)
-    agg_dict['CNV_cant_hijos_cuando_IAE_'] = ("CNV_edad_hijo_menor_cuando_IAE", ultimo_no_nulo)
+    agg_dict['CNV_'] = ("CNV_", moda_o_nan)
+    
+    agg_dict['CNV_ultimo_cant_hijos_'] = ("CNV_cant_hijos_cuando_IAE", ultimo_no_nulo)
+    agg_dict['CNV_ultimo_edad_hijo_mayor_'] = ("CNV_edad_hijo_mayor_cuando_IAE", ultimo_no_nulo)
+    agg_dict['CNV_ultimo_edad_hijo_menor_'] = ("CNV_edad_hijo_menor_cuando_IAE", ultimo_no_nulo)
 
     if dataset==2:
-        agg_dict['CNV_ultimo_cuando_IAE_estado_civil_'] = ("CNV_ultimo_cuando_IAE_estado_civil", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_pais_nac_'] = ("CNV_ultimo_cuando_IAE_pais_nac", moda_o_nan)
-        agg_dict['CNV_ultimo_cuando_IAE_pais_residencia_'] = ("CNV_ultimo_cuando_IAE_pais_residencia", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_mayor_nivel_estudio_'] = ("CNV_ultimo_cuando_IAE_mayor_nivel_estudio", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_sexo_'] = ("CNV_ultimo_cuando_IAE_sexo", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_numero_embarazo_anteriores_'] = ("CNV_ultimo_cuando_IAE_numero_embarazo_anteriores", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_semana_embarazo_primer_consulta_'] = ("CNV_ultimo_cuando_IAE_semana_embarazo_primer_consulta", ultimo_no_nulo)
-        agg_dict['CNV_ultimo_cuando_IAE_total_consultas_'] = ("CNV_ultimo_cuando_IAE_total_consultas", ultimo_no_nulo)
+        agg_dict['CNV_nro_rese_in_IAE_'] = ("CNV_nro_rese_in_IAE_", moda_o_nan)
+        agg_dict['CNV_otro_progenitor_'] = ("CNV_otro_progenitor_", moda_o_nan)
+        agg_dict['CNV_ultimo_estado_civil_'] = ("CNV_ultimo_cuando_IAE_estado_civil", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_pais_nac_'] = ("CNV_ultimo_cuando_IAE_pais_nac", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_pais_residencia_'] = ("CNV_ultimo_cuando_IAE_pais_residencia", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_mayor_nivel_estudio_'] = ("CNV_ultimo_cuando_IAE_mayor_nivel_estudio", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_sexo_'] = ("CNV_ultimo_cuando_IAE_sexo", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_embarazo_anteriores_'] = ("CNV_ultimo_cuando_IAE_numero_embarazo_anteriores", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_semana_embarazo_primer_consulta_'] = ("CNV_ultimo_cuando_IAE_semana_embarazo_primer_consulta", ultimo_no_nulo)
+        agg_dict['CNV_ultimo_total_consultas_'] = ("CNV_ultimo_cuando_IAE_total_consultas", ultimo_no_nulo)
     
     agg_dict['RUCAF_prestador'] = ("RUCAF_prestador", ultimo_no_nulo)
+    agg_dict['RUCAF_PRESTADOR_PUBLICO_'] = ("RUCAF_PRESTADOR_PUBLICO_", ultimo_no_nulo)
+    agg_dict['RUCAF_PRESTADOR_PRIVADO_'] = ("RUCAF_PRESTADOR_PRIVADO_", ultimo_no_nulo)
     agg_dict['RUCAF_pais'] = ("RUCAF_pais", ultimo_no_nulo)
     agg_dict['RUCAF_departamento'] = ("RUCAF_departamento", ultimo_no_nulo)
     agg_dict['RUCAF_localidad'] = ("RUCAF_localidad", ultimo_no_nulo)
@@ -201,7 +213,7 @@ def personas_en_CDE_sin_IAE(df_IAE_agregada, df_IAE_CDE):
 def agregar_IAE_PREVIO_corregido(df_IAE_agregada):
 
     df_IAE_agregada['IAE_PREVIO_CORREGIDO' ] = df_IAE_agregada['IAE_PREVIO'].copy()
-    df_IAE_agregada.loc[(df_IAE_agregada["IAE_PREVIO_CORREGIDO"] == "NO SE INDICA") & (df_IAE_agregada["NUMERO_INTENTOS_"] > 0), "IAE_PREVIO_CORREGIDO"] = "SI"
+    df_IAE_agregada.loc[(df_IAE_agregada["IAE_PREVIO_CORREGIDO"] == "NO SE INDICA") & (df_IAE_agregada["NUMERO_INTENTOS_"] > 1), "IAE_PREVIO_CORREGIDO"] = "SI"
     
     return df_IAE_agregada
 

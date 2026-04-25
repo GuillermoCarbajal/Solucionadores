@@ -1,0 +1,29 @@
+data:
+  entrega: 2
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0423/IAE_agregada_entrega2_2026-04-23_06-15-49.csv'
+
+  num_features:
+    - GRUPO_EDAD_
+    - Sexo
+    - NUMERO_INTENTOS_
+    #- PRESTADOR_PUBLICO_
+    #- PRESTADOR_PRIVADO_
+    #- IAE_PREVIO_CORREGIDO
+    #- CNV_
+    #- CNV_ultimo_cant_hijos_
+    #- SIV_
+    #- SHARPS_
+    # - RUCAF_cobertura
+  cat_features:
+    - METODO_IAE_PREVIO_
+    #- IAE_PREVIO_CORREGIDO
+  target: CAT_SUI_ #IAE_en_CDE_ # CAT_SUI_
+
+filtros:
+  - METODO_IAE
+experiment:
+  seed: 42
+  output_dir: results
+  device: auto
+  
+

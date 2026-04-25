@@ -1,4 +1,5 @@
 from utils.comet_utils import create_experiment, save_gs_results, save_cv_results
+from utils.load_data import load_config
 import os
 
 import numpy as np
@@ -44,7 +45,18 @@ def getX(data, num_attribs, cat_attribs):
     if 'Sexo' in num_attribs:
         data['Sexo']=data['Sexo']=='Masculino'
     if 'IAE_PREVIO_CORREGIDO' in num_attribs:
-        data['IAE_PREVIO_CORREGIDO']=data['IAE_PREVIO_CORREGIDO']=='SI'
+        data['IAE_PREVIO_SI']=data['IAE_PREVIO_CORREGIDO']=='SI'
+        data['IAE_PREVIO_NO']=data['IAE_PREVIO_CORREGIDO']=='NO'
+        num_attribs.remove('IAE_PREVIO_CORREGIDO')
+        num_attribs.append('IAE_PREVIO_SI')
+        num_attribs.append('IAE_PREVIO_NO')
+    if 'RUCAF_cobertura' in num_attribs:
+        data['RUCAF_cobertura_fonasa']=data['RUCAF_cobertura']=='Fonasa'
+        data['RUCAF_cobertura_no_fonasa']=data['RUCAF_cobertura']=='No Fonasa'
+        num_attribs.remove('RUCAF_cobertura')
+        num_attribs.append('RUCAF_cobertura_fonasa')
+        num_attribs.append('RUCAF_cobertura_no_fonasa')
+        
 
     X = data[num_attribs+cat_attribs]
 
@@ -100,7 +112,8 @@ def generate_preprocessing_pipeline(num_attribs, cat_attribs, classifier=None):
 
 
 
-def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_weights=None,cv=5, criteria='roc_auc', n_jobs=-1):
+def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_weights=None,cv=5, 
+                        criteria='roc_auc', random_state=33, n_jobs=-1):
     """
     Construye un pipeline con preprocesamiento y optimización de hiperparámetros
     mediante validación cruzada, para distintos clasificadores.
@@ -108,13 +121,13 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
 
     # Modelos base
     classifiers = {
-        'LogisticRegression': LogisticRegression(max_iter=1000,class_weight=class_weights),
-        'RandomForest': RandomForestClassifier(class_weight=class_weights),
+        'LogisticRegression': LogisticRegression(max_iter=1000,class_weight=class_weights, random_state=random_state),
+        'RandomForest': RandomForestClassifier(class_weight=class_weights, random_state=random_state),
         'XGBoost': XGBClassifier(tree_method="hist", objective='binary:logistic', eval_metric='aucpr', 
-                                 enable_categorical=True, scale_pos_weight=class_weights,verbosity=2),
+                                 enable_categorical=True, scale_pos_weight=class_weights,verbosity=2, random_state=random_state),
         'SVM': SVC(probability=True,class_weight=class_weights),
-        'DecisionTree': DecisionTreeClassifier(class_weight=class_weights),
-        'HistGradientBoosting': HistGradientBoostingClassifier(class_weight=class_weights),
+        'DecisionTree': DecisionTreeClassifier(class_weight=class_weights, random_state=random_state),
+        'HistGradientBoosting': HistGradientBoostingClassifier(class_weight=class_weights, random_state=random_state),
     }
 
     # Espacios de búsqueda razonables por modelo
@@ -306,54 +319,92 @@ def conflicting_patterns_counts(X, y, round_decimals=None):
 
 
 
+
 def mostrar_histogramas(X, y, nombres=None):
     clases = y.unique()
     num_cols = X.shape[1]
 
-    fig, axes = plt.subplots((num_cols - 1) // 4 + 1, 4, figsize=(16, 8))
-    axes = axes.flatten()[:num_cols]
+    if nombres is None:
+        nombres = X.columns
 
-    for ax, col in zip(axes, range(num_cols)):
+    nrows = (num_cols - 1) // 4 + 1
+    fig, axes = plt.subplots(nrows, 4, figsize=(16, 4 * nrows))
+    axes = axes.flatten()
+
+    for i, (ax, col) in enumerate(zip(axes, range(num_cols))):
         serie = X.iloc[:, col]
+        nombre = nombres[i]
 
-        # Detectar columna binaria
-        valores_unicos = serie.dropna().unique()
-        es_binaria = len(valores_unicos) <= 2 and set(valores_unicos).issubset({0, 1})
+        es_numerica = pd.api.types.is_numeric_dtype(serie)
 
-        for c in clases:
-            #print(f"hist col {col}")
+        # -------- NUMÉRICA --------
+        if es_numerica and serie.nunique() > 10:
+            # bins globales
+            bins = np.histogram_bin_edges(serie.dropna(), bins=10)
 
-            datos = X[y == c].iloc[:, col]
-
-            if es_binaria:
-                # Histogram bins correctos para 0 y 1
-                ax.hist(datos, bins=[-0.5, 0.5, 1.5], density=True,
+            for c in clases:
+                datos = X[y == c].iloc[:, col]
+                ax.hist(datos, bins=bins, density=True,
                         alpha=0.5, label=f"Clase {c}")
-            else:
-                ax.hist(datos, bins=10, density=True,
-                        alpha=0.5, label=f"Clase {c}")
-                #ax.set_xticks(range(len(valores_unicos)), valores_unicos, rotation=90)
 
-        ax.set_title(nombres[col])
+        # -------- CATEGÓRICA / BINARIA --------
+        else:
+            categorias = serie.dropna().unique()
+            categorias = sorted(categorias)
+
+            x = np.arange(len(categorias))
+            width = 0.8 / len(clases)  # barras lado a lado
+
+            for j, c in enumerate(clases):
+                datos = X[y == c].iloc[:, col]
+                counts = datos.value_counts(normalize=True)
+
+                valores = [counts.get(cat, 0) for cat in categorias]
+
+                ax.bar(x + j * width, valores,
+                       width=width, alpha=0.7,
+                       label=f"Clase {c}")
+
+            ax.set_xticks(x + width * (len(clases) - 1) / 2)
+            ax.set_xticklabels(categorias)
+
+        # -------- FORMATO --------
+        ax.set_title(nombre)
         ax.grid(alpha=0.3)
+        ax.tick_params(axis='x', labelrotation=45)
 
-        # Mostrar leyenda sólo en el primer subplot de cada fila
+        for label in ax.get_xticklabels():
+            label.set_ha('right')
+
         ax.legend()
 
-    plt.tight_layout()
-    #plt.show()
-    return plt
+    # borrar ejes vacíos
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
 
+    plt.tight_layout()
+    return plt
 
 
 def run_experiment(args):
 
     cometExperiment = create_experiment(args.model_type)
-    path = args.path
+    #path = args.path
+
+    # ---------------- LOAD CONFIG ----------------
+    config = load_config(args.config)
+    filepath = config["data"].get('filepath')
+    entrega = config["data"].get('entrega')
+    print('Entrega:', entrega)
+    seed = config["experiment"].get('seed')
+    np.random.seed(seed)
+    cometExperiment.log_parameters({'entrega': entrega})
+    cometExperiment.add_tag(f'e{entrega}')
+
 
     # Paso 1: cargo los datos
-    filename = 'IAE_procesada_2a_entrega.csv'  
-    data = pd.read_csv(filename)
+    #filename = 'IAE_procesada_2a_entrega.csv'  
+    data = pd.read_csv(filepath)
     columnas = data.columns.to_list()
 
 
@@ -361,21 +412,26 @@ def run_experiment(args):
     use_sample_weights = (not args.disable_sample_weights)
  
     num_attribs = ["GRUPO_EDAD_", 'Sexo',"NUMERO_INTENTOS_"]
+    num_attribs = config["data"].get('num_features')
     #            'DIAS_PROMEDIO_INTENTOS_','PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
     #            'PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
     
     #cat_attribs = ["DECISION_", "METODO_IAE_PREVIO_"]
     cat_attribs = ["METODO_IAE_PREVIO_","IAE_PREVIO_CORREGIDO"]
+    cat_attribs = config["data"].get('cat_features')
+
 
     #data[cat_attribs]=data[cat_attribs].astype("category")
     #data['PRESTADOR_DIFF_']=data['PRESTADOR_PUBLICO_'].astype(float)-data['PRESTADOR_PRIVADO_'].astype(float)
     #num_attribs = num_attribs + ['PRESTADOR_DIFF_']
 
     atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}  
-    cometExperiment.log_metrics(atributos)
+    cometExperiment.log_parameters(atributos)
 
     X = getX(data, num_attribs, cat_attribs)
-    y = getY(data, metodo=args.y_method)
+    #y = getY(data, metodo=args.y_method)
+    target = config['data'].get('target') 
+    y = data[target] ==1
     print(X.shape, y.shape)
 
 
@@ -430,7 +486,7 @@ def run_experiment(args):
     num_pos = np.sum(y==1)
     num_neg = len(y) - num_pos
     scale_pos_weight = num_neg/num_pos
-    cometExperiment.add_tag(args.y_method)
+    cometExperiment.add_tag(target)
 
     print(X.info())
 
@@ -460,7 +516,7 @@ def run_experiment(args):
     preprocessing = generate_preprocessing_pipeline(num_attribs,cat_attribs, classifier=args.model_type)
     
     gs_pipeline = build_model_with_cv(preprocessing, classifier=args.model_type, class_weights=class_weights,
-                                    criteria=args.gs_criteria)
+                                    criteria=args.gs_criteria, random_state=seed)
     
 
     print("Grid Search started")
@@ -597,6 +653,7 @@ def run_experiment(args):
 
 def parseCommandLineArguments():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--config', type=str, default='config/default.yaml')
     parser.add_argument('--model_type', type=str, default='RandomForest')
     parser.add_argument('--gs_criteria', type=str, default='roc_auc')
     parser.add_argument('--y_method', type=str, default='defuncion')
@@ -606,9 +663,7 @@ def parseCommandLineArguments():
     parser.add_argument('--disable_class_weights', '-dcw', action='store_true')
     parser.add_argument('--disable_sample_weights', '-dsw', action='store_true')
     parser.add_argument('--tsne', action='store_true')
-    parser.add_argument('--path', type=str, default='/Users/javierpreciozzi/Documents/facultad/taa/taa_2022/Proyecto_1/data')
-    parser.add_argument('--working_dir', type=str, default='/Users/javierpreciozzi/Documents/facultad/taa/taa_2022/Proyecto_1/working_dir')
-
+ 
     args = parser.parse_args()
     return args
 
