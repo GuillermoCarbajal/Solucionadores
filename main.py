@@ -17,7 +17,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.svm import SVC
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier, plot_importance
 from sklearn.ensemble import HistGradientBoostingClassifier 
 
 from sklearn.model_selection import cross_val_predict
@@ -33,11 +33,22 @@ from sklearn.model_selection import KFold
 from sklearn.base import clone
 
 from utils.visualization import mostrar_tsne
-
+from utils.evaluacion import oof_prediction
 
 import argparse
 
 os.environ["COMET_AUTO_LOGGING"] = "0"
+
+operacion = {
+    "igual_a": lambda s, v: s == v,
+    "distinto_a": lambda s, v: s != v,
+    "mayor_que": lambda s, v: s > v,
+    "mayor_o_igual_que": lambda s, v: s >= v,
+    "menor_que": lambda s, v: s < v,
+    "menor_o_igual_que": lambda s, v: s <= v,
+    "no_nulo": lambda s, v: s.notna(),
+    "es_nulo": lambda s, v: s.isna(),
+}
 
 def getX(data, num_attribs, cat_attribs):
     # Este data frame (77 casos) incluye personas que tuvieron IAE y además murieron en 2023 (por suicidio u otras causas)
@@ -138,8 +149,8 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
             'classifier__solver': ['lbfgs']
         },
         'RandomForest': {
-            'classifier__n_estimators': [100, 200, 500, 1000],
-            'classifier__max_depth': [3, 5, 10, None],
+            'classifier__n_estimators': [25, 50, 100, 200],
+            'classifier__max_depth': [3, 5, 10, 20, 50, None],
             'classifier__min_samples_split': [2, 5, 10]
         },
         'XGBoost': {
@@ -207,13 +218,14 @@ def show_cross_validation_results(gs_pipeline, criteria):
     #mean_scores = np.mean(scores, axis=0)
     #std_scores = np.std(scores, axis=0)
 
-    import matplotlib.pyplot as plt
     mean_scores = gs_pipeline.cv_results_[f'mean_test_{criteria}']
     std_scores = gs_pipeline.cv_results_[f'std_test_{criteria}']
 
-    plt.figure(figsize=(6,4))
-    plt.semilogx( mean_scores, marker='o', label='Mean CV Score')
-    plt.fill_between(
+    x = np.arange(len(mean_scores))
+
+    fig, ax = plt.subplots(figsize=(6,4))
+    ax.plot(x, mean_scores, marker='o', label='Mean CV Score')
+    ax.fill_between(
         np.arange(len(mean_scores)),
         mean_scores - std_scores,
         mean_scores + std_scores,
@@ -221,61 +233,69 @@ def show_cross_validation_results(gs_pipeline, criteria):
         label='±1 Std. Dev.'
     )
     #plt.xlabel("C (Inverse of Regularization Strength)")
-    plt.ylabel(f"Mean Cross-Validation {criteria}")
-    plt.title("Cross-Validation Performance")
-    plt.legend()
-    return plt
+    ax.set_ylabel(f"Mean Cross-Validation {criteria}")
+    ax.set_title("Cross-Validation Performance")
+    ax.legend()
+    return fig
     #plt.show()
 
 
 
 
 
-def show_cv_confusion_matrix(cv_scores, y, threshold=0.5, filename=None):
+def show_cv_confusion_matrix(cv_scores, y, threshold=0.5, titulo='Matriz de confusion', filename=None):
 
-
+    fig, ax = plt.subplots()
     # Calcular la matriz de confusión
     cm = confusion_matrix(y, cv_scores>threshold)
 
     # Mostrarla
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-    disp.plot(cmap='Blues', values_format='d')
-    plt.title(f'Matriz de confusión (validación cruzada), th={threshold:.02f}')
+    disp.plot(ax=ax, cmap='Blues', values_format='d')
+    ax.set_title(f'{titulo}, th={threshold:.02f}')
     #plt.savefig('CV_conf_matrix.png' if filename is None else filename)
     #plt.show()
-    return plt
+    return fig
 
-def show_cv_precision_recall(cv_scores, y, filename=None):
+def show_cv_precision_recall(cv_scores, y, filename=None, titulo='Curva Prec. Recall (val cruzada)', save_path=None):
     
     precision, recall, _ = precision_recall_curve(y, cv_scores)
     ap = average_precision_score(y, cv_scores)
-    plt.figure()
-    plt.plot(recall, precision, label=f"AP = {ap:.3f}")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.title("Cross-validated Precision–Recall Curve")
-    plt.legend()
-    plt.grid(True, ls='--', alpha=0.6)
-    plt.savefig('CV_PR.png' if filename is None else filename)
+    fig, ax = plt.subplots()
+    ax.plot(recall, precision, label=f"AP = {ap:.3f}")
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title(titulo)
+    ax.legend()
+    ax.grid(True, ls='--', alpha=0.6)
+
+    if save_path:
+        fig.savefig(os.path.join(save_path,'CV_PR.png') if filename is None else os.path.join(save_path,filename))
+    
     #plt.show()
+    return fig
 
 
-def show_cv_roc(cv_scores, y, filename=None):
+def show_cv_roc(cv_scores, y, filename=None, titulo='Curva ROC', save_path=None):
 
-    #y_score = model1_pipeline.predict_proba(data1_X)[:, 1]  # probabilidad de la clase positiva
+     #y_score = model1_pipeline.predict_proba(data1_X)[:, 1]  # probabilidad de la clase positiva
     fpr, tpr, _ = roc_curve(y, cv_scores)
     auc = roc_auc_score(y, cv_scores)
     
-    plt.figure()
-    plt.plot(fpr, tpr, label=f"AUC = {auc:.3f}")
-    plt.plot([0, 1], [0, 1], "k--")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title("Cross Validated ROC curve")
-    plt.legend()
-    plt.savefig('Cross Validated ROC curve'  if filename is None else filename)
-    #plt.show()
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr, label=f"AUC = {auc:.3f}")
+    ax.plot([0, 1], [0, 1], "k--")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title(titulo)
+    ax.legend()
 
+    if save_path:
+        fig.savefig(os.path.join(save_path,'CV_PR.png') if filename is None else os.path.join(save_path,filename))
+
+    #plt.savefig('Cross Validated ROC curve'  if filename is None else filename)
+    #plt.show()
+    return fig
 
 
 def conflicting_patterns_counts(X, y, round_decimals=None):
@@ -357,7 +377,7 @@ def mostrar_histogramas(X, y, nombres=None):
 
             for j, c in enumerate(clases):
                 datos = X[y == c].iloc[:, col]
-                counts = datos.value_counts(normalize=True)
+                counts = datos.value_counts(normalize=True) #
 
                 valores = [counts.get(cat, 0) for cat in categorias]
 
@@ -386,6 +406,42 @@ def mostrar_histogramas(X, y, nombres=None):
     return plt
 
 
+def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None, 
+                                indices_subgrupo=[], nombre_subgrupo=''):
+    
+    y_eval = y[indices_subgrupo] if len(indices_subgrupo)>0 else y
+    cv_scores_eval =cv_scores[indices_subgrupo] if len(indices_subgrupo)>0 else cv_scores
+
+    precision = precision_score(y_eval, cv_scores_eval > threshold)
+    accuracy = accuracy_score(y_eval, cv_scores_eval > threshold)
+    recall = recall_score(y_eval, cv_scores_eval > threshold)
+        
+    ap = average_precision_score(y_eval, cv_scores_eval)
+    roc_auc = roc_auc_score(y_eval, cv_scores_eval)
+    titulo_mc = 'Matriz de Confusión (val. cruzada)' if nombre_subgrupo=='' else f'Matriz de Confusión (val. curzada) para {nombre_subgrupo}'
+    fig_cm = show_cv_confusion_matrix(cv_scores_eval, y_eval, threshold, titulo=titulo_mc)
+
+    titulo_pr = 'Curva Prec. Recall (val. cruzada)' if nombre_subgrupo=='' else f'Curva Prec. Recall (val. curzada) para {nombre_subgrupo}'
+    fig_pr = show_cv_precision_recall(cv_scores_eval, y_eval, titulo=titulo_pr)
+    
+    titulo_roc = 'Curva ROC (val. cruzada)' if nombre_subgrupo=='' else f'Curva ROC (val. curzada) para {nombre_subgrupo}'
+    fig_roc = show_cv_roc(cv_scores_eval,y_eval, titulo=titulo_roc)
+
+    if cmt_exp:
+
+        fig_cm.canvas.draw()
+        fig_pr.canvas.draw()
+        fig_roc.canvas.draw()
+
+        cmt_exp.log_metric(f'prec@{threshold}' if nombre_subgrupo=='' else f'prec@{threshold}_' + nombre_subgrupo, precision)
+        cmt_exp.log_metric(f'acc@{threshold}' if nombre_subgrupo=='' else f'acc@{threshold}_' + nombre_subgrupo, accuracy)
+        cmt_exp.log_metric(f'recall@{threshold}' if nombre_subgrupo==''  else f'recall@{threshold}_' + nombre_subgrupo, recall)
+        cmt_exp.log_metric(f'AP' if nombre_subgrupo=='' else f'AP_' + nombre_subgrupo, ap)
+        cmt_exp.log_metric(f'roc_auc' if nombre_subgrupo=='' else f'roc_auc_' + nombre_subgrupo, roc_auc)
+        cmt_exp.log_figure('confusion_matrix' if nombre_subgrupo=='' else f'confusion_matrix_' + nombre_subgrupo,figure=fig_cm)
+        cmt_exp.log_figure('precision recall curve' if nombre_subgrupo=='' else f'precision recall curve_' + nombre_subgrupo,figure=fig_pr)
+        cmt_exp.log_figure('ROC curve' if nombre_subgrupo=='' else f'ROC curve_' + nombre_subgrupo,figure=fig_roc)
+
 def run_experiment(args):
 
     cometExperiment = create_experiment(args.model_type)
@@ -407,17 +463,31 @@ def run_experiment(args):
     data = pd.read_csv(filepath)
     columnas = data.columns.to_list()
 
+    print('Dimension de los datos levandatados:', data.shape)
+
+    mask = pd.Series(True, index=data.index)
+    if config["filtros"]:
+        for filt in config["filtros"]:
+            col = filt["atributo"]
+            op = filt["op"]
+            value = filt.get("valor")
+            
+            print('Se eliminan las filas que satisfacen: ', col, op, value)
+            mask &= operacion[op](data[col], value)
+
+        data = data[~mask]
+
+    print('Dimension de los datos luego de filtrar:', data.shape)
+
+
+    #indices_a_filtrar = data['FECHA_IAE'].isnull()
+    #data = data[~indices_a_filtrar]
 
     use_class_weights = (not args.disable_class_weights)
     use_sample_weights = (not args.disable_sample_weights)
  
-    num_attribs = ["GRUPO_EDAD_", 'Sexo',"NUMERO_INTENTOS_"]
     num_attribs = config["data"].get('num_features')
-    #            'DIAS_PROMEDIO_INTENTOS_','PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
-    #            'PRESTADOR_PUBLICO_','PRESTADOR_PRIVADO_'] 
     
-    #cat_attribs = ["DECISION_", "METODO_IAE_PREVIO_"]
-    cat_attribs = ["METODO_IAE_PREVIO_","IAE_PREVIO_CORREGIDO"]
     cat_attribs = config["data"].get('cat_features')
 
 
@@ -434,6 +504,8 @@ def run_experiment(args):
     y = data[target] ==1
     print(X.shape, y.shape)
 
+    
+
 
     # Agrupar por todas las columnas de X y ver si y tiene más de un valor distinto
     df=X.copy()
@@ -447,38 +519,38 @@ def run_experiment(args):
     #print(out["conflicts"].head(50))
 
 
-    duplicados = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
+    # duplicados = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
 
-    indices_conflicto = duplicados.index.to_list()
-    print('cantidad indices conflictos', len(indices_conflicto))
+    # indices_conflicto = duplicados.index.to_list()
+    # print('cantidad indices conflictos', len(indices_conflicto))
 
-    # 1) Agrupamos por las columnas de X y contamos cuántas veces aparece cada clase
-    pivot = (
-        df.groupby(list(X.columns))["y"]
-        .value_counts()
-        .unstack(fill_value=0)
-    )
+    # # 1) Agrupamos por las columnas de X y contamos cuántas veces aparece cada clase
+    # pivot = (
+    #     df.groupby(list(X.columns))["y"]
+    #     .value_counts()
+    #     .unstack(fill_value=0)
+    # )
 
-    # 2) Nos quedamos solo con los patrones conflictivos
-    pivot_conflict = pivot[pivot.gt(0).sum(axis=1) > 1]
+    # # 2) Nos quedamos solo con los patrones conflictivos
+    # pivot_conflict = pivot[pivot.gt(0).sum(axis=1) > 1]
 
-    print("Patrones conflictivos únicos:", len(pivot_conflict))
-    print("Filas conflictivas totales:", pivot_conflict.sum().sum())
+    # print("Patrones conflictivos únicos:", len(pivot_conflict))
+    # print("Filas conflictivas totales:", pivot_conflict.sum().sum())
 
-    pivot_conflict
+    # pivot_conflict
 
 
-    # identificar patrones conflictivos
-    conflict_patterns = df.groupby(list(X.columns))["y"].nunique() > 1
+    # # identificar patrones conflictivos
+    # conflict_patterns = df.groupby(list(X.columns))["y"].nunique() > 1
 
-    # extraer todos los patrones conflictivos
-    keys_conflictivas = conflict_patterns[conflict_patterns].index
+    # # extraer todos los patrones conflictivos
+    # keys_conflictivas = conflict_patterns[conflict_patterns].index
 
-    # todas las filas cuyo patrón esté en un patrón conflictivo
-    mask = df.apply(lambda row: tuple(row[list(X.columns)].values), axis=1).isin(keys_conflictivas)
-    df_conflict_filas = df[mask]
+    # # todas las filas cuyo patrón esté en un patrón conflictivo
+    # mask = df.apply(lambda row: tuple(row[list(X.columns)].values), axis=1).isin(keys_conflictivas)
+    # df_conflict_filas = df[mask]
 
-    print("Filas conflictivas reales:", len(df_conflict_filas))
+    # print("Filas conflictivas reales:", len(df_conflict_filas))
 
     
 
@@ -522,6 +594,9 @@ def run_experiment(args):
     print("Grid Search started")
     gs_pipeline.fit(X, y.values)
 
+
+    #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
+
     preprocess = gs_pipeline.best_estimator_.named_steps["preprocessing"]
     feature_names = preprocess.get_feature_names_out()
 
@@ -535,6 +610,14 @@ def run_experiment(args):
     print("\nMejor estimador:")
     print(gs_pipeline.best_estimator_)
 
+    result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
+
+    perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
+    perm_importance.sort_values().plot(kind="barh", figsize=(8,6))
+    plt.title("Permutation Importance")
+    #plt.show()
+    cometExperiment.log_figure('Permutation importance', figure=plt)
+    
     
     if args.model_type=='DecisionTree':
         plt.figure()
@@ -555,13 +638,13 @@ def run_experiment(args):
         #plt.show()
         cometExperiment.log_figure('Feature importances', figure=plt)
 
-        result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
-
-        perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
-        perm_importance.sort_values().plot(kind="barh", figsize=(8,6))
-        plt.title("Permutation Importance")
-        #plt.show()
-        cometExperiment.log_figure('Permutation importance', figure=plt)
+    elif args.model_type=='XGBoost':
+        plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
+                                 importance_type='weight')
+        cometExperiment.log_figure('Features importance (weight)', figure = plt_xg)
+        plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
+                                 importance_type='gain')
+        cometExperiment.log_figure('Features importance (gain)', figure = plt_xg)
 
     elif args.model_type=='LogisticRegression':
         odds_ratios = np.exp(gs_pipeline.best_estimator_.named_steps["classifier"].coef_[0])
@@ -590,62 +673,58 @@ def run_experiment(args):
     print('Cross validation...')
     cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
                                     cv=5, method='predict_proba')[:, 1]
-    threshold = 0.5
-    precision = precision_score(y, cv_scores > threshold)
-    accuracy = accuracy_score(y, cv_scores > threshold)
-    recall = recall_score(y, cv_scores > threshold)
-    ap = average_precision_score(y, cv_scores)
-    roc_auc = roc_auc_score(y, cv_scores)
-
-    cometExperiment.log_metric(f'prec@{threshold}', precision)
-    cometExperiment.log_metric(f'acc@{threshold}', accuracy)
-    cometExperiment.log_metric(f'recall@{threshold}', recall)
-    cometExperiment.log_metric(f'AP', ap)
-    cometExperiment.log_metric(f'roc_auc', roc_auc)
     
-    #cv_scores = oof_predictions_with_best_params(gs_pipeline, X, y, cv=5)
-    #save_cv_results(cometExperiment, cv_scores)
-    plt = show_cv_confusion_matrix(cv_scores, y)
-    cometExperiment.log_figure('confusion_matrix',figure=plt)
-    plt = show_cv_precision_recall(cv_scores, y)
-    cometExperiment.log_figure('precision recall curve',figure=plt)
-    plt = show_cv_roc(cv_scores,y)
-    cometExperiment.log_figure('ROC curve',figure=plt)
+    
+    reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
+
+    for cond in config["subgrupo_evaluacion"]:
+        mask = pd.Series(True, index=data.index)
+        col = cond["atributo"]
+        op = cond["op"]
+        value = cond.get("valor")
+        mask = operacion[op](data[col], value)
+        print('Evaluando en grupo que satisface: ', col, op, value)
+
+        reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment, 
+                                    indices_subgrupo=mask, nombre_subgrupo=f'{col} {op} {value}' )
+        
+
+    # ## Métricas restringidas a los intentos
+    # cv_scores_intentos = cv_scores[indices_intentos]
+    # y_intentos = y[indices_intentos]
+    # cv_scores_no_intentos = cv_scores[~indices_intentos]
+    # y_no_intentos = y[~indices_intentos]
+
+    # precision_intentos = precision_score(y_intentos, cv_scores_intentos > threshold)
+    # accuracy_intentos = accuracy_score(y_intentos, cv_scores_intentos > threshold)
+    # recall_intentos = recall_score(y_intentos, cv_scores_intentos > threshold)
+    
+    # cometExperiment.log_metric(f'prec@{threshold}_intentos', precision_intentos)
+    # cometExperiment.log_metric(f'acc@{threshold}_intentos', accuracy_intentos)
+    # cometExperiment.log_metric(f'recall@{threshold}_intentos', recall_intentos)
+    
+    # ap_intentos = average_precision_score(y_intentos, cv_scores_intentos)
+    # roc_auc_intentos = roc_auc_score(y_intentos, cv_scores_intentos)
+    # cometExperiment.log_metric(f'AP_intentos', ap_intentos)
+    # cometExperiment.log_metric(f'roc_auc_intentos', roc_auc_intentos)
+    
+    # plt = show_cv_confusion_matrix(cv_scores_intentos, y_intentos)
+    # cometExperiment.log_figure('confusion_matrix_intentos',figure=plt)
+    # plt = show_cv_precision_recall(cv_scores_intentos, y_intentos)
+    # cometExperiment.log_figure('precision recall curve_intentos',figure=plt)
+    # plt = show_cv_roc(cv_scores_intentos,y_intentos)
+    # cometExperiment.log_figure('ROC curve_intentos',figure=plt)
+
+    # if len(y_no_intentos) >0:
+    #     plt = show_cv_confusion_matrix(cv_scores_no_intentos, y_no_intentos)
+    #     cometExperiment.log_figure('confusion_matrix_no_intentos',figure=plt)
+    #     plt = show_cv_precision_recall(cv_scores_no_intentos, y_no_intentos)
+    #     cometExperiment.log_figure('precision recall curve_no_intentos',figure=plt)
+    #     plt = show_cv_roc(cv_scores_no_intentos,y_no_intentos)
+    #     cometExperiment.log_figure('ROC curve_no_intentos',figure=plt)
 
   
-    # # Paso 2: crear el clasificador
-    # classifier = createClassifier(args.model_type,create_comet = True)
 
-    # # Paso 2: Preparación de los datos
-    # X_train,y_train,X_val,y_val,nb_background_train,nb_signal_train,weights_train,weights_val = prepare_train_test_data(train,args.split_factor,classifier.getPreprocessingPipeline())
-    # X_test = prepare_test_data(test,classifier.getPreprocessingPipeline())
-
-    # # Paso 3: se setean los parametros
-    # if use_class_weights:
-    #     class_weights, scale_pos_weight = setClassWeightsParameters(nb_background_train,nb_signal_train)
-    #     classifier.setClassWeights(class_weights,scale_pos_weight)
-    
-    # classifier.setTrainingParameters({'sample_weight':weights_train.values})
-
-
-    # # Paso 4: entrenar el clasificador
-    # cometExperiment.add_tag(args.gs_scoring)
-    # gs_results = classifier.train(args.gs_scoring,X_train,y_train, cometExperiment, args.ams_threshold, use_sample_weights)
-    # save_gs_results(cometExperiment, gs_results)
-
-    # # Paso 5: salvar el clasificador a disco
-    # models_dir="{}/models".format(args.working_dir)
-    # if not os.path.exists(models_dir): os.mkdir(models_dir)
-    # classifier.save(models_dir)
-
-    # # Paso 6: validar los resultados en los datos de validación
-    # print('Analyzing validation results...')
-    # temp_path = "{}/temp_files".format(args.working_dir)
-    # if not os.path.exists(temp_path): os.mkdir(temp_path)
-    # classifier.validate(X_val,y_val,weights_val,temp_path, cometExperiment)
-    # best_ams, best_th = classifier.getBestAMSandThresholds()
-    # cometExperiment.log_metric('best ams val', best_ams)
-    # cometExperiment.log_metric('best threshold val', best_th)
 
     cometExperiment.end()
 
