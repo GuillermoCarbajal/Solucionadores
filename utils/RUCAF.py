@@ -55,7 +55,9 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
         # Se crea una variable booleana que indica si tiene asociado al menos un prestador público o no 
     RUCAF_PRESTADOR_PUBLICO_ = 'Pública' in RUCAF_tipo_prestador 
     RUCAF_PRESTADOR_PRIVADO_ = 'Privada' in RUCAF_tipo_prestador
-       
+    RUCAF_fonasa = 'Fonasa' in RUCAF_cobertura
+    RUCAF_no_fonasa = 'No Fonasa' in RUCAF_cobertura    
+
     nuevos_campos = {'RUCAF_prestador':'|'.join(RUCAF_prestador), 
                      'RUCAF_tipo_prestador':'|'.join(RUCAF_tipo_prestador),
                      'RUCAF_pais':'|'.join(RUCAF_pais), 
@@ -64,7 +66,9 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
                      'RUCAF_cobertura':'|'.join(RUCAF_cobertura),
                      'RUCAF_total_prestadores':total_prestadores,
                      'RUCAF_PRESTADOR_PUBLICO_':RUCAF_PRESTADOR_PUBLICO_,
-                     'RUCAF_PRESTADOR_PRIVADO_':RUCAF_PRESTADOR_PRIVADO_
+                     'RUCAF_PRESTADOR_PRIVADO_':RUCAF_PRESTADOR_PRIVADO_,
+                     'RUCAF_fonasa_': RUCAF_fonasa,
+                     'RUCAF_no_fonasa_': RUCAF_no_fonasa
                      }
     
     #df_result = pd.concat([intento, nuevos_campos])

@@ -1,6 +1,6 @@
 data:
   entrega: 1
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0423/IAE_agregada_entrega1_2026-04-23_06-14-11.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega1_2026-05-23_07-07-42.csv'
 
   num_features:
     - GRUPO_EDAD_
@@ -13,7 +13,8 @@ data:
     - CNV_ultimo_cant_hijos_
     - SIV_
     - SHARPS_
-    #- RUCAF_cobertura
+    #- RUCAF_fonasa
+    #- RUCAF_no_fonasa
   cat_features:
     - METODO_IAE_PREVIO_
     #- IAE_PREVIO_CORREGIDO
@@ -29,15 +30,15 @@ subgrupo_evaluacion:
   - atributo: NUMERO_INTENTOS_
     op: mayor_que
     valor: 0
-  - atributo: RUCAF_cobertura
+  - atributo: RUCAF_fonasa
     op: igual_a
-    valor: Fonasa 
-  - atributo: RUCAF_cobertura
+    valor: True   
+  - atributo: RUCAF_no_fonasa
     op: igual_a
-    valor: No Fonasa  
+    valor: True    
   - atributo: RUCAF_cobertura
     op: es_nulo
-    valor: 0   
+    valor: 0      
   - atributo: IAE_en_CDE_
     op: igual_a
     valor: 1           

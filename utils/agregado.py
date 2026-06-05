@@ -85,7 +85,7 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['REGISTRO_cantidad'] = ("REGISTRO", 'count')
     agg_dict['FECHA_IAE_ultimo_no_nulo'] = ("FECHA IAE", ultimo_no_nulo)
     agg_dict['FECHA_IAE_ultimo'] = ("FECHA IAE", ultimo)
-    agg_dict['FECHA_IAE_cantidad'] = ("FECHA IAE", 'count')
+    #agg_dict['FECHA_IAE_cantidad'] = ("FECHA IAE", 'count')
 
     agg_dict['NUMERO_INTENTOS_'] = ("FECHA IAE", 'count')
     agg_dict['DECISION_'] = (campo_decision, ultimo_no_nulo)
@@ -130,7 +130,7 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['CNV_ultimo_edad_hijo_menor_'] = ("CNV_edad_hijo_menor_cuando_IAE", ultimo_no_nulo)
 
     if dataset==2:
-        agg_dict['CNV_nro_rese_in_IAE_'] = ("CNV_nro_rese_in_IAE_", moda_o_nan)
+        agg_dict['persona_en_CNV_nro_rese_'] = ("persona_en_CNV_nro_rese_", moda_o_nan)
         agg_dict['CNV_otro_progenitor_'] = ("CNV_otro_progenitor_", moda_o_nan)
         agg_dict['CNV_ultimo_estado_civil_'] = ("CNV_ultimo_cuando_IAE_estado_civil", ultimo_no_nulo)
         agg_dict['CNV_ultimo_pais_nac_'] = ("CNV_ultimo_cuando_IAE_pais_nac", ultimo_no_nulo)
@@ -140,6 +140,7 @@ def agregar_base_intentos(df_IAE, dataset):
         agg_dict['CNV_ultimo_embarazo_anteriores_'] = ("CNV_ultimo_cuando_IAE_numero_embarazo_anteriores", ultimo_no_nulo)
         agg_dict['CNV_ultimo_semana_embarazo_primer_consulta_'] = ("CNV_ultimo_cuando_IAE_semana_embarazo_primer_consulta", ultimo_no_nulo)
         agg_dict['CNV_ultimo_total_consultas_'] = ("CNV_ultimo_cuando_IAE_total_consultas", ultimo_no_nulo)
+        agg_dict['CNV_otro_progenitor_'] = ("CNV_otro_progenitor_", moda_o_nan)
     
     agg_dict['RUCAF_prestador'] = ("RUCAF_prestador", ultimo_no_nulo)
     agg_dict['RUCAF_PRESTADOR_PUBLICO_'] = ("RUCAF_PRESTADOR_PUBLICO_", ultimo_no_nulo)
@@ -148,6 +149,8 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['RUCAF_departamento'] = ("RUCAF_departamento", ultimo_no_nulo)
     agg_dict['RUCAF_localidad'] = ("RUCAF_localidad", ultimo_no_nulo)
     agg_dict['RUCAF_cobertura'] = ("RUCAF_cobertura", ultimo_no_nulo)
+    agg_dict['RUCAF_fonasa'] = ("RUCAF_fonasa_", ultimo_no_nulo)
+    agg_dict['RUCAF_no_fonasa'] = ("RUCAF_no_fonasa_", ultimo_no_nulo)
 
     agg_dict['SHARPS_'] = ("SHARPS_", ultimo_no_nulo)
 

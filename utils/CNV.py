@@ -85,7 +85,13 @@ def esta_persona_en_CNV(df_CNV, df_IAE):
 
 def esta_nro_rese_en_IAE(df_IAE_CNV, df_IAE):
     
-    df_IAE["CNV_nro_rese_in_IAE_"] = df_IAE_CNV["nro_rese"].isin(df_IAE["CEDULA"]).astype(int) 
+    df_IAE_CNV["CNV_nro_rese_en_IAE_"] = df_IAE_CNV["nro_rese"].isin(df_IAE["CEDULA"]).astype(int) 
+
+    return df_IAE_CNV
+
+def esta_persona_en_CNV_nro_rese(df_IAE_CNV, df_IAE):
+    
+    df_IAE["persona_en_CNV_nro_rese_"] = df_IAE["CEDULA"].isin(df_IAE_CNV["nro_rese"]).astype(int) 
 
     return df_IAE
 
@@ -104,33 +110,60 @@ def incluir_otro_progrenitor_en_CNV(intento, df_IAE_CNV):
 
     return intento
 
-def calcular_otro_progenitor(df):
-    df = df.copy()
+def calcular_otro_progenitor(df_CNV):
+    '''
+    Crea un atributo llamado otro progenitor en la base CNV que vale uno 
+    en caso que haya otra fila con el mismo nro_rese. 
+    '''
+    df_CNV = df_CNV.copy()
 
     def obtener_otro(s):
         unicos = s.drop_duplicates()
         if len(unicos) == 2:
-            return s.map({unicos.iloc[0]: unicos.iloc[1],
-                          unicos.iloc[1]: unicos.iloc[0]})
+            print("\nGRUPO")
+            print(s)
+            print("UNICOS")
+            print(unicos.tolist())
+            mapping = {
+                unicos.iloc[0]: unicos.iloc[1],
+                unicos.iloc[1]: unicos.iloc[0]
+            }
+
+            print("MAPPING")
+            print(mapping)
+
+            resultado = pd.Series( s.map(mapping).values, index=s.index)
+
+            print("RESULTADO")
+            print(resultado)
+
+            return resultado
         else:
             return pd.Series([None] * len(s), index=s.index)
 
-    df["otro_progenitor_"] = (
-        df.groupby("nro_rese")["cedula"]
+    df_CNV["otro_progenitor_"] = (
+        df_CNV.groupby("nro_rese")["cedula"]
         .transform(obtener_otro)
     )
 
-    return df
+    return df_CNV
 
 def incluir_otro_progrenitor(df_IAE, df_IAE_CNV):
 
     df_IAE_CNV = calcular_otro_progenitor(df_IAE_CNV)
 
-    df_IAE["CNV_otro_progenitor_"] = df_IAE.merge(
+    # asegurar 1 fila por cedula DESPUÉS del cálculo
+    df_IAE_CNV = df_IAE_CNV.sort_values("cedula").drop_duplicates("cedula", keep="last")
+
+
+    df_IAE = df_IAE.merge(
         df_IAE_CNV[["cedula", "otro_progenitor_"]],
         left_on="CEDULA",
         right_on="cedula",
         how="left"
-    )["otro_progenitor_"]
+    )
+
+    df_IAE = df_IAE.drop(columns=["cedula"])
+    df_IAE = df_IAE.rename(columns={"otro_progenitor_": "CNV_otro_progenitor_"})
 
     return df_IAE
