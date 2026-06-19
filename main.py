@@ -26,14 +26,18 @@ from sklearn.metrics import roc_curve, roc_auc_score, precision_score, recall_sc
 from sklearn.metrics import make_scorer, fbeta_score
 from sklearn.inspection import permutation_importance
 
-
+import matplotlib
+matplotlib.use("Agg")
 from matplotlib import pyplot as plt
+
 
 from sklearn.model_selection import KFold
 from sklearn.base import clone
 
 from utils.visualization import mostrar_tsne
 from utils.evaluacion import oof_prediction
+
+from sklearn.calibration import CalibratedClassifierCV, CalibrationDisplay
 
 import argparse
 
@@ -172,7 +176,7 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
     param_grids = {
         'LogisticRegression': {
             'classifier__C': [0.001, 0.01, 0.1, 1, 10, 100],
-            'classifier__penalty': ['l2'],
+            'classifier__l1_ratio': [0],
             'classifier__solver': ['lbfgs']
         },
         'RandomForest': {
@@ -335,6 +339,132 @@ def show_cv_precision_recall(cv_scores, y, filename=None, titulo='Curva Prec. Re
     return fig
 
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.calibration import calibration_curve
+from sklearn.metrics import brier_score_loss, log_loss
+
+
+def log_calibration_analysis(
+    y_score,
+    y_true,
+    name="model",
+    n_bins=10,
+    experiment=None
+):
+    """
+    Loguea en Comet:
+      - Reliability diagram
+      - Histograma de scores por clase
+      - Brier score
+      - Log loss
+
+    Parameters
+    ----------
+    y_true : array-like
+        Etiquetas verdaderas (0/1)
+    y_score : array-like
+        Probabilidades de la clase positiva
+    name : str
+        Prefijo para nombres de figuras y métricas
+    n_bins : int
+        Número de bins para la curva de calibración
+    experiment : comet_ml.Experiment
+    """
+
+    y_true = np.asarray(y_true)
+    y_score = np.asarray(y_score)
+
+    # métricas
+    brier = brier_score_loss(y_true, y_score)
+    ll = log_loss(y_true, y_score)
+
+    if experiment:
+        experiment.log_metric(f"{name}_brier_score", brier)
+        experiment.log_metric(f"{name}_log_loss", ll)
+
+    # curva de calibración
+    frac_pos, mean_pred = calibration_curve(
+        y_true,
+        y_score,
+        n_bins=n_bins,
+        strategy="quantile"
+    )
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(12, 5)
+    )
+
+    # -------------------------------------------------
+    # Reliability diagram
+    # -------------------------------------------------
+
+    ax = axes[0]
+
+    ax.plot(
+        [0, 1],
+        [0, 1],
+        "--",
+        label="Perfect calibration"
+    )
+
+    ax.plot(
+        mean_pred,
+        frac_pos,
+        "o-",
+        label=name
+    )
+
+    ax.set_xlabel("Mean predicted probability")
+    ax.set_ylabel("Observed frequency")
+    ax.set_title(
+        f"Calibration curve\n"
+        f"Brier={brier:.4f}  LogLoss={ll:.4f}"
+    )
+
+    ax.legend()
+    ax.grid(True)
+
+    # -------------------------------------------------
+    # Histograma de scores
+    # -------------------------------------------------
+
+    ax = axes[1]
+
+    ax.hist(
+        y_score[y_true == 0],
+        bins=20,
+        alpha=0.5,
+        label="Negative"
+    )
+
+    ax.hist(
+        y_score[y_true == 1],
+        bins=20,
+        alpha=0.5,
+        label="Positive"
+    )
+
+    ax.set_xlabel("Predicted probability")
+    ax.set_ylabel("Count")
+    ax.set_title("Score distribution")
+    ax.legend()
+
+    plt.tight_layout()
+
+    fig.canvas.draw()
+
+    if experiment:
+        experiment.log_figure(
+            figure_name=f"{name}_calibration_analysis",
+            figure=fig
+        )
+
+    plt.close(fig)
+
 def show_cv_roc(cv_scores, y, filename=None, titulo='Curva ROC', save_path=None):
 
      #y_score = model1_pipeline.predict_proba(data1_X)[:, 1]  # probabilidad de la clase positiva
@@ -485,6 +615,18 @@ def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None,
     
     titulo_roc = 'Curva ROC (val. cruzada)' if nombre_subgrupo=='' else f'Curva ROC (val. curzada) para {nombre_subgrupo}'
     fig_roc = show_cv_roc(cv_scores_eval,y_eval, titulo=titulo_roc)
+    
+ 
+    titulo_curva_calib = 'Curva de probabilidad (val. cruzada)' if nombre_subgrupo=='' else f'Curva de probabilidad (val. curzada) para {nombre_subgrupo}'
+    log_calibration_analysis(y_score=cv_scores_eval, y_true=y_eval,  name=titulo_curva_calib, experiment=cmt_exp)
+
+    calibr_transform = LogisticRegression()
+    calibr_transform.fit( cv_scores.reshape(-1, 1), y)
+    scores_eval_cal = calibr_transform.predict_proba(  cv_scores_eval.reshape(-1, 1))[:, 1]
+
+    titulo_curva_calib = 'Curva de probabilidad calibrada (val. cruzada)' if nombre_subgrupo=='' else f'Curva de probabilidad calibrada (val. curzada) para {nombre_subgrupo}'
+    log_calibration_analysis(y_score=scores_eval_cal, y_true=y_eval,  name=titulo_curva_calib, experiment=cmt_exp)
+
 
     if cmt_exp:
 
@@ -501,323 +643,287 @@ def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None,
         cmt_exp.log_figure('precision recall curve' if nombre_subgrupo=='' else f'precision recall curve_' + nombre_subgrupo,figure=fig_pr)
         cmt_exp.log_figure('ROC curve' if nombre_subgrupo=='' else f'ROC curve_' + nombre_subgrupo,figure=fig_roc)
 
-def run_experiment(args):
-
-    cometExperiment = create_experiment(args.model_type)
-    #path = args.path
-
-    # ---------------- LOAD CONFIG ----------------
-    config = load_config(args.config)
-    filepath = config["data"].get('filepath')
-    entrega = config["data"].get('entrega')
-    print('Entrega:', entrega)
-    seed = config["experiment"].get('seed')
-    np.random.seed(seed)
-    cometExperiment.log_parameters({'entrega': entrega})
-    cometExperiment.add_tag(f'e{entrega}')
 
 
-    # Paso 1: cargo los datos
-    #filename = 'IAE_procesada_2a_entrega.csv'  
-    data = pd.read_csv(filepath)
-    columnas = data.columns.to_list()
-
-    print('Dimension de los datos levandatados:', data.shape)
+def filtrar_datos(data, filtros):
 
     mask = pd.Series(True, index=data.index)
-    if config["filtros"]:
-        for filt in config["filtros"]:
-            col = filt["atributo"]
-            op = filt["op"]
-            value = filt.get("valor")
+    
+    for filt in filtros:
+        col = filt["atributo"]
+        op = filt["op"]
+        value = filt.get("valor")
+        
+        print('Se eliminan las filas que satisfacen: ', col, op, value)
+        mask &= operacion[op](data[col], value)
+
+    data = data[~mask]
+    
+    return data
+
+def run_experiment(args):
+
+
+    #path = args.path
+
+    for model_type in args.classifiers:
+       
+        cometExperiment = create_experiment(model_type)   if args.log_comet else None
+
+
+        # ---------------- LOAD CONFIG ----------------
+        config = load_config(args.config)
+        filepath = config["data"].get('filepath')
+        entrega = config["data"].get('entrega')
+        print('Entrega:', entrega)
+        seed = config["experiment"].get('seed')
+        np.random.seed(seed)
+
+        use_class_weights = (not args.disable_class_weights)
+        use_sample_weights = (not args.disable_sample_weights)
+
+        if use_class_weights:  
+            if model_type=='XGBoost':
+                num_pos = np.sum(y==1)
+                num_neg = len(y) - num_pos
+                scale_pos_weight = num_neg/num_pos
+                class_weights = scale_pos_weight
+            else:
+                class_weights = 'balanced'        
+        else :
+            class_weights = None
+
+        # Paso 1: cargo los datos
+        #filename = 'IAE_procesada_2a_entrega.csv'  
+        data = pd.read_csv(filepath)
+        print('Dimension de los datos levantados:', data.shape)
+
+        # Filtro algunos datos del conjunto entregado que no se van a usar para entrenar
+        if config["filtros"]:
+            data = filtrar_datos(data, config['filtros'])
+        print('Dimension de los datos luego de filtrar:', data.shape)
+
+
+        # leo del archivo de configuración los atributos a usar 
+        num_attribs = config["data"].get('num_features')
+        cat_attribs = config["data"].get('cat_features')
+        atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}  
+        # obtengo los features que se usan para entrenar
+        X = getX(data, num_attribs, cat_attribs)
+        #y = getY(data, metodo=args.y_method)
+        # obtengo el target
+        target = config['data'].get('target') 
+        y = data[target] ==1
+        print(X.info())
+        print(X.shape, y.shape)
+
+        # ---------------- COMET ----------------
+        if args.log_comet:
+            cometExperiment.log_parameters({'entrega': entrega})
+            cometExperiment.add_tag(f'e{entrega}')
+            cometExperiment.log_parameters(atributos)
+            cometExperiment.log_dataset_hash(np.hstack((X.values,y.values[:,np.newaxis])))
+            cometExperiment.add_tag(target)
+            cometExperiment.add_tag(model_type)    
+            cometExperiment.add_tag(args.gs_criteria)
+            if use_class_weights:
+                cometExperiment.add_tag('class_weights')    
+
+        plt = mostrar_histogramas(X.loc[:,num_attribs],y,num_attribs)
+        if args.log_comet:
+            cometExperiment.log_figure('Numéricas', plt)
+
+        plt = mostrar_histogramas(X.loc[:,cat_attribs],y,cat_attribs)
+        if args.log_comet:
+            cometExperiment.log_figure('Categóricas', plt)
+
+
+        folds = create_folds(args.split)
+
+        for fold, (train_idx, test_idx) in enumerate(folds.split(X,y), start=1):
+            print(f"Fold {fold}")
+            print("Train:", train_idx)
+            print("Test :", test_idx)
+            num_positivos_fold_i = np.sum(y.values[test_idx]==1)
+            num_negativos_fold_i = np.sum(y.values[test_idx]==0)
+            print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
+            print()
+
+
+
+    
+        preprocessing = generate_preprocessing_pipeline(num_attribs,cat_attribs, classifier=model_type)
+        
+
+        gs_pipeline = build_model_with_cv(preprocessing, classifier=model_type, class_weights=class_weights,
+                                        criteria=args.gs_criteria, random_state=seed, cv=folds)
+        
+
+        print("Grid Search started")
+        gs_pipeline.fit(X, y.values)
+
+
+        #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
+
+        preprocess = gs_pipeline.best_estimator_.named_steps["preprocessing"]
+        feature_names = preprocess.get_feature_names_out()
+
+        if args.tsne:
+            plt = mostrar_tsne(preprocess.transform(X),y)
+            if args.log_comet:
+                cometExperiment.log_figure('tsne', figure=plt)
+
+        print("Mejores parámetros encontrados:")
+        print(gs_pipeline.best_params_)
+
+        print("\nMejor estimador:")
+        print(gs_pipeline.best_estimator_)
+
+        plt.figure()
+        result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
+
+        perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
+        perm_importance.sort_values().plot(kind="barh", figsize=(8,6))
+        plt.title("Permutation Importance")
+        #plt.show()
+        if args.log_comet:
+            cometExperiment.log_parameters(gs_pipeline.best_params_)
+            cometExperiment.log_metric("best score", gs_pipeline.best_score_)
+            cometExperiment.log_figure('Permutation importance', figure=plt)
+        
+        
+        if model_type=='DecisionTree':
+            plt.figure(figsize=(18,10))
+            plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],fontsize=10,
+                    filled=True, proportion=True, feature_names=feature_names)
+            if args.log_comet: 
+                cometExperiment.log_figure('Tree', figure=plt)
             
-            print('Se eliminan las filas que satisfacen: ', col, op, value)
-            mask &= operacion[op](data[col], value)
+            plt.figure(figsize=(18,10))
+            plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],
+                    filled=True, max_depth=2,fontsize=10,
+                    proportion=True, feature_names=feature_names)
+            if args.log_comet:
+                cometExperiment.log_figure('Tree (2 primeras ramas)', figure=plt)
+            
+        elif model_type=='RandomForest':
+            rf = gs_pipeline.best_estimator_.named_steps["classifier"]
+            importances = rf.feature_importances_
+            feat_importance = pd.Series(importances, index=feature_names)
+            feat_importance = feat_importance.sort_values(ascending=False)
 
-        data = data[~mask]
+            plt.figure(figsize=(10, 6))
+            feat_importance.plot(kind='bar')
+            plt.title("Importancia de Features - Random Forest")
+            plt.ylabel("Importancia")
+            plt.tight_layout()
+            #plt.show()
+            if args.log_comet:
+                cometExperiment.log_figure('Feature importances', figure=plt)
 
-    print('Dimension de los datos luego de filtrar:', data.shape)
+        elif model_type=='XGBoost':
+            plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
+                                    importance_type='weight')
+            if args.log_comet:
+                cometExperiment.log_figure('Features importance (weight)', figure = plt_xg)
+            plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
+                                    importance_type='gain')
+            if args.log_comet:
+                cometExperiment.log_figure('Features importance (gain)', figure = plt_xg)
+
+        elif model_type=='LogisticRegression':
+            odds_ratios = np.exp(gs_pipeline.best_estimator_.named_steps["classifier"].coef_[0])
+            print(feature_names)
+            print(odds_ratios)
+            feat_importance = pd.Series(odds_ratios, index=feature_names)
+            feat_importance = feat_importance.sort_values(ascending=False)
+
+            plt.figure(figsize=(10, 6))
+            feat_importance.plot(kind='bar')
+            plt.title("Odds Ratio - Logistic Regression")
+            plt.ylabel("Importancia")
+            plt.tight_layout()
+            #plt.show()
+            if args.log_comet:
+                cometExperiment.log_figure('Odds Ratio', figure=plt)
 
 
-    #indices_a_filtrar = data['FECHA_IAE'].isnull()
-    #data = data[~indices_a_filtrar]
 
-    use_class_weights = (not args.disable_class_weights)
-    use_sample_weights = (not args.disable_sample_weights)
  
-    num_attribs = config["data"].get('num_features')
-    
-    cat_attribs = config["data"].get('cat_features')
+        #save_gs_results(cometExperiment, gs_pipeline)
 
+        plt = show_best_cv_results(gs_pipeline, args.gs_criteria)
+        if args.log_comet:
+          cometExperiment.log_figure('best cross val results',figure=plt)
 
-    #data[cat_attribs]=data[cat_attribs].astype("category")
-    #data['PRESTADOR_DIFF_']=data['PRESTADOR_PUBLICO_'].astype(float)-data['PRESTADOR_PRIVADO_'].astype(float)
-    #num_attribs = num_attribs + ['PRESTADOR_DIFF_']
-
-    atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}  
-    cometExperiment.log_parameters(atributos)
-
-    X = getX(data, num_attribs, cat_attribs)
-    #y = getY(data, metodo=args.y_method)
-    target = config['data'].get('target') 
-    y = data[target] ==1
-    print(X.shape, y.shape)
-
-    
-
-
-    # Agrupar por todas las columnas de X y ver si y tiene más de un valor distinto
-    df=X.copy()
-    df['y']=y
-    conflictos = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
-    grupos_conflictos = conflictos.groupby(list(X.columns))
-    print(f'Hay {conflictos.shape[0]} conflictos.')
-    print(conflictos)
-    print(f'Hay {grupos_conflictos.ngroups} grupos de conflictos')
-    for i, (clave, datos_grupo) in enumerate(grupos_conflictos, start=1):
-        print(f'Grupo {i}')
-        print('Clave:', clave)
-        print(datos_grupo)
-        print()
-    #print(X.shape)
-    #out = conflicting_patterns_counts(X, y, round_decimals=6)  # ajustá round_decimals si conviene
-    #print("\nConflictos (patrón -> conteo por clase):")
-    #print(out["conflicts"].head(50))
-
-
-    # duplicados = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
-
-    # indices_conflicto = duplicados.index.to_list()
-    # print('cantidad indices conflictos', len(indices_conflicto))
-
-    # # 1) Agrupamos por las columnas de X y contamos cuántas veces aparece cada clase
-    # pivot = (
-    #     df.groupby(list(X.columns))["y"]
-    #     .value_counts()
-    #     .unstack(fill_value=0)
-    # )
-
-    # # 2) Nos quedamos solo con los patrones conflictivos
-    # pivot_conflict = pivot[pivot.gt(0).sum(axis=1) > 1]
-
-    # print("Patrones conflictivos únicos:", len(pivot_conflict))
-    # print("Filas conflictivas totales:", pivot_conflict.sum().sum())
-
-    # pivot_conflict
-
-
-    # # identificar patrones conflictivos
-    # conflict_patterns = df.groupby(list(X.columns))["y"].nunique() > 1
-
-    # # extraer todos los patrones conflictivos
-    # keys_conflictivas = conflict_patterns[conflict_patterns].index
-
-    # # todas las filas cuyo patrón esté en un patrón conflictivo
-    # mask = df.apply(lambda row: tuple(row[list(X.columns)].values), axis=1).isin(keys_conflictivas)
-    # df_conflict_filas = df[mask]
-
-    # print("Filas conflictivas reales:", len(df_conflict_filas))
-
-    
-
-    cometExperiment.log_dataset_hash(np.hstack((X.values,y.values[:,np.newaxis])))
-    num_pos = np.sum(y==1)
-    num_neg = len(y) - num_pos
-    scale_pos_weight = num_neg/num_pos
-    cometExperiment.add_tag(target)
-
-    print(X.info())
-
-    if use_class_weights:  
-        if args.model_type=='XGBoost':
-            class_weights = scale_pos_weight
-        else:
-            class_weights = 'balanced'
-        cometExperiment.add_tag('class_weights')
-    else :
-        class_weights = None
-
-    cometExperiment.add_tag(args.model_type)    
-    cometExperiment.add_tag(args.gs_criteria)
-
-    print(columnas)
-
-   
-  
-
-    plt = mostrar_histogramas(X.loc[:,num_attribs],y,num_attribs)
-    cometExperiment.log_figure('Numéricas', plt)
-
-    plt = mostrar_histogramas(X.loc[:,cat_attribs],y,cat_attribs)
-    cometExperiment.log_figure('Categóricas', plt)
-
-    preprocessing = generate_preprocessing_pipeline(num_attribs,cat_attribs, classifier=args.model_type)
-    
-    folds = create_folds(args.split)
-
-    for fold, (train_idx, test_idx) in enumerate(folds.split(X,y), start=1):
-        print(f"Fold {fold}")
-        print("Train:", train_idx)
-        print("Test :", test_idx)
-        num_positivos_fold_i = np.sum(y.values[test_idx]==1)
-        num_negativos_fold_i = np.sum(y.values[test_idx]==0)
-        print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
-        print()
-
-    gs_pipeline = build_model_with_cv(preprocessing, classifier=args.model_type, class_weights=class_weights,
-                                    criteria=args.gs_criteria, random_state=seed, cv=folds)
-    
-
-    print("Grid Search started")
-    gs_pipeline.fit(X, y.values)
-
-
-    #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
-
-    preprocess = gs_pipeline.best_estimator_.named_steps["preprocessing"]
-    feature_names = preprocess.get_feature_names_out()
-
-    if args.tsne:
-        plt = mostrar_tsne(preprocess.transform(X),y)
-        cometExperiment.log_figure('tsne', figure=plt)
-
-    print("Mejores parámetros encontrados:")
-    print(gs_pipeline.best_params_)
-
-    print("\nMejor estimador:")
-    print(gs_pipeline.best_estimator_)
-
-    plt.figure()
-    result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
-
-    perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
-    perm_importance.sort_values().plot(kind="barh", figsize=(8,6))
-    plt.title("Permutation Importance")
-    #plt.show()
-    cometExperiment.log_figure('Permutation importance', figure=plt)
-    
-    
-    if args.model_type=='DecisionTree':
-        plt.figure(figsize=(18,10))
-        plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],fontsize=10,
-                  filled=True, proportion=True, feature_names=feature_names)
-        cometExperiment.log_figure('Tree', figure=plt)
-        plt.figure(figsize=(18,10))
-        plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],
-                  filled=True, max_depth=2,fontsize=10,
-                  proportion=True, feature_names=feature_names)
-        cometExperiment.log_figure('Tree (2 primeras ramas)', figure=plt)
+        print('Cross validation...')
+        cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
+                                        cv=folds, method='predict_proba')[:, 1]
         
-    elif args.model_type=='RandomForest':
-        rf = gs_pipeline.best_estimator_.named_steps["classifier"]
-        importances = rf.feature_importances_
-        feat_importance = pd.Series(importances, index=feature_names)
-        feat_importance = feat_importance.sort_values(ascending=False)
+        
+        reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
 
-        plt.figure(figsize=(10, 6))
-        feat_importance.plot(kind='bar')
-        plt.title("Importancia de Features - Random Forest")
-        plt.ylabel("Importancia")
-        plt.tight_layout()
-        #plt.show()
-        cometExperiment.log_figure('Feature importances', figure=plt)
-
-    elif args.model_type=='XGBoost':
-        plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
-                                 importance_type='weight')
-        cometExperiment.log_figure('Features importance (weight)', figure = plt_xg)
-        plt_xg = plot_importance(gs_pipeline.best_estimator_.named_steps["classifier"], 
-                                 importance_type='gain')
-        cometExperiment.log_figure('Features importance (gain)', figure = plt_xg)
-
-    elif args.model_type=='LogisticRegression':
-        odds_ratios = np.exp(gs_pipeline.best_estimator_.named_steps["classifier"].coef_[0])
-        print(feature_names)
-        print(odds_ratios)
-        feat_importance = pd.Series(odds_ratios, index=feature_names)
-        feat_importance = feat_importance.sort_values(ascending=False)
-
-        plt.figure(figsize=(10, 6))
-        feat_importance.plot(kind='bar')
-        plt.title("Odds Ratio - Logistic Regression")
-        plt.ylabel("Importancia")
-        plt.tight_layout()
-        #plt.show()
-        cometExperiment.log_figure('Odds Ratio', figure=plt)
-
-
-
-    cometExperiment.log_parameters(gs_pipeline.best_params_)
-    cometExperiment.log_metric("best score", gs_pipeline.best_score_)
-    #save_gs_results(cometExperiment, gs_pipeline)
-
-    plt = show_best_cv_results(gs_pipeline, args.gs_criteria)
-    cometExperiment.log_figure('best cross val results',figure=plt)
-
-    print('Cross validation...')
-    cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
-                                    cv=folds, method='predict_proba')[:, 1]
-    
-    
-    reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
-
-    for cond in config["subgrupo_evaluacion"]:
-        mask = pd.Series(True, index=data.index)
-        col = cond["atributo"]
-        op = cond["op"]
-        value = cond.get("valor")
-        mask = operacion[op](data[col], value)
-        print('Evaluando en grupo que satisface: ', col, op, value)
-
-        reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment, 
-                                    indices_subgrupo=mask, nombre_subgrupo=f'{col} {op} {value}' )
         
 
-    # ## Métricas restringidas a los intentos
-    # cv_scores_intentos = cv_scores[indices_intentos]
-    # y_intentos = y[indices_intentos]
-    # cv_scores_no_intentos = cv_scores[~indices_intentos]
-    # y_no_intentos = y[~indices_intentos]
+        for cond in config["subgrupo_evaluacion"]:
+            mask = pd.Series(True, index=data.index)
+            col = cond["atributo"]
+            op = cond["op"]
+            value = cond.get("valor")
+            mask = operacion[op](data[col], value)
+            print('Evaluando en grupo que satisface: ', col, op, value)
 
-    # precision_intentos = precision_score(y_intentos, cv_scores_intentos > threshold)
-    # accuracy_intentos = accuracy_score(y_intentos, cv_scores_intentos > threshold)
-    # recall_intentos = recall_score(y_intentos, cv_scores_intentos > threshold)
+            reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment, 
+                                        indices_subgrupo=mask, nombre_subgrupo=f'{col} {op} {value}' )
+            
+
+        # ## Métricas restringidas a los intentos
+        # cv_scores_intentos = cv_scores[indices_intentos]
+        # y_intentos = y[indices_intentos]
+        # cv_scores_no_intentos = cv_scores[~indices_intentos]
+        # y_no_intentos = y[~indices_intentos]
+
+        # precision_intentos = precision_score(y_intentos, cv_scores_intentos > threshold)
+        # accuracy_intentos = accuracy_score(y_intentos, cv_scores_intentos > threshold)
+        # recall_intentos = recall_score(y_intentos, cv_scores_intentos > threshold)
+        
+        # cometExperiment.log_metric(f'prec@{threshold}_intentos', precision_intentos)
+        # cometExperiment.log_metric(f'acc@{threshold}_intentos', accuracy_intentos)
+        # cometExperiment.log_metric(f'recall@{threshold}_intentos', recall_intentos)
+        
+        # ap_intentos = average_precision_score(y_intentos, cv_scores_intentos)
+        # roc_auc_intentos = roc_auc_score(y_intentos, cv_scores_intentos)
+        # cometExperiment.log_metric(f'AP_intentos', ap_intentos)
+        # cometExperiment.log_metric(f'roc_auc_intentos', roc_auc_intentos)
+        
+        # plt = show_cv_confusion_matrix(cv_scores_intentos, y_intentos)
+        # cometExperiment.log_figure('confusion_matrix_intentos',figure=plt)
+        # plt = show_cv_precision_recall(cv_scores_intentos, y_intentos)
+        # cometExperiment.log_figure('precision recall curve_intentos',figure=plt)
+        # plt = show_cv_roc(cv_scores_intentos,y_intentos)
+        # cometExperiment.log_figure('ROC curve_intentos',figure=plt)
+
+        # if len(y_no_intentos) >0:
+        #     plt = show_cv_confusion_matrix(cv_scores_no_intentos, y_no_intentos)
+        #     cometExperiment.log_figure('confusion_matrix_no_intentos',figure=plt)
+        #     plt = show_cv_precision_recall(cv_scores_no_intentos, y_no_intentos)
+        #     cometExperiment.log_figure('precision recall curve_no_intentos',figure=plt)
+        #     plt = show_cv_roc(cv_scores_no_intentos,y_no_intentos)
+        #     cometExperiment.log_figure('ROC curve_no_intentos',figure=plt)
+
     
-    # cometExperiment.log_metric(f'prec@{threshold}_intentos', precision_intentos)
-    # cometExperiment.log_metric(f'acc@{threshold}_intentos', accuracy_intentos)
-    # cometExperiment.log_metric(f'recall@{threshold}_intentos', recall_intentos)
-    
-    # ap_intentos = average_precision_score(y_intentos, cv_scores_intentos)
-    # roc_auc_intentos = roc_auc_score(y_intentos, cv_scores_intentos)
-    # cometExperiment.log_metric(f'AP_intentos', ap_intentos)
-    # cometExperiment.log_metric(f'roc_auc_intentos', roc_auc_intentos)
-    
-    # plt = show_cv_confusion_matrix(cv_scores_intentos, y_intentos)
-    # cometExperiment.log_figure('confusion_matrix_intentos',figure=plt)
-    # plt = show_cv_precision_recall(cv_scores_intentos, y_intentos)
-    # cometExperiment.log_figure('precision recall curve_intentos',figure=plt)
-    # plt = show_cv_roc(cv_scores_intentos,y_intentos)
-    # cometExperiment.log_figure('ROC curve_intentos',figure=plt)
 
-    # if len(y_no_intentos) >0:
-    #     plt = show_cv_confusion_matrix(cv_scores_no_intentos, y_no_intentos)
-    #     cometExperiment.log_figure('confusion_matrix_no_intentos',figure=plt)
-    #     plt = show_cv_precision_recall(cv_scores_no_intentos, y_no_intentos)
-    #     cometExperiment.log_figure('precision recall curve_no_intentos',figure=plt)
-    #     plt = show_cv_roc(cv_scores_no_intentos,y_no_intentos)
-    #     cometExperiment.log_figure('ROC curve_no_intentos',figure=plt)
-
-  
-
-
-    cometExperiment.end()
+        if args.log_comet:
+            cometExperiment.end()
 
 
 
 def parseCommandLineArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, default='config/default.yaml')
-    parser.add_argument('--model_type', type=str, default='RandomForest')
+    parser.add_argument( '--classifiers', nargs='+', choices=['RandomForest', 'XGBoost', 'LogisticRegression', 'DecisionTree'],
+                                                    default=['RandomForest']
+)
     parser.add_argument('--gs_criteria', type=str, default='roc_auc')
     parser.add_argument('--y_method', type=str, default='defuncion')
     parser.add_argument('--ams_threshold', type=float, default=0.9)
@@ -826,6 +932,7 @@ def parseCommandLineArguments():
     parser.add_argument('--disable_class_weights', '-dcw', action='store_true')
     parser.add_argument('--disable_sample_weights', '-dsw', action='store_true')
     parser.add_argument('--tsne', action='store_true')
+    parser.add_argument('--log_comet', action='store_true')
     parser.add_argument('--split', type=str, default='estratificado')
  
     args = parser.parse_args()
