@@ -73,9 +73,9 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['GRUPO_EDAD_'] = ('GRUPO_EDAD_', ultimo_no_nulo)
 
     agg_dict['METODO_IAE_FRECUENTE_'] = ("METODO_", moda_o_nan)
-    agg_dict['METODO_IAE_PREVIO_'] = ("METODO_", ultimo_no_nulo)
-    agg_dict['METODO_IAE_PREVIO_2_'] = ("METODO_", penultimo_no_nulo)
-    agg_dict['METODO_IAE_PREVIO_3_'] = ("METODO_", antepenultimo_no_nulo)
+    agg_dict['METODO_IAE_ACTUAL_'] = ("METODO_", ultimo_no_nulo)
+    agg_dict['METODO_IAE_PREVIO_'] = ("METODO_", penultimo_no_nulo)
+    agg_dict['METODO_IAE_PREVIO_2_'] = ("METODO_", antepenultimo_no_nulo)
     agg_dict['IAE_PREVIO'] = (campo_IAE_previo, ultimo_no_nulo)
     agg_dict['PRESTADOR_RECODIFICADO'] = (campo_prestador, ultimo_no_nulo)
     agg_dict['PRESTADOR_PUBLICO_'] = ("PRESTADOR_PUBLICO_", moda_o_nan)

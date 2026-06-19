@@ -19,6 +19,28 @@ def agregar_datos_RUCAF_en_IAE_old(df_RUCAF, df_IAE):
 
     return df_IAE
 
+def agregar_RUCAF_region(df_RUCAF):
+    def get_region(departamento):
+        Oeste = ['SAN JOSE', 'FLORES', 'FLORIDA', 'COLONIA', 'SORIANO','RIO NEGRO','DURAZNO']
+        Norte = ['ARTIGAS', 'SALTO', 'PAYSANDU', 'RIVERA', 'TACUAREMBO']
+        Este = ['MALDONADO', 'ROCHA', 'LAVALLEJA', 'TREINTA Y TRES', 'CERRO LARGO']
+        Sur = ['CANELONES', 'MONTEVIDEO']
+        
+        region = None
+        if departamento in Oeste:
+            region = 'Oeste'
+        elif departamento in Norte:
+            region = 'Norte'
+        elif departamento in Este:
+            region='Este'
+        elif departamento in Sur:
+            region='Sur' 
+        return region
+    
+    df_RUCAF['region_'] = df_RUCAF['departamento'].map(get_region)
+
+    return df_RUCAF
+
 def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
     cedula = intento['CEDULA']
     
@@ -28,6 +50,7 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
     RUCAF_localidad = []
     RUCAF_cobertura = []
     RUCAF_tipo_prestador = []
+    RUCAF_region = []
     total_prestadores = 0
     
     if cedula in df_RUCAF_agrupada.groups:
@@ -37,6 +60,7 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
         prestadores = datos_RUCAF['prestador']
         coberturas = datos_RUCAF['cobertura']
         departamentos = datos_RUCAF['departamento']
+        regiones = datos_RUCAF['region_']
         localidades = datos_RUCAF['localidad']
         paises = datos_RUCAF['pais']
         tipo_prestadores_RUCAF = datos_RUCAF['tipo_prestador_RUCAF']
@@ -46,6 +70,7 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
             RUCAF_prestador.append(str(prestadores.iloc[i]))
             RUCAF_pais.append(str(paises.iloc[i]))
             RUCAF_departamento.append(str(departamentos.iloc[i]))
+            RUCAF_region.append(str(regiones.iloc[i]))
             RUCAF_localidad.append(str(localidades.iloc[i]))
             RUCAF_cobertura.append(str(coberturas.iloc[i]))
             RUCAF_tipo_prestador.append(str(tipo_prestadores_RUCAF.iloc[i]))
@@ -62,6 +87,7 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
                      'RUCAF_tipo_prestador':'|'.join(RUCAF_tipo_prestador),
                      'RUCAF_pais':'|'.join(RUCAF_pais), 
                      'RUCAF_departamento':'|'.join(RUCAF_departamento),
+                     'RUCAF_region_':'|'.join(RUCAF_region),
                      'RUCAF_localidad':'|'.join(RUCAF_localidad),
                      'RUCAF_cobertura':'|'.join(RUCAF_cobertura),
                      'RUCAF_total_prestadores':total_prestadores,

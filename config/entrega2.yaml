@@ -6,24 +6,32 @@ data:
     - GRUPO_EDAD_
     - Sexo
     - NUMERO_INTENTOS_
-    - PRESTADOR_PUBLICO_
-    - PRESTADOR_PRIVADO_
+    #- PRESTADOR_PUBLICO_
+    #- PRESTADOR_PRIVADO_
     - IAE_PREVIO_CORREGIDO
-    - CNV_
-    - CNV_ultimo_cant_hijos_
-    - SIV_
-    - SHARPS_
+    #- CNV_
+    #- CNV_ultimo_cant_hijos_
+    #- SIV_
+    #- SHARPS_
     - RUCAF_fonasa
     - RUCAF_no_fonasa
+    #- persona_en_CNV_nro_rese_
+    #- CNV_otro_progenitor_
+    - ANTIPOLIOMELITICA
+    #- COVID 19
+    #- NO_CONCURRIO_CONSULTA_
   cat_features:
     - METODO_IAE_PREVIO_
+    - METODO_IAE_PREVIO_2_
+    #- CNV_ultimo_mayor_nivel_estudio_
+    #- CNV_ultimo_estado_civil_
     #- IAE_PREVIO_CORREGIDO
   target: CAT_SUI_ #IAE_en_CDE_ # CAT_SUI_
 
 filtros:
-  #- atributo: NUMERO_INTENTOS_
-  #  op: igual_a
-  #  valor: 0
+  - atributo: NUMERO_INTENTOS_
+    op: igual_a
+    valor: 0
     
 subgrupo_evaluacion:
   - atributo: NUMERO_INTENTOS_
@@ -40,7 +48,19 @@ subgrupo_evaluacion:
     valor: 0      
   - atributo: IAE_en_CDE_
     op: igual_a
-    valor: 1           
+    valor: 1    
+  #- atributo: CNV_otro_progenitor_
+  #  op: igual_a
+  #  valor: True        
+  #- atributo: persona_en_CNV_nro_rese_
+  #  op: igual_a
+  #  valor: 1                 
+  #- atributo: ANTIPOLIOMELITICA
+  #  op: igual_a
+  #  valor: 0
+  #- atributo: COVID 19
+  #  op: igual_a
+  #  valor: 0                 
          
 experiment:
   seed: 42

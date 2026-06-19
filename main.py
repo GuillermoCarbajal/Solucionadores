@@ -67,7 +67,14 @@ def getX(data, num_attribs, cat_attribs):
         num_attribs.remove('RUCAF_cobertura')
         num_attribs.append('RUCAF_cobertura_fonasa')
         num_attribs.append('RUCAF_cobertura_no_fonasa')
-        
+    if 'CNV_otro_progenitor_' in num_attribs:  
+        data['CNV_otro_progenitor_']=~ data['CNV_otro_progenitor_'].isnull()
+    if 'ANTIPOLIOMELITICA' in num_attribs:  
+        sin_vacuna = data['ANTIPOLIOMELITICA'].isnull()  
+        data.loc[sin_vacuna,'ANTIPOLIOMELITICA']=0  
+    if 'COVID 19' in num_attribs:  
+        sin_vacuna = data['COVID 19'].isnull()  
+        data.loc[sin_vacuna,'COVID 19']=0  
 
     X = data[num_attribs+cat_attribs]
 
@@ -123,6 +130,26 @@ def generate_preprocessing_pipeline(num_attribs, cat_attribs, classifier=None):
 
 
 
+def create_folds(metodo='default'):
+
+    from sklearn.model_selection import KFold
+    from sklearn.model_selection import StratifiedKFold
+
+    if metodo=='default':
+        cv = KFold(
+            n_splits=5,
+            shuffle=False
+        )
+
+    elif metodo=='estratificado':
+
+        cv = StratifiedKFold(
+            n_splits=5,
+            shuffle=False
+        )
+
+    return cv
+
 def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_weights=None,cv=5, 
                         criteria='roc_auc', random_state=33, n_jobs=-1):
     """
@@ -154,16 +181,16 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
             'classifier__min_samples_split': [2, 5, 10]
         },
         'XGBoost': {
-            'classifier__n_estimators': [100, 200, 500, 1000],
-            'classifier__max_depth': [3, 5, 8],
-            'classifier__learning_rate': [0.001, 0.01, 0.1, 0.3]
+            'classifier__n_estimators': [50, 100, 200, 500, 1000],
+            'classifier__max_depth': [2, 3, 5, 8],
+            'classifier__learning_rate': [0.0001, 0.001, 0.01, 0.1]
         },
         'SVM': {
             'classifier__C': [0.1, 1, 10],
             'classifier__kernel': ['linear', 'rbf']
         },
         'DecisionTree': {
-            'classifier__max_depth': [3, 5, 10, None],
+            'classifier__max_depth': [2, 3, 4, 5, 10, 15, None],
             'classifier__min_samples_split': [2, 5, 10]
         },
         'HistGradientBoosting': {
@@ -203,13 +230,14 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
         n_jobs=n_jobs,
         refit=criteria,
         scoring=scoring,
-        return_train_score=False, verbose=1
+        return_train_score=True, verbose=1
     )
 
     return grid_search
 
 
-def show_cross_validation_results(gs_pipeline, criteria):
+
+def show_grid_search_results(gs_pipeline, criteria):
 
     #for clase, scores in classifier.scores_.items():
     #    print(f"Clase {clase}: shape {scores.shape}")  # (n_folds, n_Cs)
@@ -241,7 +269,38 @@ def show_cross_validation_results(gs_pipeline, criteria):
 
 
 
+def show_best_cv_results(gs_pipeline, criteria):
 
+    best_idx = gs_pipeline.best_index_
+    cv_results = gs_pipeline.cv_results_
+    n_splits = gs_pipeline.n_splits_
+
+    train_scores = [
+        cv_results[f'split{i}_train_{criteria}'][best_idx]
+        for i in range(n_splits)
+    ]
+
+    test_scores = [
+        cv_results[f'split{i}_test_{criteria}'][best_idx]
+        for i in range(n_splits)
+    ]
+
+    folds = np.arange(1, n_splits + 1)
+
+    fig, ax = plt.subplots(figsize=(6,4))
+
+    ax.plot(folds, train_scores, 'o-', label='Train')
+    ax.plot(folds, test_scores, 'o-', label='Validation')
+
+    ax.axhline(np.mean(train_scores), ls='--', color='b', label='mean train')
+    ax.axhline(np.mean(test_scores), ls='--', color='r', label='mean val')
+
+    ax.set_xlabel('Fold')
+    ax.set_ylabel(criteria)
+    ax.set_title('Best hyperparameter setting')
+    ax.legend()
+
+    return fig
 
 def show_cv_confusion_matrix(cv_scores, y, threshold=0.5, titulo='Matriz de confusion', filename=None):
 
@@ -510,9 +569,16 @@ def run_experiment(args):
     # Agrupar por todas las columnas de X y ver si y tiene más de un valor distinto
     df=X.copy()
     df['y']=y
-    #conflictos = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
-
-    #print(conflictos)
+    conflictos = df.groupby(list(X.columns)).filter(lambda g: g["y"].nunique() > 1)
+    grupos_conflictos = conflictos.groupby(list(X.columns))
+    print(f'Hay {conflictos.shape[0]} conflictos.')
+    print(conflictos)
+    print(f'Hay {grupos_conflictos.ngroups} grupos de conflictos')
+    for i, (clave, datos_grupo) in enumerate(grupos_conflictos, start=1):
+        print(f'Grupo {i}')
+        print('Clave:', clave)
+        print(datos_grupo)
+        print()
     #print(X.shape)
     #out = conflicting_patterns_counts(X, y, round_decimals=6)  # ajustá round_decimals si conviene
     #print("\nConflictos (patrón -> conteo por clase):")
@@ -587,8 +653,19 @@ def run_experiment(args):
 
     preprocessing = generate_preprocessing_pipeline(num_attribs,cat_attribs, classifier=args.model_type)
     
+    folds = create_folds(args.split)
+
+    for fold, (train_idx, test_idx) in enumerate(folds.split(X,y), start=1):
+        print(f"Fold {fold}")
+        print("Train:", train_idx)
+        print("Test :", test_idx)
+        num_positivos_fold_i = np.sum(y.values[test_idx]==1)
+        num_negativos_fold_i = np.sum(y.values[test_idx]==0)
+        print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
+        print()
+
     gs_pipeline = build_model_with_cv(preprocessing, classifier=args.model_type, class_weights=class_weights,
-                                    criteria=args.gs_criteria, random_state=seed)
+                                    criteria=args.gs_criteria, random_state=seed, cv=folds)
     
 
     print("Grid Search started")
@@ -610,6 +687,7 @@ def run_experiment(args):
     print("\nMejor estimador:")
     print(gs_pipeline.best_estimator_)
 
+    plt.figure()
     result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
 
     perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
@@ -620,9 +698,15 @@ def run_experiment(args):
     
     
     if args.model_type=='DecisionTree':
-        plt.figure()
-        plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],proportion=True, feature_names=feature_names)
+        plt.figure(figsize=(18,10))
+        plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],fontsize=10,
+                  filled=True, proportion=True, feature_names=feature_names)
         cometExperiment.log_figure('Tree', figure=plt)
+        plt.figure(figsize=(18,10))
+        plot_tree(gs_pipeline.best_estimator_.named_steps["classifier"],
+                  filled=True, max_depth=2,fontsize=10,
+                  proportion=True, feature_names=feature_names)
+        cometExperiment.log_figure('Tree (2 primeras ramas)', figure=plt)
         
     elif args.model_type=='RandomForest':
         rf = gs_pipeline.best_estimator_.named_steps["classifier"]
@@ -667,12 +751,12 @@ def run_experiment(args):
     cometExperiment.log_metric("best score", gs_pipeline.best_score_)
     #save_gs_results(cometExperiment, gs_pipeline)
 
-    plt = show_cross_validation_results(gs_pipeline, args.gs_criteria)
-    cometExperiment.log_figure('cross val results',figure=plt)
+    plt = show_best_cv_results(gs_pipeline, args.gs_criteria)
+    cometExperiment.log_figure('best cross val results',figure=plt)
 
     print('Cross validation...')
     cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
-                                    cv=5, method='predict_proba')[:, 1]
+                                    cv=folds, method='predict_proba')[:, 1]
     
     
     reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
@@ -742,6 +826,7 @@ def parseCommandLineArguments():
     parser.add_argument('--disable_class_weights', '-dcw', action='store_true')
     parser.add_argument('--disable_sample_weights', '-dsw', action='store_true')
     parser.add_argument('--tsne', action='store_true')
+    parser.add_argument('--split', type=str, default='estratificado')
  
     args = parser.parse_args()
     return args
