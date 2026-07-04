@@ -1,6 +1,7 @@
 import pandas as pd 
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import numpy as np
 
 def conservar_filas_con_n_no_nulos(df_CDE, n=3):
     '''
@@ -28,7 +29,8 @@ def discretizar(df, nombre_original, nombre_nuevo, bin_size=5):
     df[nombre_nuevo] = pd.cut(df[nombre_nuevo], bins=range(0, int(df[nombre_nuevo].max()) + bin_size, bin_size), right=False)
 
     # usar el valor medio de cada intervalo
-    df[nombre_nuevo] = df[nombre_nuevo].apply(lambda x: x.mid)
+    #df[nombre_nuevo] = df[nombre_nuevo].apply(lambda x: x.mid)
+    df[nombre_nuevo] = df[nombre_nuevo].apply(   lambda x: x.mid if pd.notna(x) else np.nan)
 
     return df
 
@@ -116,16 +118,20 @@ def generarMapaEstadisticaDepartamentos(df_dptos):
     plt.title("Valor por departamento")
     plt.show()
 
-
 def convertir_enteros_a_fecha(serie):
+
+    if pd.api.types.is_datetime64_any_dtype(serie):
+        return serie
+
     valores = pd.to_numeric(serie, errors="coerce")
-    mask = valores > 20000
-    serie_inicial = serie.copy()
+
+    mask = valores.between(20000, 70000)
+
     resultado = serie.copy()
-    resultado[mask] = pd.to_datetime(
-        valores[mask],
-        unit="D",
-        origin="1899-12-30"
+
+    resultado = resultado.where(
+        ~mask,
+        pd.to_datetime(valores, unit="D", origin="1899-12-30")
     )
-    
+
     return resultado

@@ -1,0 +1,9 @@
+numpy
+scikit-learn
+pandas
+comet_ml
+matplotlib
+geopandas
+pyaml
+xgboost
+openpyxl # para leer el excel

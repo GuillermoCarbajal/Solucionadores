@@ -665,7 +665,10 @@ def run_experiment(args):
 
 
     #path = args.path
-
+    
+    trained_classifiers = []
+    trained_classifiers_scores = []
+    combination_criteria = ['hard_voting', 'soft_voting', 'weighted_soft_voting']
     for model_type in args.classifiers:
        
         cometExperiment = create_experiment(model_type)   if args.log_comet else None
@@ -778,6 +781,7 @@ def run_experiment(args):
 
         print("\nMejor estimador:")
         print(gs_pipeline.best_estimator_)
+        trained_classifiers.append(gs_pipeline.best_estimator_)
 
         plt.figure()
         result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
@@ -859,7 +863,7 @@ def run_experiment(args):
         print('Cross validation...')
         cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
                                         cv=folds, method='predict_proba')[:, 1]
-        
+        trained_classifiers_scores.append(cv_scores)
         
         reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
 
@@ -915,6 +919,54 @@ def run_experiment(args):
 
         if args.log_comet:
             cometExperiment.end()
+
+    
+    if len(trained_classifiers)>1:
+        n_classifiers = len(args.classifiers)
+        print('combining classifiers: ', n_classifiers)
+        n_scores = trained_classifiers_scores[0].shape[0]
+        cv_scores_all = np.zeros((n_classifiers, n_scores))
+        predictions_all = np.zeros_like(cv_scores_all, dtype=bool)
+        weights_ap = np.zeros(n_classifiers)
+        for i, clf in enumerate(args.classifiers):
+            cv_scores_all[i] = trained_classifiers_scores[i]
+            predictions_all[i] = trained_classifiers_scores[i]>0.5
+            weights_ap[i] = average_precision_score(y, trained_classifiers_scores[i])
+
+        for comb_criteria in combination_criteria:
+            
+            if args.log_comet: 
+                cometExperiment = create_experiment(comb_criteria)  
+                for clf in args.classifiers: 
+                    cometExperiment.add_tag(clf)
+                cometExperiment.add_tag(comb_criteria)
+            
+            if comb_criteria=='hard_voting':
+                votes = np.sum(predictions_all, axis=0)
+                #predictions_i = votes > n_classifiers/2
+                cv_scores_i = votes / n_classifiers
+            elif comb_criteria=='soft_voting':
+                cv_scores_i = np.mean(cv_scores_all,axis=0)
+            elif comb_criteria=='weighted_soft_voting':
+                cv_scores_i = np.average(cv_scores_all,axis=0,weights=weights_ap)
+                #predictions_i = cv_scores_i>0.5
+            
+            
+            reportar_validacion_cruzada(cv_scores_i,y,threshold=0.5, cmt_exp=cometExperiment)
+
+            for cond in config["subgrupo_evaluacion"]:
+                mask = pd.Series(True, index=data.index)
+                col = cond["atributo"]
+                op = cond["op"]
+                value = cond.get("valor")
+                mask = operacion[op](data[col], value)
+                print('Evaluando en grupo que satisface: ', col, op, value)
+
+                reportar_validacion_cruzada(cv_scores_i,y,threshold=0.5, cmt_exp=cometExperiment, 
+                                            indices_subgrupo=mask, nombre_subgrupo=f'{col} {op} {value}' )
+            
+            if args.log_comet:
+                cometExperiment.end()
 
 
 
