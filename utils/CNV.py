@@ -120,22 +120,22 @@ def calcular_otro_progenitor(df_CNV):
     def obtener_otro(s):
         unicos = s.drop_duplicates()
         if len(unicos) == 2:
-            print("\nGRUPO")
-            print(s)
-            print("UNICOS")
-            print(unicos.tolist())
+            #print("\nGRUPO")
+            #print(s)
+            #print("UNICOS")
+            #print(unicos.tolist())
             mapping = {
                 unicos.iloc[0]: unicos.iloc[1],
                 unicos.iloc[1]: unicos.iloc[0]
             }
 
-            print("MAPPING")
-            print(mapping)
+            #print("MAPPING")
+            #print(mapping)
 
             resultado = pd.Series( s.map(mapping).values, index=s.index)
 
-            print("RESULTADO")
-            print(resultado)
+            #print("RESULTADO")
+            #print(resultado)
 
             return resultado
         else:

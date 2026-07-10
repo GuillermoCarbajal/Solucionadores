@@ -921,7 +921,7 @@ def run_experiment(args):
             cometExperiment.end()
 
     
-    if len(trained_classifiers)>1:
+    if len(trained_classifiers)>1 and args.combine:
         n_classifiers = len(args.classifiers)
         print('combining classifiers: ', n_classifiers)
         n_scores = trained_classifiers_scores[0].shape[0]
@@ -985,6 +985,7 @@ def parseCommandLineArguments():
     parser.add_argument('--disable_sample_weights', '-dsw', action='store_true')
     parser.add_argument('--tsne', action='store_true')
     parser.add_argument('--log_comet', action='store_true')
+    parser.add_argument('--combine', action='store_true', help='combine classifiers')
     parser.add_argument('--split', type=str, default='estratificado')
  
     args = parser.parse_args()

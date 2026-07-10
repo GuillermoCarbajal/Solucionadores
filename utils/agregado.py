@@ -147,6 +147,7 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['RUCAF_PRESTADOR_PRIVADO_'] = ("RUCAF_PRESTADOR_PRIVADO_", ultimo_no_nulo)
     agg_dict['RUCAF_pais'] = ("RUCAF_pais", ultimo_no_nulo)
     agg_dict['RUCAF_departamento'] = ("RUCAF_departamento", ultimo_no_nulo)
+    agg_dict['RUCAF_region_'] = ("RUCAF_region_", ultimo_no_nulo)
     agg_dict['RUCAF_localidad'] = ("RUCAF_localidad", ultimo_no_nulo)
     agg_dict['RUCAF_cobertura'] = ("RUCAF_cobertura", ultimo_no_nulo)
     agg_dict['RUCAF_fonasa'] = ("RUCAF_fonasa_", ultimo_no_nulo)

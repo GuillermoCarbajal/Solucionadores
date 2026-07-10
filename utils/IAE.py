@@ -146,6 +146,8 @@ def calcular_y_agregar_campo_edad(df_IAE, campo_fecha, campo_nacimiento):
     df_IAE[campo_fecha] = pd.to_datetime(df_IAE[campo_fecha], errors='coerce')
     df_IAE[campo_nacimiento] = pd.to_datetime(df_IAE[campo_nacimiento], errors='coerce')
     df_IAE['EDAD_'] = df_IAE[campo_fecha].dt.year - df_IAE[campo_nacimiento].dt.year
+    df_IAE.loc[df_IAE['EDAD_'] > 150 ,'EDAD_'] = np.nan
+    df_IAE.loc[df_IAE['EDAD_'] < 0,'EDAD_' ] = np.nan
 
     return df_IAE
 
@@ -155,6 +157,9 @@ def acondicionar_campo_DECISION(df_IAE, campo_decision):
     #df_IAE[campo_decision].value_counts()
     palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'RESUELTO')
     df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'RESUELTO')
+
+    palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'RESUELTO')
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'SI')
 
     palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'NO CUMPLE')
     df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'NO CUMPLE PROTOCOLO')
@@ -166,6 +171,7 @@ def acondicionar_campo_DECISION(df_IAE, campo_decision):
     df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'INTERNADO')
     #df_IAE[campo_decision] = df_IAE[campo_decision].replace('INTERNADO ','INTERNADO')
     df_IAE[campo_decision] = df_IAE[campo_decision].replace('PENDIENTE INTERNADO','INTERNADO')
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('INTERNADO','PENDIENTE RESPUESTA')
 
     palabras_a_reemplazar = obtener_palabras_en_campo_que_contienen_substr(df_IAE, campo_decision,'PENDIENTE RESPUESTA')
     df_IAE[campo_decision] = df_IAE[campo_decision].replace(palabras_a_reemplazar,'PENDIENTE RESPUESTA')
@@ -196,6 +202,17 @@ def acondicionar_campo_agendo_consulta_en_7dias(df_IAE, campo_decision):
 
     df_IAE[campo_decision] = df_IAE[campo_decision].replace('SEG PARTICULAR','SEGUIMIENTO PARTICULAR')
     df_IAE['DESCARTADA_POR_RASTREADOR'] = df_IAE[campo_decision]  == 'DESCARTADA_POR_RASTREADOR'
+
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SIN COBERTURA ASISTENCIAL','NO',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SIN DATO ASISTENCIAL','NO',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SIN REGISTRO','NO',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SIN RESPUESTA','NO',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('NO CUMPLE PROTOCOLO','NO')
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('PRIVADO DE LIBERTAD','NO')
+
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('RESUELTO','SI',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('SEGUIMIENTO PARTICULAR','SI',regex=True)
+    df_IAE[campo_decision] = df_IAE[campo_decision].replace('RESUELTO','SI',regex=True)
     
     
     return df_IAE
@@ -277,4 +294,34 @@ def acondicionar_CONCURRIO(df_IAE, nombre_campo='CONCURRIO_', nombre_nuevo_campo
     df_IAE[nombre_nuevo_campo] = df_IAE[nombre_campo].where(~es_fecha, "SI")
     df_IAE['NO_CONCURRIO_CONSULTA_'] = df_IAE['CONCURRIO_']=='NO'
 
+    return df_IAE
+
+def agregar_fecha_IAE_siguiente(df_IAE):
+    # Guardar el orden original
+    df_IAE["_orden_original"] = np.arange(len(df_IAE))
+    df_IAE = df_IAE.sort_values(["CEDULA", "FECHA IAE"])
+
+    df_IAE["FECHA IAE SIGUIENTE"] = (
+        df_IAE.groupby("CEDULA")["FECHA IAE"]
+          .shift(-1)
+    )
+
+    # Restaurar el orden original
+    df_IAE = (
+        df_IAE.sort_values("_orden_original")
+          .drop(columns="_orden_original")
+          .reset_index(drop=True)
+    )
+
+    return df_IAE
+
+def agregar_tiempo_reincidencia(df_IAE):
+    tr1 = df_IAE['FECHA IAE SIGUIENTE'].dt.day - df_IAE['FECHA IAE'].dt.day
+    tr2 = df_IAE["DIAS_IAE_MUERTE_"].dt.days.where(df_IAE["CAT_SUI_"] == 1)
+    df_IAE['tiempo_reintento_']  = tr2.where(pd.isnull(df_IAE['FECHA IAE SIGUIENTE']), other=tr1)
+    df_IAE['reint_30dias'] = df_IAE['tiempo_reintento_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['reint_60dias'] = df_IAE['tiempo_reintento_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['reint_90dias'] = df_IAE['tiempo_reintento_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['reintento'] = ~pd.isnull(df_IAE['tiempo_reintento_']) 
+  
     return df_IAE

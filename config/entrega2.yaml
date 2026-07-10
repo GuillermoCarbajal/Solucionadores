@@ -1,28 +1,30 @@
 data:
   entrega: 2
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega2_2026-05-27_18-08-46.csv'
+  #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega2_2026-05-27_18-08-46.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0707/IAE_agregada_entrega2_2026-07-07_19-14-21.csv'
 
   num_features:
     - GRUPO_EDAD_
     - Sexo
     - NUMERO_INTENTOS_
-    #- PRESTADOR_PUBLICO_
-    #- PRESTADOR_PRIVADO_
+    - PRESTADOR_PUBLICO_
+    - PRESTADOR_PRIVADO_
     - IAE_PREVIO_CORREGIDO
-    #- CNV_
-    #- CNV_ultimo_cant_hijos_
-    #- SIV_
-    #- SHARPS_
-    - RUCAF_fonasa
-    - RUCAF_no_fonasa
+    - CNV_
+    - CNV_ultimo_cant_hijos_
+    - SIV_
+    - SHARPS_
+    #- RUCAF_fonasa
+    #- RUCAF_no_fonasa
     #- persona_en_CNV_nro_rese_
     #- CNV_otro_progenitor_
     - ANTIPOLIOMELITICA
-    #- COVID 19
+    - COVID 19
     #- NO_CONCURRIO_CONSULTA_
   cat_features:
-    - METODO_IAE_PREVIO_
-    - METODO_IAE_PREVIO_2_
+    - METODO_IAE_ACTUAL_
+    #- METODO_IAE_PREVIO_
+    #- METODO_IAE_PREVIO_2_
     #- CNV_ultimo_mayor_nivel_estudio_
     #- CNV_ultimo_estado_civil_
     #- IAE_PREVIO_CORREGIDO
