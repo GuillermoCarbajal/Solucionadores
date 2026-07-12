@@ -67,13 +67,26 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
         total_prestadores = prestadores.shape[0]
 
         for i in range(total_prestadores):
-            RUCAF_prestador.append(str(prestadores.iloc[i]))
-            RUCAF_pais.append(str(paises.iloc[i]))
-            RUCAF_departamento.append(str(departamentos.iloc[i]))
-            RUCAF_region.append(str(regiones.iloc[i]))
-            RUCAF_localidad.append(str(localidades.iloc[i]))
-            RUCAF_cobertura.append(str(coberturas.iloc[i]))
-            RUCAF_tipo_prestador.append(str(tipo_prestadores_RUCAF.iloc[i]))
+            if pd.notna(prestadores.iloc[i]) and prestadores.iloc[i] not in RUCAF_prestador:
+                RUCAF_prestador.append(prestadores.iloc[i])
+
+            if pd.notna(paises.iloc[i]) and paises.iloc[i] not in RUCAF_pais:
+                RUCAF_pais.append(paises.iloc[i])
+
+            if pd.notna(departamentos.iloc[i]) and departamentos.iloc[i] not in RUCAF_departamento:
+                RUCAF_departamento.append(departamentos.iloc[i])
+
+            if pd.notna(regiones.iloc[i]) and regiones.iloc[i] not in RUCAF_region:
+                RUCAF_region.append(regiones.iloc[i])
+
+            if pd.notna(localidades.iloc[i]) and localidades.iloc[i] not in RUCAF_localidad:
+                RUCAF_localidad.append(localidades.iloc[i])
+
+            if pd.notna(coberturas.iloc[i]) and coberturas.iloc[i] not in RUCAF_cobertura:
+                RUCAF_cobertura.append(coberturas.iloc[i])
+
+            if pd.notna(tipo_prestadores_RUCAF.iloc[i]) and tipo_prestadores_RUCAF.iloc[i] not in RUCAF_tipo_prestador:
+                RUCAF_tipo_prestador.append(tipo_prestadores_RUCAF.iloc[i])
         #print(f'La persona tiene {total_hijos} en total y tenía {cantidad_hijos} en la fecha del intento')
  
         edad_hijo_menor = np.nan

@@ -34,6 +34,20 @@ def discretizar(df, nombre_original, nombre_nuevo, bin_size=5):
 
     return df
 
+def eliminar_sin_cedula(base):
+    filas_antes, _ = base.shape
+
+    base.dropna(subset=["CEDULA"], inplace=True)
+
+    filas_despues, _ = base.shape
+
+    print(
+        f'Se eliminaron {filas_antes - filas_despues} filas sin cédula. '
+        f'Ahora la base tiene {filas_despues} filas.'
+    )
+
+    return base
+
 def eliminar_duplicados(base):
     filas_antes, _ = base.shape
     base.drop_duplicates(inplace=True) 

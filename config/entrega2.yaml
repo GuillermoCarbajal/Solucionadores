@@ -1,7 +1,8 @@
 data:
   entrega: 2
   #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega2_2026-05-27_18-08-46.csv'
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0707/IAE_agregada_entrega2_2026-07-07_19-14-21.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0710/IAE_agregada_entrega2_2026-07-11_16-55-36.csv'
+  cv_split: 'estratificado'
 
   num_features:
     - GRUPO_EDAD_
@@ -9,7 +10,7 @@ data:
     - NUMERO_INTENTOS_
     - PRESTADOR_PUBLICO_
     - PRESTADOR_PRIVADO_
-    - IAE_PREVIO_CORREGIDO
+    - IAE_PREVIO_CORREGIDO_
     - CNV_
     - CNV_ultimo_cant_hijos_
     - SIV_

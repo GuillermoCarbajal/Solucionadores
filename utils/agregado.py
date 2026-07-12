@@ -77,6 +77,7 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['METODO_IAE_PREVIO_'] = ("METODO_", penultimo_no_nulo)
     agg_dict['METODO_IAE_PREVIO_2_'] = ("METODO_", antepenultimo_no_nulo)
     agg_dict['IAE_PREVIO'] = (campo_IAE_previo, ultimo_no_nulo)
+    agg_dict['IAE_PREVIO_CORREGIDO_'] = ('IAE_PREVIO_CORREGIDO_', ultimo_no_nulo)
     agg_dict['PRESTADOR_RECODIFICADO'] = (campo_prestador, ultimo_no_nulo)
     agg_dict['PRESTADOR_PUBLICO_'] = ("PRESTADOR_PUBLICO_", moda_o_nan)
     agg_dict['PRESTADOR_PRIVADO_'] = ("PRESTADOR_PRIVADO_", moda_o_nan)
@@ -214,12 +215,12 @@ def personas_en_CDE_sin_IAE(df_IAE_agregada, df_IAE_CDE):
     
     return personas
 
-def agregar_IAE_PREVIO_corregido(df_IAE_agregada):
-
-    df_IAE_agregada['IAE_PREVIO_CORREGIDO' ] = df_IAE_agregada['IAE_PREVIO'].copy()
-    df_IAE_agregada.loc[(df_IAE_agregada["IAE_PREVIO_CORREGIDO"] == "NO SE INDICA") & (df_IAE_agregada["NUMERO_INTENTOS_"] > 1), "IAE_PREVIO_CORREGIDO"] = "SI"
+#def agregar_IAE_PREVIO_corregido(df_IAE_agregada):
+#
+#    df_IAE_agregada['IAE_PREVIO_CORREGIDO' ] = df_IAE_agregada['IAE_PREVIO'].copy()
+#    df_IAE_agregada.loc[(df_IAE_agregada["IAE_PREVIO_CORREGIDO"] == "NO SE INDICA") & (df_IAE_agregada["NUMERO_INTENTOS_"] > 1), "IAE_PREVIO_CORREGIDO"] = "SI"
     
-    return df_IAE_agregada
+#    return df_IAE_agregada
 
 def personas_con_IAE_no_presentes_en_CNV(df_IAE_agregada, df_IAE_CNV):
     
@@ -241,7 +242,12 @@ def personas_con_IAE_no_presentes_en_RUCAF(df_IAE_agregada, df_IAE_RUCAF):
     
     indices = df_IAE_agregada['CEDULA'].isin(df_IAE_RUCAF['cedula'])
     personas_de_IAE_no_presentes_en_RUCAF = df_IAE_agregada[~indices]
-    print(f'Hay {personas_de_IAE_no_presentes_en_RUCAF.shape[0]} personas con IAE no presentes en RUCAF.')
+    print(f'Hay {personas_de_IAE_no_presentes_en_RUCAF.shape[0]} personas en la base de IAE no presentes en RUCAF.')
+    
+    df_IAE_intentos = df_IAE_agregada.loc[df_IAE_agregada['es_IAE_']==True]
+    indices = df_IAE_intentos['CEDULA'].isin(df_IAE_RUCAF['cedula'])
+    personas_de_IAE_no_presentes_en_RUCAF = df_IAE_intentos[~indices]
+    print(f'Hay {personas_de_IAE_no_presentes_en_RUCAF.shape[0]} con IAE no presentes en RUCAF.')
     
     return personas_de_IAE_no_presentes_en_RUCAF
 

@@ -315,6 +315,78 @@ def agregar_fecha_IAE_siguiente(df_IAE):
 
     return df_IAE
 
+def agregar_info_intentos_previos(df_IAE):
+    # Guardar el orden original
+    df_IAE["_orden_original"] = np.arange(len(df_IAE))
+    df_IAE = df_IAE.sort_values(["CEDULA", "FECHA IAE"])
+
+    df_IAE["n_intento_"] = (
+        df_IAE["FECHA IAE"]
+        .notna()
+        .groupby(df_IAE["CEDULA"])
+        .cumsum())
+
+
+
+    df_IAE['IAE_PREVIO_CORREGIDO_'] = df_IAE['IAE PREVIO'].copy()
+    indices_no_se_indica_a_cambiar = (df_IAE["IAE_PREVIO_CORREGIDO_"] == "NO SE INDICA") & (df_IAE["n_intento_"] > 1)
+    df_IAE.loc[indices_no_se_indica_a_cambiar, "IAE_PREVIO_CORREGIDO_"] = "SI"
+    print(f'Se corrigieron {np.sum(indices_no_se_indica_a_cambiar)} intentos que decían NO SE INDICA en campo IAE PREVIO')
+
+    indices_no_a_cambiar = (df_IAE["IAE_PREVIO_CORREGIDO_"] == "NO") & (df_IAE["n_intento_"] > 1)
+    df_IAE.loc[indices_no_a_cambiar, "IAE_PREVIO_CORREGIDO_"] = "SI" 
+    print(f'Se corrigieron {np.sum(indices_no_a_cambiar)} intentos que decían NO en campo IAE PREVIO')
+    
+
+    df_IAE["total_intentos_"] = (
+    df_IAE.groupby("CEDULA")["FECHA IAE"]
+          .transform("count"))
+
+    campos = ['METODO'] # FECHA IAE
+
+    for campo in campos:
+        df_IAE[f"{campo}_IAE_PREVIO_"] = (
+            df_IAE.groupby("CEDULA")[campo]
+            .shift(1)
+        )
+        df_IAE[f"{campo}_IAE_PREVIO_2_"] = (
+            df_IAE.groupby("CEDULA")[campo]
+            .shift(2)
+        )
+    
+    
+    df_IAE["DIAS_DESDE_IAE_PREVIO_"] = (
+        df_IAE.groupby("CEDULA")["FECHA IAE"]
+        .diff()
+        .dt.days)    
+    
+
+    df_IAE["PROMEDIO_DIAS_ENTRE_IAES_"] = (
+        df_IAE.groupby("CEDULA")["DIAS_DESDE_IAE_PREVIO_"]
+        .expanding()
+        .mean()
+        .reset_index(level=0, drop=True))
+
+    
+    df_IAE["STD_DIAS_ENTRE_IAES_"] = (
+        df_IAE.groupby("CEDULA")["DIAS_DESDE_IAE_PREVIO_"]
+        .expanding()
+        .std(ddof=0)
+        .reset_index(level=0, drop=True)
+    )
+    
+    # Restaurar el orden original
+    df_IAE = (
+        df_IAE.sort_values("_orden_original")
+        .drop(columns="_orden_original")
+        .reset_index(drop=True)
+    )
+
+
+
+    return df_IAE
+
+
 def agregar_tiempo_reincidencia(df_IAE):
     tr1 = df_IAE['FECHA IAE SIGUIENTE'].dt.day - df_IAE['FECHA IAE'].dt.day
     tr2 = df_IAE["DIAS_IAE_MUERTE_"].dt.days.where(df_IAE["CAT_SUI_"] == 1)

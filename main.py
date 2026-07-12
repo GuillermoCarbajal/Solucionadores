@@ -59,10 +59,12 @@ def getX(data, num_attribs, cat_attribs):
     
     if 'Sexo' in num_attribs:
         data['Sexo']=data['Sexo']=='Masculino'
-    if 'IAE_PREVIO_CORREGIDO' in num_attribs:
-        data['IAE_PREVIO_SI']=data['IAE_PREVIO_CORREGIDO']=='SI'
-        data['IAE_PREVIO_NO']=data['IAE_PREVIO_CORREGIDO']=='NO'
-        num_attribs.remove('IAE_PREVIO_CORREGIDO')
+    if 'PERSONA' in num_attribs:
+        data['PERSONA']=data['PERSONA']=='Masculino'    
+    if 'IAE_PREVIO_CORREGIDO_' in num_attribs:
+        data['IAE_PREVIO_SI']=data['IAE_PREVIO_CORREGIDO_']=='SI'
+        data['IAE_PREVIO_NO']=data['IAE_PREVIO_CORREGIDO_']=='NO'
+        num_attribs.remove('IAE_PREVIO_CORREGIDO_')
         num_attribs.append('IAE_PREVIO_SI')
         num_attribs.append('IAE_PREVIO_NO')
     if 'RUCAF_cobertura' in num_attribs:
@@ -80,7 +82,7 @@ def getX(data, num_attribs, cat_attribs):
         sin_vacuna = data['COVID 19'].isnull()  
         data.loc[sin_vacuna,'COVID 19']=0  
 
-    X = data[num_attribs+cat_attribs]
+    X = data[num_attribs+cat_attribs] if cat_attribs else data[num_attribs]
 
     
     return X    
@@ -124,12 +126,16 @@ def generate_preprocessing_pipeline(num_attribs, cat_attribs, classifier=None):
         #SimpleImputer(strategy="most_frequent"),
         OneHotEncoder(handle_unknown="ignore"))
 
-
-    preprocessing = ColumnTransformer([
-        ("num", num_pipeline, num_attribs),
-        ("cat", cat_pipeline, cat_attribs)
-        ], remainder='passthrough')
-    
+    if cat_attribs:
+        preprocessing = ColumnTransformer([
+            ("num", num_pipeline, num_attribs),
+            ("cat", cat_pipeline, cat_attribs)
+            ], remainder='passthrough')
+    else:
+        preprocessing = ColumnTransformer([
+            ("num", num_pipeline, num_attribs),
+            ], remainder='passthrough')
+        
     return preprocessing
 
 
@@ -138,6 +144,8 @@ def create_folds(metodo='default'):
 
     from sklearn.model_selection import KFold
     from sklearn.model_selection import StratifiedKFold
+    from sklearn.model_selection import StratifiedGroupKFold
+
 
     if metodo=='default':
         cv = KFold(
@@ -150,6 +158,12 @@ def create_folds(metodo='default'):
         cv = StratifiedKFold(
             n_splits=5,
             shuffle=False
+        )
+    elif metodo=='grupo_estratificado':
+
+        cv = StratifiedGroupKFold(
+            n_splits=5,
+            shuffle=False,
         )
 
     return cv
@@ -214,7 +228,8 @@ def build_model_with_cv(preprocessing, classifier='LogisticRegression', class_we
         ("preprocessing", preprocessing),
         ("classifier", classifiers[classifier])
     ])
-
+    
+    print(base_pipeline.named_steps['classifier'])
     scoring = {
         "accuracy": "accuracy",
         "precision": "precision",
@@ -710,7 +725,8 @@ def run_experiment(args):
         # leo del archivo de configuración los atributos a usar 
         num_attribs = config["data"].get('num_features')
         cat_attribs = config["data"].get('cat_features')
-        atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}  
+        atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}
+        cv_split = config['data'].get('cv_split')  
         # obtengo los features que se usan para entrenar
         X = getX(data, num_attribs, cat_attribs)
         #y = getY(data, metodo=args.y_method)
@@ -729,6 +745,7 @@ def run_experiment(args):
             cometExperiment.add_tag(target)
             cometExperiment.add_tag(model_type)    
             cometExperiment.add_tag(args.gs_criteria)
+            cometExperiment.add_tag(cv_split)
             if use_class_weights:
                 cometExperiment.add_tag('class_weights')    
 
@@ -736,21 +753,37 @@ def run_experiment(args):
         if args.log_comet:
             cometExperiment.log_figure('Numéricas', plt)
 
-        plt = mostrar_histogramas(X.loc[:,cat_attribs],y,cat_attribs)
-        if args.log_comet:
-            cometExperiment.log_figure('Categóricas', plt)
+        if cat_attribs:
+            plt = mostrar_histogramas(X.loc[:,cat_attribs],y,cat_attribs)
+            if args.log_comet:
+                cometExperiment.log_figure('Categóricas', plt)
 
+        
+        folds = create_folds(cv_split)
 
-        folds = create_folds(args.split)
-
-        for fold, (train_idx, test_idx) in enumerate(folds.split(X,y), start=1):
-            print(f"Fold {fold}")
-            print("Train:", train_idx)
-            print("Test :", test_idx)
-            num_positivos_fold_i = np.sum(y.values[test_idx]==1)
-            num_negativos_fold_i = np.sum(y.values[test_idx]==0)
-            print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
-            print()
+        if 'grupo' in cv_split:
+            grupo = data["CEDULA"]
+            print('Folds generados utilizando grupos')
+            for fold, (train_idx, test_idx) in enumerate(folds.split(X, y, grupo), start=1):
+                print(f"Fold {fold}")
+                print("Train:", train_idx)
+                print("Test :", test_idx)
+                num_positivos_fold_i = np.sum(y.values[test_idx]==1)
+                num_negativos_fold_i = np.sum(y.values[test_idx]==0)
+                print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
+                print()
+        
+        else:
+            grupo = None
+            print('Folds generados sin utilizar grupos')
+            for fold, (train_idx, test_idx) in enumerate(folds.split(X,y), start=1):
+                print(f"Fold {fold}")
+                print("Train:", train_idx)
+                print("Test :", test_idx)
+                num_positivos_fold_i = np.sum(y.values[test_idx]==1)
+                num_negativos_fold_i = np.sum(y.values[test_idx]==0)
+                print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')
+                print()
 
 
 
@@ -761,9 +794,14 @@ def run_experiment(args):
         gs_pipeline = build_model_with_cv(preprocessing, classifier=model_type, class_weights=class_weights,
                                         criteria=args.gs_criteria, random_state=seed, cv=folds)
         
+        print('Cantidad de nans en el entrenamiento: ', X.isna().sum())
 
-        print("Grid Search started")
-        gs_pipeline.fit(X, y.values)
+        if 'grupo' in cv_split:
+            print("Grid Search considerando grupo PERSONA started")
+            gs_pipeline.fit(X, y.values, groups=grupo)      
+        else:
+            print("Grid Search started")
+            gs_pipeline.fit(X, y.values)
 
 
         #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
@@ -786,7 +824,11 @@ def run_experiment(args):
         plt.figure()
         result = permutation_importance(gs_pipeline, X, y, n_repeats=10, random_state=42, n_jobs=-1)
 
-        perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
+        if cat_attribs:
+            perm_importance = pd.Series(result.importances_mean, index=num_attribs+cat_attribs)
+        else:
+            perm_importance = pd.Series(result.importances_mean, index=num_attribs)
+
         perm_importance.sort_values().plot(kind="barh", figsize=(8,6))
         plt.title("Permutation Importance")
         #plt.show()
@@ -794,6 +836,7 @@ def run_experiment(args):
             cometExperiment.log_parameters(gs_pipeline.best_params_)
             cometExperiment.log_metric("best score", gs_pipeline.best_score_)
             cometExperiment.log_figure('Permutation importance', figure=plt)
+
         
         
         if model_type=='DecisionTree':
@@ -862,7 +905,7 @@ def run_experiment(args):
 
         print('Cross validation...')
         cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
-                                        cv=folds, method='predict_proba')[:, 1]
+                                        cv=folds, groups=grupo, method='predict_proba')[:, 1]
         trained_classifiers_scores.append(cv_scores)
         
         reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
@@ -986,7 +1029,7 @@ def parseCommandLineArguments():
     parser.add_argument('--tsne', action='store_true')
     parser.add_argument('--log_comet', action='store_true')
     parser.add_argument('--combine', action='store_true', help='combine classifiers')
-    parser.add_argument('--split', type=str, default='estratificado')
+    #parser.add_argument('--split', type=str, default='estratificado')
  
     args = parser.parse_args()
     return args
