@@ -1,0 +1,80 @@
+data:
+  entrega: 2
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0710/IAE_sin_agregar_entrega2_2026-07-11_16-55-36.csv'
+  cv_split: 'grupo_estratificado'
+
+  num_features:
+    - GRUPO_EDAD_
+    - PERSONA
+    #- n_intento_
+    #- DECISION
+    #- AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO
+    - PRESTADOR_PUBLICO_
+    - PRESTADOR_PRIVADO_
+    #- IAE_PREVIO_CORREGIDO_
+    #- DIAS_DESDE_IAE_PREVIO_
+    #- STD_DIAS_ENTRE_IAES_
+    #- PROMEDIO_DIAS_ENTRE_IAES_
+    #- CNV_
+    #- CNV_cant_hijos_cuando_IAE
+    #- CNV_edad_hijo_mayor_cuando_IAE
+    #- CNV_edad_hijo_menor_cuando_IAE
+    #- SIV_
+    #- SHARPS_
+    #- RUCAF_fonasa
+    #- RUCAF_no_fonasa
+    #- persona_en_CNV_nro_rese_
+    #- CNV_otro_progenitor_
+    #- ANTIPOLIOMELITICA
+    #- COVID 19
+    #- NO_CONCURRIO_CONSULTA_
+  cat_features:
+    - METODO_
+    #- METODO_IAE_PREVIO_
+    #- METODO_IAE_PREVIO_2_
+    #- CNV_ultimo_mayor_nivel_estudio_
+    #- CNV_ultimo_estado_civil_
+    #- IAE_PREVIO_CORREGIDO
+  target: reintento #IAE_en_CDE_ # CAT_SUI_
+
+filtros:
+  - atributo: total_intentos_
+    op: igual_a
+    valor: 0
+    
+subgrupo_evaluacion:
+  - atributo: total_intentos_
+    op: mayor_que
+    valor: 0
+  #- atributo: RUCAF_fonasa
+  #  op: igual_a
+  #  valor: True   
+  #- atributo: RUCAF_no_fonasa
+  #  op: igual_a
+  #  valor: True    
+  #- atributo: RUCAF_cobertura
+  #  op: es_nulo
+  #  valor: 0      
+  #- atributo: IAE_en_CDE_
+  #  op: igual_a
+  #  valor: 1    
+  
+  #- atributo: CNV_otro_progenitor_
+  #  op: igual_a
+  #  valor: True        
+  #- atributo: persona_en_CNV_nro_rese_
+  #  op: igual_a
+  #  valor: 1                 
+  #- atributo: ANTIPOLIOMELITICA
+  #  op: igual_a
+  #  valor: 0
+  #- atributo: COVID 19
+  #  op: igual_a
+  #  valor: 0                 
+         
+experiment:
+  seed: 42
+  output_dir: results
+  device: auto
+  
+
