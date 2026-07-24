@@ -4,6 +4,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_datetime64_any_dtype
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.pipeline import Pipeline, make_pipeline
@@ -660,6 +661,8 @@ def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None,
 
 
 
+
+
 def filtrar_datos(data, filtros):
 
     mask = pd.Series(True, index=data.index)
@@ -669,6 +672,14 @@ def filtrar_datos(data, filtros):
         op = filt["op"]
         value = filt.get("valor")
         
+        print(col)
+        print(data[col].dtype)
+        print(type(value), value)
+
+        # Si la columna es datetime, convertir el valor
+        if is_datetime64_any_dtype(data[col]):
+            value = pd.to_datetime(value)
+
         print('Se eliminan las filas que satisfacen: ', col, op, value)
         mask &= operacion[op](data[col], value)
 
@@ -714,6 +725,7 @@ def run_experiment(args):
         # Paso 1: cargo los datos
         #filename = 'IAE_procesada_2a_entrega.csv'  
         data = pd.read_csv(filepath)
+        data["FECHA IAE"] = pd.to_datetime(data["FECHA IAE"])
         print('Dimension de los datos levantados:', data.shape)
 
         # Filtro algunos datos del conjunto entregado que no se van a usar para entrenar
@@ -766,8 +778,20 @@ def run_experiment(args):
             print('Folds generados utilizando grupos')
             for fold, (train_idx, test_idx) in enumerate(folds.split(X, y, grupo), start=1):
                 print(f"Fold {fold}")
-                print("Train:", train_idx)
-                print("Test :", test_idx)
+
+                train_grupos = set(grupo.iloc[train_idx])
+                test_grupos = set(grupo.iloc[test_idx])
+
+                grupos_repetidos = train_grupos.intersection(test_grupos)
+
+                if len(grupos_repetidos) == 0:
+                    print("✓ Todos los grupos están completamente contenidos en un único fold.")
+                else:
+                    print(f"✗ ERROR: {len(grupos_repetidos)} grupos aparecen tanto en train como en test.")
+                    print("Ejemplos:", list(grupos_repetidos)[:10])
+
+                #print("Train:", train_idx)
+                #print("Test :", test_idx)
                 num_positivos_fold_i = np.sum(y.values[test_idx]==1)
                 num_negativos_fold_i = np.sum(y.values[test_idx]==0)
                 print(f'positivos: {num_positivos_fold_i}, negativos: {num_negativos_fold_i}')

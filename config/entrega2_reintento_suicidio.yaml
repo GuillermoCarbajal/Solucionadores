@@ -1,6 +1,6 @@
 data:
   entrega: 2
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0717/IAE_sin_agregar_entrega2_2026-07-17_10-26-53.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0719/IAE_sin_agregar_entrega2_2026-07-19_11-33-02.csv'
   cv_split: 'grupo_estratificado'
 
   num_features:
@@ -37,7 +37,7 @@ data:
     #- CNV_ultimo_mayor_nivel_estudio_
     #- CNV_ultimo_estado_civil_
     #- IAE_PREVIO_CORREGIDO
-  target: reintento #IAE_en_CDE_ # CAT_SUI_
+  target: reintento_suicidio_ #IAE_en_CDE_ # CAT_SUI_
 
 filtros:
   - atributo: total_intentos_

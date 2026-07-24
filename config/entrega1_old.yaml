@@ -1,0 +1,51 @@
+data:
+  entrega: 1
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega1_2026-05-23_07-07-42.csv'
+
+  num_features:
+    - GRUPO_EDAD_
+    - Sexo
+    #- NUMERO_INTENTOS_
+    #- PRESTADOR_PUBLICO_
+    #- PRESTADOR_PRIVADO_
+    #- IAE_PREVIO_CORREGIDO
+    #- CNV_
+    #- CNV_ultimo_cant_hijos_
+    #- SIV_
+    #- SHARPS_
+    #- RUCAF_cobertura
+  cat_features:
+    - METODO_IAE_PREVIO_
+    #- IAE_PREVIO_CORREGIDO
+  target: CAT_SUI_ #IAE_en_CDE_ # CAT_SUI_
+
+
+filtros:
+  - atributo: NUMERO_INTENTOS_
+    op: igual_a
+    valor: 0
+    
+subgrupo_evaluacion:
+  - atributo: NUMERO_INTENTOS_
+    op: mayor_que
+    valor: 0
+  - atributo: RUCAF_cobertura
+    op: igual_a
+    valor: Fonasa 
+  - atributo: RUCAF_cobertura
+    op: igual_a
+    valor: No Fonasa  
+  - atributo: RUCAF_cobertura
+    op: es_nulo
+    valor: 0   
+  - atributo: IAE_en_CDE_
+    op: igual_a
+    valor: 1           
+         
+experiment:
+  seed: 42
+  output_dir: results
+  device: auto
+
+  
+

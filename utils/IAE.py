@@ -388,12 +388,53 @@ def agregar_info_intentos_previos(df_IAE):
 
 
 def agregar_tiempo_reincidencia(df_IAE):
-    tr1 = df_IAE['FECHA IAE SIGUIENTE'].dt.day - df_IAE['FECHA IAE'].dt.day
+    tr1 = (df_IAE['FECHA IAE SIGUIENTE'] - df_IAE['FECHA IAE']).dt.days
+    df_IAE['tiempo_reintento_']=tr1
+    df_IAE['reint_2dias_'] = df_IAE['tiempo_reintento_'] < 2 #pd.Timedelta(days=2)
+    df_IAE['reint_5dias_'] = df_IAE['tiempo_reintento_'] < 5 #pd.Timedelta(days=5)
+    df_IAE['reint_10dias_'] = df_IAE['tiempo_reintento_'] < 10 #pd.Timedelta(days=10)
+    df_IAE['reint_30dias_'] = df_IAE['tiempo_reintento_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['reint_60dias_'] = df_IAE['tiempo_reintento_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['reint_90dias_'] = df_IAE['tiempo_reintento_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['reintento_'] = ~pd.isnull(df_IAE['tiempo_reintento_'])
+    
     tr2 = df_IAE["DIAS_IAE_MUERTE_"].dt.days.where(df_IAE["CAT_SUI_"] == 1)
-    df_IAE['tiempo_reintento_']  = tr2.where(pd.isnull(df_IAE['FECHA IAE SIGUIENTE']), other=tr1)
-    df_IAE['reint_30dias'] = df_IAE['tiempo_reintento_'] < 30 #pd.Timedelta(days=30)
-    df_IAE['reint_60dias'] = df_IAE['tiempo_reintento_'] < 60 #pd.Timedelta(days=60)
-    df_IAE['reint_90dias'] = df_IAE['tiempo_reintento_'] < 90 #pd.Timedelta(days=90)
-    df_IAE['reintento'] = ~pd.isnull(df_IAE['tiempo_reintento_']) 
+    df_IAE['tiempo_suicidio_'] = tr2
+    df_IAE['suicidio_2dias_'] = df_IAE['tiempo_suicidio_'] < 2 #pd.Timedelta(days=2)
+    df_IAE['suicidio_5dias_'] = df_IAE['tiempo_suicidio_'] < 5 #pd.Timedelta(days=5)
+    df_IAE['suicidio_10dias_'] = df_IAE['tiempo_suicidio_'] < 10 #pd.Timedelta(days=10)
+    df_IAE['suicidio_30dias_'] = df_IAE['tiempo_suicidio_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['suicidio_60dias_'] = df_IAE['tiempo_suicidio_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['suicidio_90dias_'] = df_IAE['tiempo_suicidio_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['suicidio_'] = ~pd.isnull(df_IAE['tiempo_suicidio_'])
+
+    tr3 = df_IAE["DIAS_IAE_MUERTE_"].dt.days
+    df_IAE['tiempo_muerte_'] = tr3
+    df_IAE['muerte_2dias_'] = df_IAE['tiempo_muerte_'] < 2 #pd.Timedelta(days=2)
+    df_IAE['muerte_5dias_'] = df_IAE['tiempo_muerte_'] < 5 #pd.Timedelta(days=5)
+    df_IAE['muerte_10dias_'] = df_IAE['tiempo_muerte_'] < 10 #pd.Timedelta(days=10)
+    df_IAE['muerte_30dias_'] = df_IAE['tiempo_muerte_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['muerte_60dias_'] = df_IAE['tiempo_muerte_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['muerte_90dias_'] = df_IAE['tiempo_muerte_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['muerte_'] = ~pd.isnull(df_IAE['tiempo_muerte_'])
+    
+    
+    df_IAE['tiempo_reintento_suicidio_']  = tr2.where(pd.isnull(df_IAE['FECHA IAE SIGUIENTE']), other=tr1)
+    df_IAE['reint_suicidio_2dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 2 #pd.Timedelta(days=2)
+    df_IAE['reint_suicidio_5dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 5 #pd.Timedelta(days=5)
+    df_IAE['reint_suicidio_10dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 10 #pd.Timedelta(days=10)
+    df_IAE['reint_suicidio_30dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['reint_suicidio_60dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['reint_suicidio_90dias_'] = df_IAE['tiempo_reintento_suicidio_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['reintento_suicidio_'] = ~pd.isnull(df_IAE['tiempo_reintento_suicidio_']) 
+
+    df_IAE['tiempo_reintento_muerte_']  = tr3.where(pd.isnull(df_IAE['FECHA IAE SIGUIENTE']), other=tr1)
+    df_IAE['reint_muerte_2dias_'] = df_IAE['tiempo_reintento_muerte_'] < 2 #pd.Timedelta(days=2)
+    df_IAE['reint_muerte_5dias_'] = df_IAE['tiempo_reintento_muerte_'] < 5 #pd.Timedelta(days=5)
+    df_IAE['reint_muerte_10dias_'] = df_IAE['tiempo_reintento_muerte_'] < 10 #pd.Timedelta(days=10)
+    df_IAE['reint_muerte_30dias_'] = df_IAE['tiempo_reintento_muerte_'] < 30 #pd.Timedelta(days=30)
+    df_IAE['reint_muerte_60dias_'] = df_IAE['tiempo_reintento_muerte_'] < 60 #pd.Timedelta(days=60)
+    df_IAE['reint_muerte_90dias_'] = df_IAE['tiempo_reintento_muerte_'] < 90 #pd.Timedelta(days=90)
+    df_IAE['reintento_muerte_'] = ~pd.isnull(df_IAE['tiempo_reintento_muerte_']) 
   
     return df_IAE
