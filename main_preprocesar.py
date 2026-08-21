@@ -25,7 +25,7 @@ from utils.CNV import esta_persona_en_CNV, agregar_datos_hijos_cuando_intento, a
 from utils.RUCAF import agregar_datos_RUCAF_en_IAE, agregar_RUCAF_region
 from utils.SHARP import esta_persona_en_SHARPS
 from utils.SIV import agregar_campos_SIV    
-from utils.EH import agregar_datos_EH_cuando_intento
+from utils.EH import agregar_datos_EH_cuando_intento, generar_indicadores_EH
 
 from datetime import datetime
 import argparse
@@ -193,10 +193,11 @@ def preprocesar(args):
     ################  EH  #########################
     print('Procesando EH...')
     if dataset==2:
+        df_IAE_EH = generar_indicadores_EH(df_IAE_EH)
         df_IAE_EH_agrupada = df_IAE_EH.groupby('cedula')
-        df_IAE = df_IAE.apply( lambda row: agregar_datos_EH_cuando_intento(row, df_IAE, df_IAE_EH_agrupada), axis=1)
+        df_IAE = df_IAE.apply( lambda row: agregar_datos_EH_cuando_intento(row, df_IAE_EH_agrupada), axis=1)
 
-    ## Guardar la base de datos procesada pero sin agregar por persona
+    ### Guardar la base de datos procesada pero sin agregar por persona
     nombre_procesada = f'IAE_sin_agregar_entrega{dataset}_{timestamp}.csv' 
     df_IAE.to_csv(nombre_procesada)        
 

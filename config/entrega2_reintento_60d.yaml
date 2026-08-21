@@ -42,10 +42,10 @@ data:
 filtros:
   - atributo: total_intentos_
     op: igual_a
-    valor: 0
-  - atributo: FECHA IAE
-    op: mayor_que
-    valor: 2025-10-01  
+    valor: 0 
+  #- atributo: FECHA IAE
+  #  op: mayor_que
+  #  valor: 2025-10-01  
     
 subgrupo_evaluacion:
   - atributo: total_intentos_

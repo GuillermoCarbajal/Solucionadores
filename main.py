@@ -665,7 +665,7 @@ def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None,
 
 def filtrar_datos(data, filtros):
 
-    mask = pd.Series(True, index=data.index)
+    mask = pd.Series(False, index=data.index)
     
     for filt in filtros:
         col = filt["atributo"]
@@ -681,7 +681,8 @@ def filtrar_datos(data, filtros):
             value = pd.to_datetime(value)
 
         print('Se eliminan las filas que satisfacen: ', col, op, value)
-        mask &= operacion[op](data[col], value)
+        #mask &= operacion[op](data[col], value)
+        mask |= operacion[op](data[col], value)
 
     data = data[~mask]
     
@@ -725,7 +726,9 @@ def run_experiment(args):
         # Paso 1: cargo los datos
         #filename = 'IAE_procesada_2a_entrega.csv'  
         data = pd.read_csv(filepath)
-        data["FECHA IAE"] = pd.to_datetime(data["FECHA IAE"])
+        if "FECHA IAE" in data.keys():
+            data["FECHA IAE"] = pd.to_datetime(data["FECHA IAE"])
+
         print('Dimension de los datos levantados:', data.shape)
 
         # Filtro algunos datos del conjunto entregado que no se van a usar para entrenar

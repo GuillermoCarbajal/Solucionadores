@@ -20,7 +20,7 @@ data:
     #- persona_en_CNV_nro_rese_
     #- CNV_otro_progenitor_
     - ANTIPOLIOMELITICA
-    - COVID 19
+    #- COVID 19
     #- NO_CONCURRIO_CONSULTA_
   cat_features:
     - METODO_IAE_ACTUAL_

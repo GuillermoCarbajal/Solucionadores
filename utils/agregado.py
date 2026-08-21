@@ -160,6 +160,35 @@ def agregar_base_intentos(df_IAE, dataset):
     agg_dict['ANTIPOLIOMELITICA'] = ("ANTIPOLIOMELITICA", ultimo_no_nulo)
     agg_dict['COVID 19'] = ("COVID 19", ultimo_no_nulo)
 
+    if dataset==2:
+        agg_dict['EH_cercano_a_IAE_cedula'] = ("EH_cercano_a_IAE_cedula", ultimo_no_nulo)
+        agg_dict['EH_cercano_a_IAE_Institución'] = ("EH_cercano_a_IAE_Institución", ultimo_no_nulo)
+        agg_dict['EH_cercano_a_IAE_Sector'] = ("EH_cercano_a_IAE_Sector", ultimo_no_nulo)
+        agg_dict['EH_cercano_a_IAE_Fecha ingreso'] = ("EH_cercano_a_IAE_Fecha ingreso", ultimo_no_nulo)
+        agg_dict['EH_cercano_a_IAE_Fecha Egreso'] = ("EH_cercano_a_IAE_Fecha Egreso", ultimo_no_nulo)
+
+        agg_dict['EH_cercano_a_IAE_Diagnostico principal según CIE-10'] = ("EH_cercano_a_IAE_Diagnostico principal según CIE-10", ultimo_no_nulo)
+        agg_dict['EH_cercano_a_IAE_Causa externa según CIE-10'] = ("EH_cercano_a_IAE_Causa externa según CIE-10", ultimo_no_nulo)
+
+        agg_dict['EH_antecedente_EH_intento_suicidio'] = ("EH_antecedente_EH_intento_suicidio", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_ideacion_suicida'] = ("EH_antecedente_EH_ideacion_suicida", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_antecedente_autolesion'] = ("EH_antecedente_EH_antecedente_autolesion", ultimo_no_nulo)
+
+        agg_dict['EH_antecedente_EH_vulnerabilidad_laboral'] = ("EH_antecedente_EH_vulnerabilidad_laboral", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_vulnerabilidad_economica'] = ("EH_antecedente_EH_vulnerabilidad_economica", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_conflicto_soporte_familiar'] = ("EH_antecedente_EH_conflicto_soporte_familiar", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_historia_trauma_infantil'] = ("EH_antecedente_EH_historia_trauma_infantil", ultimo_no_nulo)
+
+        agg_dict['EH_antecedente_EH_trastorno_depresivo'] = ("EH_antecedente_EH_trastorno_depresivo", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_trastorno_bipolar'] = ("EH_antecedente_EH_trastorno_bipolar", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_consumo_sustancias'] = ("EH_antecedente_EH_consumo_sustancias", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_trastorno_personalidad'] = ("EH_antecedente_EH_trastorno_personalidad", ultimo_no_nulo)
+        agg_dict['EH_antecedente_EH_ansiedad_y_estres'] = ("EH_antecedente_EH_ansiedad_y_estres", ultimo_no_nulo)    
+
+        agg_dict['EH_antecedente_EH_enfermedad_oncologica'] = ("EH_antecedente_EH_enfermedad_oncologica", ultimo_no_nulo)    
+        
+        agg_dict['EH_cercano_a_IAE_dias_internacion_'] = ("EH_cercano_a_IAE_dias_internacion_", ultimo_no_nulo)            
+
 
 
         

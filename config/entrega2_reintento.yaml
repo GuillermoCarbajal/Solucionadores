@@ -1,6 +1,6 @@
 data:
   entrega: 2
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0719/IAE_sin_agregar_entrega2_2026-07-19_11-33-02.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0820/IAE_sin_agregar_entrega2_2026-08-20_16-52-02.csv'
   cv_split: 'grupo_estratificado'
 
   num_features:
@@ -15,19 +15,32 @@ data:
     - DIAS_DESDE_IAE_PREVIO_
     #- STD_DIAS_ENTRE_IAES_
     #- PROMEDIO_DIAS_ENTRE_IAES_
-    - CNV_
-    - CNV_cant_hijos_cuando_IAE
-    - CNV_edad_hijo_mayor_cuando_IAE
-    - CNV_edad_hijo_menor_cuando_IAE
+    #- CNV_
+    #- CNV_cant_hijos_cuando_IAE
+    #- CNV_edad_hijo_mayor_cuando_IAE
+    #- CNV_edad_hijo_menor_cuando_IAE
     #- SIV_
     #- SHARPS_
     #- RUCAF_fonasa
     #- RUCAF_no_fonasa
     #- persona_en_CNV_nro_rese_
     #- CNV_otro_progenitor_
-    - ANTIPOLIOMELITICA
-    - COVID 19
+    #- ANTIPOLIOMELITICA
+    #- COVID 19
     - NO_CONCURRIO_CONSULTA_
+    #- EH_cercano_a_IAE_EH_intento_suicidio
+    - EH_antecedente_EH_ideacion_suicida
+    - EH_antecedente_EH_antecedente_autolesion
+    - EH_antecedente_EH_vulnerabilidad_laboral
+    - EH_antecedente_EH_vulnerabilidad_economica
+    - EH_antecedente_EH_conflicto_soporte_familiar
+    - EH_antecedente_EH_historia_trauma_infantil
+    - EH_antecedente_EH_trastorno_bipolar
+    - EH_antecedente_EH_consumo_sustancias
+    - EH_antecedente_EH_trastorno_personalidad
+    - EH_antecedente_EH_ansiedad_y_estres
+    - EH_antecedente_EH_enfermedad_oncologica
+    - EH_cercano_a_IAE_dias_internacion_
   cat_features:
     - METODO_
     #- RUCAF_region_
