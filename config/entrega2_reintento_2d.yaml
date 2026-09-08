@@ -1,6 +1,6 @@
 data:
   entrega: 2
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0719/IAE_sin_agregar_entrega2_2026-07-19_11-33-02.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0820/IAE_sin_agregar_entrega2_2026-08-20_16-52-02.csv'
   cv_split: 'grupo_estratificado'
 
   num_features:
@@ -26,7 +26,7 @@ data:
     #- persona_en_CNV_nro_rese_
     #- CNV_otro_progenitor_
     - ANTIPOLIOMELITICA
-    - COVID 19
+    #- COVID 19
     - NO_CONCURRIO_CONSULTA_
   cat_features:
     - METODO_

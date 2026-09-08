@@ -1,7 +1,8 @@
 data:
   entrega: 2
   #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega2_2026-05-27_18-08-46.csv'
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0710/IAE_agregada_entrega2_2026-07-11_16-55-36.csv'
+  #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0710/IAE_agregada_entrega2_2026-07-11_16-55-36.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0820/IAE_agregada_entrega2_2026-08-20_16-52-02.csv'
   cv_split: 'estratificado'
 
   num_features:
@@ -22,6 +23,19 @@ data:
     - ANTIPOLIOMELITICA
     #- COVID 19
     #- NO_CONCURRIO_CONSULTA_
+    - EH_antecedente_EH_ideacion_suicida
+    - EH_antecedente_EH_antecedente_autolesion
+    #- EH_antecedente_EH_vulnerabilidad_laboral
+    #- EH_antecedente_EH_vulnerabilidad_economica
+    #- EH_antecedente_EH_conflicto_soporte_familiar
+    #- EH_antecedente_EH_historia_trauma_infantil
+    - EH_antecedente_EH_trastorno_bipolar
+    - EH_antecedente_EH_consumo_sustancias
+    - EH_antecedente_EH_trastorno_personalidad
+    #- EH_antecedente_EH_ansiedad_y_estres
+    #- EH_antecedente_EH_enfermedad_oncologica
+    - EH_cercano_a_IAE_dias_internacion_
+    
   cat_features:
     - METODO_IAE_ACTUAL_
     #- METODO_IAE_PREVIO_
@@ -29,7 +43,8 @@ data:
     #- CNV_ultimo_mayor_nivel_estudio_
     #- CNV_ultimo_estado_civil_
     #- IAE_PREVIO_CORREGIDO
-  target: CAT_SUI_ #IAE_en_CDE_ # CAT_SUI_
+    
+  target: CAT_SUI_ #MOTIVO_EXT_SUI_ #CAT_SUI_ #IAE_en_CDE_ # CAT_SUI_
 
 filtros:
   - atributo: NUMERO_INTENTOS_

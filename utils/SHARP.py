@@ -3,5 +3,11 @@ import pandas as pd
 
 def esta_persona_en_SHARPS(df_SHARPS, df_IAE):
     
-    df_IAE["SHARPS_"] = df_IAE["CEDULA"].isin(df_SHARPS["cedula"]).astype(int)    
+    if df_SHARPS.empty:
+        df_IAE["SHARPS_"] = False
+    else:
+        df_IAE["SHARPS_"] = df_IAE["CEDULA"].isin(
+            df_SHARPS["cedula"]
+        )
+    
     return df_IAE

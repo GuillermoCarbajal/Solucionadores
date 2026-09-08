@@ -1,5 +1,6 @@
 import numpy as np 
 import pandas as pd
+from .utils import eliminar_duplicados
 
 def agregar_datos_hijos_cuando_intento(intento, df_IAE_CNV_agrupada):
     cedula = intento['CEDULA']
@@ -165,5 +166,24 @@ def incluir_otro_progrenitor(df_IAE, df_IAE_CNV):
 
     df_IAE = df_IAE.drop(columns=["cedula"])
     df_IAE = df_IAE.rename(columns={"otro_progenitor_": "CNV_otro_progenitor_"})
+
+    return df_IAE
+
+
+def preprocesar_CNV(df_IAE_CNV, df_IAE, dataset=2 ):
+
+    df_IAE_CNV = eliminar_duplicados(df_IAE_CNV)  
+    df_IAE_CNV_agrupada = df_IAE_CNV.groupby('cedula')     
+
+    df_IAE = esta_persona_en_CNV(df_IAE_CNV, df_IAE)
+
+    if dataset==2:
+        df_IAE = esta_persona_en_CNV_nro_rese(df_IAE_CNV, df_IAE) 
+
+    df_IAE = df_IAE.apply( lambda row: agregar_datos_hijos_cuando_intento(row, df_IAE_CNV_agrupada), axis=1)    
+
+    if dataset==2:
+        df_IAE = df_IAE.apply( lambda row: agregar_datos_CNV_cuando_intento(row, df_IAE_CNV_agrupada), axis=1)
+        df_IAE=incluir_otro_progrenitor(df_IAE,df_IAE_CNV)
 
     return df_IAE

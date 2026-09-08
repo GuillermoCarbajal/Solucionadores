@@ -143,9 +143,11 @@ def convertir_enteros_a_fecha(serie):
 
     resultado = serie.copy()
 
-    resultado = resultado.where(
-        ~mask,
-        pd.to_datetime(valores, unit="D", origin="1899-12-30")
+    resultado.loc[mask] = pd.to_datetime(
+        valores.loc[mask],
+        unit="D",
+        origin="1899-12-30"
     )
 
     return resultado
+

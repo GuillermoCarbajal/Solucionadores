@@ -41,6 +41,7 @@ from utils.evaluacion import oof_prediction
 from sklearn.calibration import CalibratedClassifierCV, CalibrationDisplay
 
 import argparse
+import joblib
 
 os.environ["COMET_AUTO_LOGGING"] = "0"
 
@@ -830,7 +831,8 @@ def run_experiment(args):
             print("Grid Search started")
             gs_pipeline.fit(X, y.values)
 
-
+        # Guardar modelo entrenado
+        joblib.dump(gs_pipeline, f"{model_type}_{target}.joblib")
         #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
 
         preprocess = gs_pipeline.best_estimator_.named_steps["preprocessing"]

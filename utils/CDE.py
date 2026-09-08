@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 
@@ -106,4 +107,10 @@ def agregar_datos_CDE_en_IAE(df_IAE, df_IAE_CDE, dataset):
 
     return df_IAE
 
-  
+def agregar_si_intentos_en_CDE(df_IAE, df_IAE_CDE, nombre_nuevo_campo='DEFUNCION_'):
+    df_IAE[nombre_nuevo_campo] = df_IAE["CEDULA"].isin(df_IAE_CDE["cedula"]).astype(int)
+    cantidad_intentos_fallecidos = np.sum(df_IAE[nombre_nuevo_campo])
+    print(f'Se agrego el campo {nombre_nuevo_campo} que vale 1 si la persona falleció (no necesariamente suicidio)')
+    print(f'{cantidad_intentos_fallecidos} de los {df_IAE.shape[0]} intentos están asociados a personas fallecidas') 
+
+    return df_IAE

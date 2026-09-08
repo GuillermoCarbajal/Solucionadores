@@ -1,0 +1,2505 @@
+Levantando las bases ...
+['IAE', 'CDE', 'CNV', 'EH', 'SIV', 'SHARPS', 'IAE_RUCAF', 'Sheet1']
+Eliminando filas de base CDE con menos de 4 columnas no nulas
+La base tenía 4678 filas. Luego de eliminar las filas con al menos 4 campos nulos quedaron 4678 filas
+Hay 2181 filas de 4678 en la categoría CAT_SUI_
+Hay 2067 filas de 4678 en la categoría CAT_MCEXSUI_
+El rango del atributo edad_fallecimiento_digitada es [0.0, 106.0]
+edad_fallecimiento_digitada tiene 10 valores nulos
+El rango del atributo edad_fallecimiento_calculada es [0.0, 106.0]
+edad_fallecimiento_calculada tiene 11 valores nulos
+Las fechas de nacimineto digitadas y calculadas coinciden en 4643 de 4678 casos
+15851 de las 19884 filas de la base IAE tienen fecha de registro
+15586 de las 19884 filas de la base IAE son intentos
+Se eliminaron 11 filas sin cédula. Ahora la base tiene 19873 filas.
+Se eliminaron 2 filas duplicadas en la base. Ahora la base tiene 19871 filas.
+METODO_
+Ingesta de Medicamentos    10916
+Otros                       3725
+Ahorcamiento o asfixia      3066
+Lesiones autoinfligidas     1551
+Armas de fuego               429
+Caída                        184
+Name: count, dtype: int64
+IAE PREVIO
+SI              7808
+NO SE INDICA    7104
+NO              4834
+Tratamiento      125
+Name: count, dtype: int64
+IAE PREVIO tiene 4 valores únicos.
+<StringArray>
+['NO SE INDICA', 'SI', 'NO', 'Tratamiento']
+Length: 4, dtype: str
+El rango del atributo EDAD_ es [0.0, 113.0]
+DECISION tiene 12 valores únicos.
+<StringArray>
+[                'NO CUMPLE PROTOCOLO',                                  'SI',
+                 'PENDIENTE RESPUESTA',                                   nan,
+           'SIN COBERTURA ASISTENCIAL',                            'SUICIDIO',
+             'SIN DATOS ASISTENCIALES',                           'RESPUESTA',
+                 'PRIVADO DE LIBERTAD',                            'RESUELT0',
+ 'FECHA ERRONEA DE IAE? UN AÑO ATRASO',                      'SEG PARTICULAR']
+Length: 12, dtype: str
+DECISION
+SI                                     5887
+NO CUMPLE PROTOCOLO                    2281
+PENDIENTE RESPUESTA                    1428
+SIN COBERTURA ASISTENCIAL                59
+SUICIDIO                                 45
+SIN DATOS ASISTENCIALES                   5
+RESPUESTA                                 1
+PRIVADO DE LIBERTAD                       1
+RESUELT0                                  1
+FECHA ERRONEA DE IAE? UN AÑO ATRASO       1
+SEG PARTICULAR                            1
+Name: count, dtype: int64
+DECISION tiene 12 valores únicos.
+<StringArray>
+[                'NO CUMPLE PROTOCOLO',                                  'SI',
+                 'PENDIENTE RESPUESTA',                                   nan,
+           'SIN COBERTURA ASISTENCIAL',                            'SUICIDIO',
+             'SIN DATOS ASISTENCIALES',                           'RESPUESTA',
+                 'PRIVADO DE LIBERTAD',                            'RESUELT0',
+ 'FECHA ERRONEA DE IAE? UN AÑO ATRASO',                      'SEG PARTICULAR']
+Length: 12, dtype: str
+DECISION
+SI                                     5887
+NO CUMPLE PROTOCOLO                    2281
+PENDIENTE RESPUESTA                    1428
+SIN COBERTURA ASISTENCIAL                59
+SUICIDIO                                 45
+SIN DATOS ASISTENCIALES                   5
+RESPUESTA                                 1
+PRIVADO DE LIBERTAD                       1
+RESUELT0                                  1
+FECHA ERRONEA DE IAE? UN AÑO ATRASO       1
+SEG PARTICULAR                            1
+Name: count, dtype: int64
+DECISION_ tiene 4 valores únicos.
+<StringArray>
+['NO CUMPLE PROTOCOLO', 'OTRA DECISION', 'PENDIENTE RESPUESTA', 'SUICIDIO']
+Length: 4, dtype: str
+DECISION_
+OTRA DECISION          16117
+NO CUMPLE PROTOCOLO     2281
+PENDIENTE RESPUESTA     1428
+SUICIDIO                  45
+Name: count, dtype: int64
+Se agrego el campo IAE_en_CDE que vale 1 si la persona falleció (no necesariamente suicidio)
+4756 de los 19871 intentos están asociados a personas fallecidas
+En el campo FECHA SEGUIMIENTO se corrigieron 0 fechas enteras
+En el campo FECHA LLAMADA PRESTADOR se corrigieron 0 fechas enteras
+En el campo AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO se corrigieron 0 fechas enteras
+En el campo FECHA DE CONSULTA se corrigieron 4900 fechas enteras
+En el campo CONCURRIO se corrigieron 5516 fechas enteras
+En el campo SE LLAMO A USUARIO Y/O REFERENTE se corrigieron 1 fechas enteras
+En el campo AGENDO NUEVA CONSULTA se corrigieron 2 fechas enteras
+En el campo FECHA DE NUEVA CONSULTA se corrigieron 312 fechas enteras
+En el campo INTERNACION se corrigieron 617 fechas enteras
+En el campo FECHA ALTA se corrigieron 2826 fechas enteras
+En el campo FECHA LLAMADA PRESTADOR.1 se corrigieron 1149 fechas enteras
+En el campo MSP se corrigieron 5819 fechas enteras
+En el campo OBSERVACIONES se corrigieron 1 fechas enteras
+En el campo UNNAMED: 26 se corrigieron 0 fechas enteras
+En el campo FECHA DE LLAMADA AL PRESTADOR se corrigieron 44 fechas enteras
+En el campo MOTIVO se corrigieron 2 fechas enteras
+AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_
+SI                            9147
+NO                            3710
+PENDIENTE RESPUESTA           2151
+DESCARTADA_POR_RASTREADOR      275
+SUICIDIO                        56
+DOBLE IAE ? 29/09 Y 30/09?       1
+DOBLE IAE ? 10/10 Y 11/10?       1
+IAE CONSECUTIVO?                 1
+                                 1
+Name: count, dtype: int64
+Campo CONCURRIO crudo: [nan, 'SI ', 'NO ', 'SI', 'NO', 'si', 'no', '45482', '45712', 'TELEFONICA', '45686', '45400', '45399', '45481', '45454', '45442', '45440', '45441', '30/0', '45448', '45439', '45446', '45447', '45443', '45449', '45456', '45444', '45694', '45469', '45455', '45474', '45467', '45450', '45468', '45451', '45453', '45461', '45457', '45460', '45471', '45452', '45550', '45477', '45463', '45506', '45693', '45462', '45553', '45437', '45476', '45490', '45458', '45464', '45486', '45470', '45483', '45500', '45465', '45478', '45484', '45475', '45466', '45533', '18/06/20254', '45485', '45502', '45540', '45516', '45489', '45523', '45488', '45492', '45499', '45503', '45495', '45497', '45504', '45496', '45519', '45509', '45505', '45498', '45527', '45653', '45511', '45512', '45525', '45541', '25/07/204 ', '45518', '45513', '45535', '45510', '45517', '45531', '45537', '45526', '45524', '45514', '45545', '45520', '45521', '45589', '45705', '09/08 PSIC', '45532', '45530', '45539', '45534', '45548', '45515', '45544', '45551', '45575', '45549', '45528', '45538', '27/08 EQUIPO SM', '45554', '45547', '45542', '45582', '45566', '45558', '45546', '45562', '45561', '45543', '45555', '45552', '45567', '45560', '45559', '45568', '45192', '45569', '45572', '45563', '17/09/2024 PSIQ', '45579', '45565', '45570', '45601', '45925', '45564', '45586', '45573', '45597', '45583', '45576', '45593', '45577', '45580', '45635', '45571', '45574', '45614', '45588', '45581', '45603', '45587', '45595', '45584', '45600', '45596', '14/10/2024 psiq', '45594', '44526', '45619', '45591', '45617', '45611', '45598', '45625', '45607', '45590', '45609', '45637', '45602', '45604', '45610', '45628', '45624', '45608', '45615', '45630', '45618', '45616', '45652', '45622', '45605', '45643', '45626', '45706', '45636', '45621', '45664', '45660', '45629', '45623', '45612', '45632', '45713', '45638', '45651', '45631', '45642', '2/12/2024SI ', '45649', '45639', '45645', '45659', '45644', '45646', '45640', '45641', '23/12/204', '45670', '45673', '45648', '45687', '45650', '45656', '19/12/20204', '45666', '45654', '45679', '46021', '45665', '45657', '45671', '45681', '45661', '45678', '45647', '45691', '45677', '45668', '45674', '45685', '45297', '45295', '45672', '45667', '45663', '45682', '45684', '45704', '45695', '45680', '45723', '45714', '45698', '45675', '45701', '45689', '45699', '45688', '45702', '45692', '45727', '45683', '45710', '45696', '45726', '45700', '45733', '45748', '45707', '45709', '45740', '45716', '45776', '45715', '10/03/20025', '45735', '45346', '45708', '45729', '45719', '45722', '45747', '45721', '45743', '45730', '45728', '45737', '45762', '45724', '45734', '45731', '45736', '45744', '45742', '45738', '45758', '45725', '45769', '45750', '45755', '45749', '45796', '45795', '45741', '45761', '45757', '25/2025', '45779', '45752', '45756', '45754', '45810', '45772', '45745', '45763', '45751', '45775', '45799', '45768', '45764', '45770', '45777', '45389', '45792', 'PPL', '45789', '45771', '45783', '45790', '45759', '45765', '45782', '45784', '45786', '45806', '45793', '45785', '45780', '45820', '45841', '45773', '06/05 NUEVO IAE ', '45835', '45787', '45797', '45791', '05/05/205', '45798', '45811', '27/05/20255', '45831', '45805', '45845', '45855', '45890', '45794', '45804', '45826', '45814', '45817', '45803', '45827', '45825', '45818', '45800', '45812', '45819', '45807', '45801', '45824', '45813', '45808', '45836', '45821', '45833', '45815', '45847', '10/06/20258', '45828', '45822', '45832', '45829', '45823', '45848', '45840', '45838', '45834', '45839', '45816', '45842', '45863', '25/06/20258', '45852', '45897', '45846', '45857', '45862', '45860', '45854', '45849', '44016', '45837', '45853', '04/07/20250', '45866', '45859', '45868', '45883', '07/07/20255', '45873', '45877', '45850', '45880', '38540', '45861', '45867', '45876', '45887', '45884', '45869', '45882', '45870', '45888', '45881', '45874', '45875', '45871', '45865', '45872', '45905', '45892', '45895', '45858', '45938', '45891', '06/08/20255', '45878', '45922', '45885', '45879', '45893', '45889', '45896', '13/08/205', '45912', '45901', '45904', '45909', '45898', '19/08/205', '45919', '45902', '45914', '45908', '45910', '45894', '45913', '45903', '45967', '45915', 'PENDIENTE DATO', '45918', '45926', '29/08/205', '45911', '45924', '45916', '45964', '45933', '45917', '45923', '45906', '45932', '45930', '45931', '56875', '45939', '45929', '45937', '45936', '45965', '45934', '45943', '45960', '45927', '45950', '45958', '45946', '45928', '28/10/2025 (pendiente)', '45945', '45944', '45961', '45954', '45940', '08/10/20255', '45952', '45951', '45957', '45974', '10/10/20255', '45947', '45948', '45953', '45959', '45978', '20/102025', '45966', '45973', '27/10/205', '45962', '28/10/025', '45972', '45969', '45968', '45971', '45985', '45975', '45980', 'pend', 'PEND', 'no ', 'TELEFONICO ', 'sI', 'N0', 'sd', '31/09/2024']
+Campo CONCURRIO_ luego de convertir enteros a fechas: [nan, 'SI ', 'NO ', 'SI', 'NO', 'si', 'no', Timestamp('2024-07-09 00:00:00'), Timestamp('2025-02-24 00:00:00'), 'TELEFONICA', Timestamp('2025-01-29 00:00:00'), Timestamp('2024-04-18 00:00:00'), Timestamp('2024-04-17 00:00:00'), Timestamp('2024-07-08 00:00:00'), Timestamp('2024-06-11 00:00:00'), Timestamp('2024-05-30 00:00:00'), Timestamp('2024-05-28 00:00:00'), Timestamp('2024-05-29 00:00:00'), '30/0', Timestamp('2024-06-05 00:00:00'), Timestamp('2024-05-27 00:00:00'), Timestamp('2024-06-03 00:00:00'), Timestamp('2024-06-04 00:00:00'), Timestamp('2024-05-31 00:00:00'), Timestamp('2024-06-06 00:00:00'), Timestamp('2024-06-13 00:00:00'), Timestamp('2024-06-01 00:00:00'), Timestamp('2025-02-06 00:00:00'), Timestamp('2024-06-26 00:00:00'), Timestamp('2024-06-12 00:00:00'), Timestamp('2024-07-01 00:00:00'), Timestamp('2024-06-24 00:00:00'), Timestamp('2024-06-07 00:00:00'), Timestamp('2024-06-25 00:00:00'), Timestamp('2024-06-08 00:00:00'), Timestamp('2024-06-10 00:00:00'), Timestamp('2024-06-18 00:00:00'), Timestamp('2024-06-14 00:00:00'), Timestamp('2024-06-17 00:00:00'), Timestamp('2024-06-28 00:00:00'), Timestamp('2024-06-09 00:00:00'), Timestamp('2024-09-15 00:00:00'), Timestamp('2024-07-04 00:00:00'), Timestamp('2024-06-20 00:00:00'), Timestamp('2024-08-02 00:00:00'), Timestamp('2025-02-05 00:00:00'), Timestamp('2024-06-19 00:00:00'), Timestamp('2024-09-18 00:00:00'), Timestamp('2024-05-25 00:00:00'), Timestamp('2024-07-03 00:00:00'), Timestamp('2024-07-17 00:00:00'), Timestamp('2024-06-15 00:00:00'), Timestamp('2024-06-21 00:00:00'), Timestamp('2024-07-13 00:00:00'), Timestamp('2024-06-27 00:00:00'), Timestamp('2024-07-10 00:00:00'), Timestamp('2024-07-27 00:00:00'), Timestamp('2024-06-22 00:00:00'), Timestamp('2024-07-05 00:00:00'), Timestamp('2024-07-11 00:00:00'), Timestamp('2024-07-02 00:00:00'), Timestamp('2024-06-23 00:00:00'), Timestamp('2024-08-29 00:00:00'), '18/06/20254', Timestamp('2024-07-12 00:00:00'), Timestamp('2024-07-29 00:00:00'), Timestamp('2024-09-05 00:00:00'), Timestamp('2024-08-12 00:00:00'), Timestamp('2024-07-16 00:00:00'), Timestamp('2024-08-19 00:00:00'), Timestamp('2024-07-15 00:00:00'), Timestamp('2024-07-19 00:00:00'), Timestamp('2024-07-26 00:00:00'), Timestamp('2024-07-30 00:00:00'), Timestamp('2024-07-22 00:00:00'), Timestamp('2024-07-24 00:00:00'), Timestamp('2024-07-31 00:00:00'), Timestamp('2024-07-23 00:00:00'), Timestamp('2024-08-15 00:00:00'), Timestamp('2024-08-05 00:00:00'), Timestamp('2024-08-01 00:00:00'), Timestamp('2024-07-25 00:00:00'), Timestamp('2024-08-23 00:00:00'), Timestamp('2024-12-27 00:00:00'), Timestamp('2024-08-07 00:00:00'), Timestamp('2024-08-08 00:00:00'), Timestamp('2024-08-21 00:00:00'), Timestamp('2024-09-06 00:00:00'), '25/07/204 ', Timestamp('2024-08-14 00:00:00'), Timestamp('2024-08-09 00:00:00'), Timestamp('2024-08-31 00:00:00'), Timestamp('2024-08-06 00:00:00'), Timestamp('2024-08-13 00:00:00'), Timestamp('2024-08-27 00:00:00'), Timestamp('2024-09-02 00:00:00'), Timestamp('2024-08-22 00:00:00'), Timestamp('2024-08-20 00:00:00'), Timestamp('2024-08-10 00:00:00'), Timestamp('2024-09-10 00:00:00'), Timestamp('2024-08-16 00:00:00'), Timestamp('2024-08-17 00:00:00'), Timestamp('2024-10-24 00:00:00'), Timestamp('2025-02-17 00:00:00'), '09/08 PSIC', Timestamp('2024-08-28 00:00:00'), Timestamp('2024-08-26 00:00:00'), Timestamp('2024-09-04 00:00:00'), Timestamp('2024-08-30 00:00:00'), Timestamp('2024-09-13 00:00:00'), Timestamp('2024-08-11 00:00:00'), Timestamp('2024-09-09 00:00:00'), Timestamp('2024-09-16 00:00:00'), Timestamp('2024-10-10 00:00:00'), Timestamp('2024-09-14 00:00:00'), Timestamp('2024-08-24 00:00:00'), Timestamp('2024-09-03 00:00:00'), '27/08 EQUIPO SM', Timestamp('2024-09-19 00:00:00'), Timestamp('2024-09-12 00:00:00'), Timestamp('2024-09-07 00:00:00'), Timestamp('2024-10-17 00:00:00'), Timestamp('2024-10-01 00:00:00'), Timestamp('2024-09-23 00:00:00'), Timestamp('2024-09-11 00:00:00'), Timestamp('2024-09-27 00:00:00'), Timestamp('2024-09-26 00:00:00'), Timestamp('2024-09-08 00:00:00'), Timestamp('2024-09-20 00:00:00'), Timestamp('2024-09-17 00:00:00'), Timestamp('2024-10-02 00:00:00'), Timestamp('2024-09-25 00:00:00'), Timestamp('2024-09-24 00:00:00'), Timestamp('2024-10-03 00:00:00'), Timestamp('2023-09-23 00:00:00'), Timestamp('2024-10-04 00:00:00'), Timestamp('2024-10-07 00:00:00'), Timestamp('2024-09-28 00:00:00'), '17/09/2024 PSIQ', Timestamp('2024-10-14 00:00:00'), Timestamp('2024-09-30 00:00:00'), Timestamp('2024-10-05 00:00:00'), Timestamp('2024-11-05 00:00:00'), Timestamp('2025-09-25 00:00:00'), Timestamp('2024-09-29 00:00:00'), Timestamp('2024-10-21 00:00:00'), Timestamp('2024-10-08 00:00:00'), Timestamp('2024-11-01 00:00:00'), Timestamp('2024-10-18 00:00:00'), Timestamp('2024-10-11 00:00:00'), Timestamp('2024-10-28 00:00:00'), Timestamp('2024-10-12 00:00:00'), Timestamp('2024-10-15 00:00:00'), Timestamp('2024-12-09 00:00:00'), Timestamp('2024-10-06 00:00:00'), Timestamp('2024-10-09 00:00:00'), Timestamp('2024-11-18 00:00:00'), Timestamp('2024-10-23 00:00:00'), Timestamp('2024-10-16 00:00:00'), Timestamp('2024-11-07 00:00:00'), Timestamp('2024-10-22 00:00:00'), Timestamp('2024-10-30 00:00:00'), Timestamp('2024-10-19 00:00:00'), Timestamp('2024-11-04 00:00:00'), Timestamp('2024-10-31 00:00:00'), '14/10/2024 psiq', Timestamp('2024-10-29 00:00:00'), Timestamp('2021-11-26 00:00:00'), Timestamp('2024-11-23 00:00:00'), Timestamp('2024-10-26 00:00:00'), Timestamp('2024-11-21 00:00:00'), Timestamp('2024-11-15 00:00:00'), Timestamp('2024-11-02 00:00:00'), Timestamp('2024-11-29 00:00:00'), Timestamp('2024-11-11 00:00:00'), Timestamp('2024-10-25 00:00:00'), Timestamp('2024-11-13 00:00:00'), Timestamp('2024-12-11 00:00:00'), Timestamp('2024-11-06 00:00:00'), Timestamp('2024-11-08 00:00:00'), Timestamp('2024-11-14 00:00:00'), Timestamp('2024-12-02 00:00:00'), Timestamp('2024-11-28 00:00:00'), Timestamp('2024-11-12 00:00:00'), Timestamp('2024-11-19 00:00:00'), Timestamp('2024-12-04 00:00:00'), Timestamp('2024-11-22 00:00:00'), Timestamp('2024-11-20 00:00:00'), Timestamp('2024-12-26 00:00:00'), Timestamp('2024-11-26 00:00:00'), Timestamp('2024-11-09 00:00:00'), Timestamp('2024-12-17 00:00:00'), Timestamp('2024-11-30 00:00:00'), Timestamp('2025-02-18 00:00:00'), Timestamp('2024-12-10 00:00:00'), Timestamp('2024-11-25 00:00:00'), Timestamp('2025-01-07 00:00:00'), Timestamp('2025-01-03 00:00:00'), Timestamp('2024-12-03 00:00:00'), Timestamp('2024-11-27 00:00:00'), Timestamp('2024-11-16 00:00:00'), Timestamp('2024-12-06 00:00:00'), Timestamp('2025-02-25 00:00:00'), Timestamp('2024-12-12 00:00:00'), Timestamp('2024-12-25 00:00:00'), Timestamp('2024-12-05 00:00:00'), Timestamp('2024-12-16 00:00:00'), '2/12/2024SI ', Timestamp('2024-12-23 00:00:00'), Timestamp('2024-12-13 00:00:00'), Timestamp('2024-12-19 00:00:00'), Timestamp('2025-01-02 00:00:00'), Timestamp('2024-12-18 00:00:00'), Timestamp('2024-12-20 00:00:00'), Timestamp('2024-12-14 00:00:00'), Timestamp('2024-12-15 00:00:00'), '23/12/204', Timestamp('2025-01-13 00:00:00'), Timestamp('2025-01-16 00:00:00'), Timestamp('2024-12-22 00:00:00'), Timestamp('2025-01-30 00:00:00'), Timestamp('2024-12-24 00:00:00'), Timestamp('2024-12-30 00:00:00'), '19/12/20204', Timestamp('2025-01-09 00:00:00'), Timestamp('2024-12-28 00:00:00'), Timestamp('2025-01-22 00:00:00'), Timestamp('2025-12-30 00:00:00'), Timestamp('2025-01-08 00:00:00'), Timestamp('2024-12-31 00:00:00'), Timestamp('2025-01-14 00:00:00'), Timestamp('2025-01-24 00:00:00'), Timestamp('2025-01-04 00:00:00'), Timestamp('2025-01-21 00:00:00'), Timestamp('2024-12-21 00:00:00'), Timestamp('2025-02-03 00:00:00'), Timestamp('2025-01-20 00:00:00'), Timestamp('2025-01-11 00:00:00'), Timestamp('2025-01-17 00:00:00'), Timestamp('2025-01-28 00:00:00'), Timestamp('2024-01-06 00:00:00'), Timestamp('2024-01-04 00:00:00'), Timestamp('2025-01-15 00:00:00'), Timestamp('2025-01-10 00:00:00'), Timestamp('2025-01-06 00:00:00'), Timestamp('2025-01-25 00:00:00'), Timestamp('2025-01-27 00:00:00'), Timestamp('2025-02-16 00:00:00'), Timestamp('2025-02-07 00:00:00'), Timestamp('2025-01-23 00:00:00'), Timestamp('2025-03-07 00:00:00'), Timestamp('2025-02-26 00:00:00'), Timestamp('2025-02-10 00:00:00'), Timestamp('2025-01-18 00:00:00'), Timestamp('2025-02-13 00:00:00'), Timestamp('2025-02-01 00:00:00'), Timestamp('2025-02-11 00:00:00'), Timestamp('2025-01-31 00:00:00'), Timestamp('2025-02-14 00:00:00'), Timestamp('2025-02-04 00:00:00'), Timestamp('2025-03-11 00:00:00'), Timestamp('2025-01-26 00:00:00'), Timestamp('2025-02-22 00:00:00'), Timestamp('2025-02-08 00:00:00'), Timestamp('2025-03-10 00:00:00'), Timestamp('2025-02-12 00:00:00'), Timestamp('2025-03-17 00:00:00'), Timestamp('2025-04-01 00:00:00'), Timestamp('2025-02-19 00:00:00'), Timestamp('2025-02-21 00:00:00'), Timestamp('2025-03-24 00:00:00'), Timestamp('2025-02-28 00:00:00'), Timestamp('2025-04-29 00:00:00'), Timestamp('2025-02-27 00:00:00'), '10/03/20025', Timestamp('2025-03-19 00:00:00'), Timestamp('2024-02-24 00:00:00'), Timestamp('2025-02-20 00:00:00'), Timestamp('2025-03-13 00:00:00'), Timestamp('2025-03-03 00:00:00'), Timestamp('2025-03-06 00:00:00'), Timestamp('2025-03-31 00:00:00'), Timestamp('2025-03-05 00:00:00'), Timestamp('2025-03-27 00:00:00'), Timestamp('2025-03-14 00:00:00'), Timestamp('2025-03-12 00:00:00'), Timestamp('2025-03-21 00:00:00'), Timestamp('2025-04-15 00:00:00'), Timestamp('2025-03-08 00:00:00'), Timestamp('2025-03-18 00:00:00'), Timestamp('2025-03-15 00:00:00'), Timestamp('2025-03-20 00:00:00'), Timestamp('2025-03-28 00:00:00'), Timestamp('2025-03-26 00:00:00'), Timestamp('2025-03-22 00:00:00'), Timestamp('2025-04-11 00:00:00'), Timestamp('2025-03-09 00:00:00'), Timestamp('2025-04-22 00:00:00'), Timestamp('2025-04-03 00:00:00'), Timestamp('2025-04-08 00:00:00'), Timestamp('2025-04-02 00:00:00'), Timestamp('2025-05-19 00:00:00'), Timestamp('2025-05-18 00:00:00'), Timestamp('2025-03-25 00:00:00'), Timestamp('2025-04-14 00:00:00'), Timestamp('2025-04-10 00:00:00'), '25/2025', Timestamp('2025-05-02 00:00:00'), Timestamp('2025-04-05 00:00:00'), Timestamp('2025-04-09 00:00:00'), Timestamp('2025-04-07 00:00:00'), Timestamp('2025-06-02 00:00:00'), Timestamp('2025-04-25 00:00:00'), Timestamp('2025-03-29 00:00:00'), Timestamp('2025-04-16 00:00:00'), Timestamp('2025-04-04 00:00:00'), Timestamp('2025-04-28 00:00:00'), Timestamp('2025-05-22 00:00:00'), Timestamp('2025-04-21 00:00:00'), Timestamp('2025-04-17 00:00:00'), Timestamp('2025-04-23 00:00:00'), Timestamp('2025-04-30 00:00:00'), Timestamp('2024-04-07 00:00:00'), Timestamp('2025-05-15 00:00:00'), 'PPL', Timestamp('2025-05-12 00:00:00'), Timestamp('2025-04-24 00:00:00'), Timestamp('2025-05-06 00:00:00'), Timestamp('2025-05-13 00:00:00'), Timestamp('2025-04-12 00:00:00'), Timestamp('2025-04-18 00:00:00'), Timestamp('2025-05-05 00:00:00'), Timestamp('2025-05-07 00:00:00'), Timestamp('2025-05-09 00:00:00'), Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-16 00:00:00'), Timestamp('2025-05-08 00:00:00'), Timestamp('2025-05-03 00:00:00'), Timestamp('2025-06-12 00:00:00'), Timestamp('2025-07-03 00:00:00'), Timestamp('2025-04-26 00:00:00'), '06/05 NUEVO IAE ', Timestamp('2025-06-27 00:00:00'), Timestamp('2025-05-10 00:00:00'), Timestamp('2025-05-20 00:00:00'), Timestamp('2025-05-14 00:00:00'), '05/05/205', Timestamp('2025-05-21 00:00:00'), Timestamp('2025-06-03 00:00:00'), '27/05/20255', Timestamp('2025-06-23 00:00:00'), Timestamp('2025-05-28 00:00:00'), Timestamp('2025-07-07 00:00:00'), Timestamp('2025-07-17 00:00:00'), Timestamp('2025-08-21 00:00:00'), Timestamp('2025-05-17 00:00:00'), Timestamp('2025-05-27 00:00:00'), Timestamp('2025-06-18 00:00:00'), Timestamp('2025-06-06 00:00:00'), Timestamp('2025-06-09 00:00:00'), Timestamp('2025-05-26 00:00:00'), Timestamp('2025-06-19 00:00:00'), Timestamp('2025-06-17 00:00:00'), Timestamp('2025-06-10 00:00:00'), Timestamp('2025-05-23 00:00:00'), Timestamp('2025-06-04 00:00:00'), Timestamp('2025-06-11 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-05-24 00:00:00'), Timestamp('2025-06-16 00:00:00'), Timestamp('2025-06-05 00:00:00'), Timestamp('2025-05-31 00:00:00'), Timestamp('2025-06-28 00:00:00'), Timestamp('2025-06-13 00:00:00'), Timestamp('2025-06-25 00:00:00'), Timestamp('2025-06-07 00:00:00'), Timestamp('2025-07-09 00:00:00'), '10/06/20258', Timestamp('2025-06-20 00:00:00'), Timestamp('2025-06-14 00:00:00'), Timestamp('2025-06-24 00:00:00'), Timestamp('2025-06-21 00:00:00'), Timestamp('2025-06-15 00:00:00'), Timestamp('2025-07-10 00:00:00'), Timestamp('2025-07-02 00:00:00'), Timestamp('2025-06-30 00:00:00'), Timestamp('2025-06-26 00:00:00'), Timestamp('2025-07-01 00:00:00'), Timestamp('2025-06-08 00:00:00'), Timestamp('2025-07-04 00:00:00'), Timestamp('2025-07-25 00:00:00'), '25/06/20258', Timestamp('2025-07-14 00:00:00'), Timestamp('2025-08-28 00:00:00'), Timestamp('2025-07-08 00:00:00'), Timestamp('2025-07-19 00:00:00'), Timestamp('2025-07-24 00:00:00'), Timestamp('2025-07-22 00:00:00'), Timestamp('2025-07-16 00:00:00'), Timestamp('2025-07-11 00:00:00'), Timestamp('2020-07-04 00:00:00'), Timestamp('2025-06-29 00:00:00'), Timestamp('2025-07-15 00:00:00'), '04/07/20250', Timestamp('2025-07-28 00:00:00'), Timestamp('2025-07-21 00:00:00'), Timestamp('2025-07-30 00:00:00'), Timestamp('2025-08-14 00:00:00'), '07/07/20255', Timestamp('2025-08-04 00:00:00'), Timestamp('2025-08-08 00:00:00'), Timestamp('2025-07-12 00:00:00'), Timestamp('2025-08-11 00:00:00'), Timestamp('2005-07-07 00:00:00'), Timestamp('2025-07-23 00:00:00'), Timestamp('2025-07-29 00:00:00'), Timestamp('2025-08-07 00:00:00'), Timestamp('2025-08-18 00:00:00'), Timestamp('2025-08-15 00:00:00'), Timestamp('2025-07-31 00:00:00'), Timestamp('2025-08-13 00:00:00'), Timestamp('2025-08-01 00:00:00'), Timestamp('2025-08-19 00:00:00'), Timestamp('2025-08-12 00:00:00'), Timestamp('2025-08-05 00:00:00'), Timestamp('2025-08-06 00:00:00'), Timestamp('2025-08-02 00:00:00'), Timestamp('2025-07-27 00:00:00'), Timestamp('2025-08-03 00:00:00'), Timestamp('2025-09-05 00:00:00'), Timestamp('2025-08-23 00:00:00'), Timestamp('2025-08-26 00:00:00'), Timestamp('2025-07-20 00:00:00'), Timestamp('2025-10-08 00:00:00'), Timestamp('2025-08-22 00:00:00'), '06/08/20255', Timestamp('2025-08-09 00:00:00'), Timestamp('2025-09-22 00:00:00'), Timestamp('2025-08-16 00:00:00'), Timestamp('2025-08-10 00:00:00'), Timestamp('2025-08-24 00:00:00'), Timestamp('2025-08-20 00:00:00'), Timestamp('2025-08-27 00:00:00'), '13/08/205', Timestamp('2025-09-12 00:00:00'), Timestamp('2025-09-01 00:00:00'), Timestamp('2025-09-04 00:00:00'), Timestamp('2025-09-09 00:00:00'), Timestamp('2025-08-29 00:00:00'), '19/08/205', Timestamp('2025-09-19 00:00:00'), Timestamp('2025-09-02 00:00:00'), Timestamp('2025-09-14 00:00:00'), Timestamp('2025-09-08 00:00:00'), Timestamp('2025-09-10 00:00:00'), Timestamp('2025-08-25 00:00:00'), Timestamp('2025-09-13 00:00:00'), Timestamp('2025-09-03 00:00:00'), Timestamp('2025-11-06 00:00:00'), Timestamp('2025-09-15 00:00:00'), 'PENDIENTE DATO', Timestamp('2025-09-18 00:00:00'), Timestamp('2025-09-26 00:00:00'), '29/08/205', Timestamp('2025-09-11 00:00:00'), Timestamp('2025-09-24 00:00:00'), Timestamp('2025-09-16 00:00:00'), Timestamp('2025-11-03 00:00:00'), Timestamp('2025-10-03 00:00:00'), Timestamp('2025-09-17 00:00:00'), Timestamp('2025-09-23 00:00:00'), Timestamp('2025-09-06 00:00:00'), Timestamp('2025-10-02 00:00:00'), Timestamp('2025-09-30 00:00:00'), Timestamp('2025-10-01 00:00:00'), Timestamp('2055-09-18 00:00:00'), Timestamp('2025-10-09 00:00:00'), Timestamp('2025-09-29 00:00:00'), Timestamp('2025-10-07 00:00:00'), Timestamp('2025-10-06 00:00:00'), Timestamp('2025-11-04 00:00:00'), Timestamp('2025-10-04 00:00:00'), Timestamp('2025-10-13 00:00:00'), Timestamp('2025-10-30 00:00:00'), Timestamp('2025-09-27 00:00:00'), Timestamp('2025-10-20 00:00:00'), Timestamp('2025-10-28 00:00:00'), Timestamp('2025-10-16 00:00:00'), Timestamp('2025-09-28 00:00:00'), '28/10/2025 (pendiente)', Timestamp('2025-10-15 00:00:00'), Timestamp('2025-10-14 00:00:00'), Timestamp('2025-10-31 00:00:00'), Timestamp('2025-10-24 00:00:00'), Timestamp('2025-10-10 00:00:00'), '08/10/20255', Timestamp('2025-10-22 00:00:00'), Timestamp('2025-10-21 00:00:00'), Timestamp('2025-10-27 00:00:00'), Timestamp('2025-11-13 00:00:00'), '10/10/20255', Timestamp('2025-10-17 00:00:00'), Timestamp('2025-10-18 00:00:00'), Timestamp('2025-10-23 00:00:00'), Timestamp('2025-10-29 00:00:00'), Timestamp('2025-11-17 00:00:00'), '20/102025', Timestamp('2025-11-05 00:00:00'), Timestamp('2025-11-12 00:00:00'), '27/10/205', Timestamp('2025-11-01 00:00:00'), '28/10/025', Timestamp('2025-11-11 00:00:00'), Timestamp('2025-11-08 00:00:00'), Timestamp('2025-11-07 00:00:00'), Timestamp('2025-11-10 00:00:00'), Timestamp('2025-11-24 00:00:00'), Timestamp('2025-11-14 00:00:00'), Timestamp('2025-11-19 00:00:00'), 'pend', 'PEND', 'no ', 'TELEFONICO ', 'sI', 'N0', 'sd', '31/09/2024']
+['NO', 'SI ', nan, 'si', 'SI', 'NO ', 'no', 'pend ', '?', 'PEND', '45863', 'BRASIL', 'pend', 'pen', '45079', 'PEND ', 'PENDIENTE']
+['NO', 'SI ', nan, 'si', 'SI', 'NO ', 'no', 'pend ', '?', 'PEND', Timestamp('2025-07-25 00:00:00'), 'BRASIL', 'pend', 'pen', Timestamp('2023-06-02 00:00:00'), 'PEND ', 'PENDIENTE']
+Antes de eliminar los intentos descartados por rastreador habían:  19871
+Luego de eliminar los intentos descartados por rastreador hay:  19596
+Se eliminaron  275 intentos descartados por los rastreadores
+Agregando info de intentos anteriores
+Se corrigieron 348 intentos que decían NO SE INDICA en campo IAE PREVIO
+Se corrigieron 146 intentos que decían NO en campo IAE PREVIO
+Agregando info de intentos posteriores
+Se eliminaron 0 filas duplicadas en la base. Ahora la base tiene 5359 filas.
+persona_en_CNV_nro_rese_ tiene 0 valores nulos
+persona_en_CNV_nro_rese_ tiene 2 valores únicos.
+[0 1]
+persona_en_CNV_nro_rese_
+0    19566
+1       30
+Name: count, dtype: int64
+CNV_otro_progenitor_ tiene 19541 valores nulos
+CNV_otro_progenitor_ tiene 44 valores únicos.
+[nan None
+ 'fc4a88a48edecee8768fcd3950db17add398dc0cb2037bbb0adb57d4c66cd971'
+ 'd717e5fe53c8c259c94ae5b2e9f0f48a9c4475d48a0798435f9d6903b3e66a22'
+ '35a41c3672f308a9e4a0d99c0d04043fa6ff1928f584765ca06439e5633d6d61'
+ '01c2116bd357418f7cae8dcf4ebf979f93ce6c1f9105de9975fecdf97c5c2e46'
+ 'eda132d0d414245aa394dad90653d1d80cb2eff752d9e54e02f9d450d270e8ce'
+ 'b4be9d4177079416bc266592dffa5c57279aac6756306c4cdab083152be64299'
+ 'ad68f0df7012601021541677de4be4fce1f835e996053c9c47ec85c81cc77abc'
+ '20520d420e3d0b4b3dbe741628f9cad442f8a00e5884c10530cecbcca37f5b2d'
+ '6438eef2d1c6d47ed39fe6f8155a7fe0ba6fb3918fc6ba6e8fcc5693fe0f819b'
+ 'c38f11daddd2d0b63377ae98d25f8e25161e07925145de15b3d0f27490199dde'
+ '681eeff12274f7f63194cb17bace2e6d909483c603a8fcdc35f47fde5178d047'
+ 'b94a0617dd2572482a39c4552cc3017a348ed890f57ec17a2f2ccdd986992a95'
+ '66d00990d058a31cc672f606ce6c12b33a81f5fc35c0693d307977fbd9bb4a3f'
+ 'd1042f6cdeecb1d309833411af8622e5f8adfcdf7b61931295e47e898259c894'
+ '4b35b6b86d42cb53e7e24e8abebe45a56bd13940bf20ed99a46ef34ca3c27f89'
+ '8c0ea67a0ff51e7c769a2075cd40c29fa0f29abdc63b5f973de069ac37b56570'
+ '3c58d4fabb5370ee7ff7aa8e5e8c472d03250004d49744131f8c0dff3d31acec'
+ '5b0e6bdf404e362a96e98789b4b99bf08e3158413b808b268b4aa5c4fc95312c'
+ '07880b2e81bf1df3b8510505884043fda6bd1ff486d0ff9f2c880520e454df4a'
+ '9e0ba34eb3328cf8f81a2cec69a186778f1523aedea78da0c1f52f1334ff73ab'
+ '0b1dea5a0ff3bfbba4ec6db0836446f787350c535964fef4b4b09b8d58410e0e'
+ '8f56907e122b08d4ae9129becb5c3fb37056117b098742bf70682a9197862575'
+ '51f6795a77361975a9e7a34c8ce52704f09cb606c629ef41583b146f40a44086'
+ '6faba3634623e4fd86861f9923db33980f2230a48c8385cf2e9d9f8147007773'
+ '7a63ef7118854423069a6161113dfcb4a3f808b0c5b1227f6ca8a9d0d782ea7c'
+ '2400f3f2a950a619dfded3b80c374d71e31d3273152a16261b14dd196dd1a014'
+ 'c531e33bc41c2397b1bcce38f7ffeb83959d8bf92cc0568522917aa035130852'
+ '37a452dba730aa15da64becd1b712292e336ee0f17beb383c0c740ba5fb432d9'
+ '2ec55ffa3028fae2dec3a68352395890645341e778de92320593cc45d4c3129b'
+ '887933f333f071774580c6cfa1602c16184b7fec7c9672d75de82c3a9ff6ddf6'
+ '9f4c2ac6d5fd16cefbb3ccc7201e77d15cb119df1e4c0051d5b3a17a2955b88f'
+ 'b71ac5e20439cfbadf2d4782197531b5c3a5f6b74f541d026b9029be609f4762'
+ '836c27762f48b1bddaa28572dec50908f04aa5446020460aadad58b118364689'
+ 'c9061d6c64b76df0f672f58bf554bfa17b07e1ac049ba39c2a42cdc661023a0d'
+ '06c16042670dcad84014c64f41526d91d9170c427d9a776222612d0eecce531f'
+ '0c2269468da218bf0d16e8a1665fd3a65f5296e1f3539a9817123ed22cc74a25'
+ 'b6e9e9fdc89b5e719e1cd1088febf07e4c44c46d9085e516dbd88e4dcf24acff'
+ '8de4dafe93b1f9e662539e6cc52606e8a6257d3435d70e95a74813a83e8f1d8f'
+ '21177d92813e4e94ff3f04fd2adb20e96dcf976ff261055d3824531e328fd883'
+ '0d1907bfba2bdeacc7d3cfa875465dda5b51ce60eabdf9cc76758c122018969c'
+ '123eeac0e36377400bb526c58ecfc92fd6295880edf8e992b6c4c2a9d440cf26'
+ 'ff33f944b338d5cdcc3e569f49d5c309fcca1835a1d88578f095789cc8192b49']
+CNV_otro_progenitor_
+fc4a88a48edecee8768fcd3950db17add398dc0cb2037bbb0adb57d4c66cd971    5
+681eeff12274f7f63194cb17bace2e6d909483c603a8fcdc35f47fde5178d047    4
+d717e5fe53c8c259c94ae5b2e9f0f48a9c4475d48a0798435f9d6903b3e66a22    3
+b4be9d4177079416bc266592dffa5c57279aac6756306c4cdab083152be64299    2
+20520d420e3d0b4b3dbe741628f9cad442f8a00e5884c10530cecbcca37f5b2d    2
+4b35b6b86d42cb53e7e24e8abebe45a56bd13940bf20ed99a46ef34ca3c27f89    2
+5b0e6bdf404e362a96e98789b4b99bf08e3158413b808b268b4aa5c4fc95312c    2
+35a41c3672f308a9e4a0d99c0d04043fa6ff1928f584765ca06439e5633d6d61    1
+01c2116bd357418f7cae8dcf4ebf979f93ce6c1f9105de9975fecdf97c5c2e46    1
+eda132d0d414245aa394dad90653d1d80cb2eff752d9e54e02f9d450d270e8ce    1
+ad68f0df7012601021541677de4be4fce1f835e996053c9c47ec85c81cc77abc    1
+6438eef2d1c6d47ed39fe6f8155a7fe0ba6fb3918fc6ba6e8fcc5693fe0f819b    1
+c38f11daddd2d0b63377ae98d25f8e25161e07925145de15b3d0f27490199dde    1
+b94a0617dd2572482a39c4552cc3017a348ed890f57ec17a2f2ccdd986992a95    1
+66d00990d058a31cc672f606ce6c12b33a81f5fc35c0693d307977fbd9bb4a3f    1
+d1042f6cdeecb1d309833411af8622e5f8adfcdf7b61931295e47e898259c894    1
+8c0ea67a0ff51e7c769a2075cd40c29fa0f29abdc63b5f973de069ac37b56570    1
+3c58d4fabb5370ee7ff7aa8e5e8c472d03250004d49744131f8c0dff3d31acec    1
+07880b2e81bf1df3b8510505884043fda6bd1ff486d0ff9f2c880520e454df4a    1
+9e0ba34eb3328cf8f81a2cec69a186778f1523aedea78da0c1f52f1334ff73ab    1
+0b1dea5a0ff3bfbba4ec6db0836446f787350c535964fef4b4b09b8d58410e0e    1
+8f56907e122b08d4ae9129becb5c3fb37056117b098742bf70682a9197862575    1
+51f6795a77361975a9e7a34c8ce52704f09cb606c629ef41583b146f40a44086    1
+6faba3634623e4fd86861f9923db33980f2230a48c8385cf2e9d9f8147007773    1
+7a63ef7118854423069a6161113dfcb4a3f808b0c5b1227f6ca8a9d0d782ea7c    1
+2400f3f2a950a619dfded3b80c374d71e31d3273152a16261b14dd196dd1a014    1
+c531e33bc41c2397b1bcce38f7ffeb83959d8bf92cc0568522917aa035130852    1
+37a452dba730aa15da64becd1b712292e336ee0f17beb383c0c740ba5fb432d9    1
+2ec55ffa3028fae2dec3a68352395890645341e778de92320593cc45d4c3129b    1
+887933f333f071774580c6cfa1602c16184b7fec7c9672d75de82c3a9ff6ddf6    1
+9f4c2ac6d5fd16cefbb3ccc7201e77d15cb119df1e4c0051d5b3a17a2955b88f    1
+b71ac5e20439cfbadf2d4782197531b5c3a5f6b74f541d026b9029be609f4762    1
+836c27762f48b1bddaa28572dec50908f04aa5446020460aadad58b118364689    1
+c9061d6c64b76df0f672f58bf554bfa17b07e1ac049ba39c2a42cdc661023a0d    1
+06c16042670dcad84014c64f41526d91d9170c427d9a776222612d0eecce531f    1
+0c2269468da218bf0d16e8a1665fd3a65f5296e1f3539a9817123ed22cc74a25    1
+b6e9e9fdc89b5e719e1cd1088febf07e4c44c46d9085e516dbd88e4dcf24acff    1
+8de4dafe93b1f9e662539e6cc52606e8a6257d3435d70e95a74813a83e8f1d8f    1
+21177d92813e4e94ff3f04fd2adb20e96dcf976ff261055d3824531e328fd883    1
+0d1907bfba2bdeacc7d3cfa875465dda5b51ce60eabdf9cc76758c122018969c    1
+123eeac0e36377400bb526c58ecfc92fd6295880edf8e992b6c4c2a9d440cf26    1
+ff33f944b338d5cdcc3e569f49d5c309fcca1835a1d88578f095789cc8192b49    1
+Name: count, dtype: int64
+Procesando RUCAF...
+La base tenía 12199 filas. Luego de eliminar las filas con al menos 2 campos nulos quedaron 12199 filas
+Se eliminaron 0 filas duplicadas en la base. Ahora la base tiene 12199 filas.
+Hay 41 personas en RUCAF que no están en la base de IAE.
+Hay 5384 personas en la base de IAE no presentes en RUCAF.
+Hay 1097 con IAE no presentes en RUCAF.
+Procesando SHARPS...
+La base tenía 987 filas. Luego de eliminar las filas con al menos 2 campos nulos quedaron 987 filas
+Hay 18557 personas con IAE no presentes en SHARPS.
+Procesando SIV...
+La base tenía 206117 filas. Luego de eliminar las filas con al menos 2 campos nulos quedaron 206117 filas
+Se eliminaron 0 filas duplicadas en la base. Ahora la base tiene 206117 filas.
+Hay 599 personas en SIV que no están en la base de IAE.
+Procesando EH...
+Agregando los datos por persona...
+Hay 13117 personas con IAE no presentes en CNV.
+Hay 539 personas con IAE no presentes en SIV.
+Hay 11947 personas con IAE no presentes en CDE.
+Hay 1 personas en CDE que no están en la base de IAE.
+CEDULA tiene 0 valores nulos
+CEDULA tiene 16624 valores únicos.
+<StringArray>
+['0000e681952be7f20878a73707231609bf41c5c8c0a86b0166da88d7ebd012ba',
+ '0003596f1bde95098ff48b86d0561cb0498b93576221e33bb3da1bf5fabf0ee2',
+ '00038a5392a55a75ead4cc22801ce5fb4aa1e94d0b70db8d78c72df7ea548a22',
+ '0004278339f5f72aa648112ee2ea5968932e11d34147aa171f5934009af1bb2e',
+ '00127d6bb76d70724ef073fe967dd80f6b77df38a959ae4dafefff2789cd8326',
+ '00133099d10f0d6d56bd2f58267ff271fd097b1682638fc7405967ed68fbeff5',
+ '0019b23cfe93768b7cdde4b1368e2b4b9591e64d5de3c18cdcc995c0ea982e00',
+ '001da1f6d77a1a72835bba4c2b9d4ccdf297d90e00ada42fea3dd8dc2e784455',
+ '001eecb0c2ccec125edf01c7c069aa76d7865cae45be71efe20ec50640eb6686',
+ '00238e5fe1190d87676fb70c58e36805b76e0e57e125b5ef70ac71fa1768f8a5',
+ ...
+ 'ffd45f93da7a2fec5e731dfaa58a02c762d2b29e47b6c1bb61b9eae59f08b1e6',
+ 'ffd6ebc0e89640c572b5f69bbe517d07a07d10d1c972a1b29df61e3c43529229',
+ 'ffd85616e4ad5998ca097dd11fd36bc4d423c792f001f771c4b9c7837d973955',
+ 'ffd86ed4de8d42f7d2b083ee6bdcac20622515c2fe41ca361b3fff89bbc60e5c',
+ 'ffdd1b5e5d7725d482660916d4dff0fa149cba523fae64c474f895796f26520e',
+ 'ffdda04d9cb7f61ac16abefb57d895d41381e70cc5098d4576cfa58780f7c357',
+ 'ffe42d723da45d0e54737c67fccc747dcc8aceb73075fb598b755045e8c6ff56',
+ 'fff6eeeb39dc05fc78a98f367f478045ccf8835a538565f47ba0949106157136',
+ 'fff70f241b7a38806c1580fb5d8077c97d84bc6256b0aefb96ce7f4d04b484c2',
+ 'fff9a612ad60860b9c3be2ca6b24e6d338b2a8f62b11f7602b4f14707c32dfd5']
+Length: 16624, dtype: str
+CEDULA
+0000e681952be7f20878a73707231609bf41c5c8c0a86b0166da88d7ebd012ba    1
+0003596f1bde95098ff48b86d0561cb0498b93576221e33bb3da1bf5fabf0ee2    1
+00038a5392a55a75ead4cc22801ce5fb4aa1e94d0b70db8d78c72df7ea548a22    1
+0004278339f5f72aa648112ee2ea5968932e11d34147aa171f5934009af1bb2e    1
+00127d6bb76d70724ef073fe967dd80f6b77df38a959ae4dafefff2789cd8326    1
+                                                                   ..
+ffdda04d9cb7f61ac16abefb57d895d41381e70cc5098d4576cfa58780f7c357    1
+ffe42d723da45d0e54737c67fccc747dcc8aceb73075fb598b755045e8c6ff56    1
+fff6eeeb39dc05fc78a98f367f478045ccf8835a538565f47ba0949106157136    1
+fff70f241b7a38806c1580fb5d8077c97d84bc6256b0aefb96ce7f4d04b484c2    1
+fff9a612ad60860b9c3be2ca6b24e6d338b2a8f62b11f7602b4f14707c32dfd5    1
+Name: count, Length: 16624, dtype: int64
+Sexo tiene 306 valores nulos
+Sexo tiene 5 valores únicos.
+<StringArray>
+[nan, 'Masculino', 'Femenino', 'NO C', 'Indefinido']
+Length: 5, dtype: str
+Sexo
+Femenino      10049
+Masculino      6266
+Indefinido        2
+NO C              1
+Name: count, dtype: int64
+NACIMIENTO tiene 4599 valores nulos
+NACIMIENTO tiene 957 valores únicos.
+<DatetimeArray>
+[                'NaT', '2008-02-01 00:00:00', '1991-01-01 00:00:00',
+ '2004-07-01 00:00:00', '2007-03-01 00:00:00', '2005-09-01 00:00:00',
+ '1958-04-01 00:00:00', '1997-08-01 00:00:00', '2004-06-01 00:00:00',
+ '1951-09-01 00:00:00',
+ ...
+ '1949-01-01 00:00:00', '1948-03-01 00:00:00', '1941-08-01 00:00:00',
+ '2015-08-01 00:00:00', '1931-08-01 00:00:00', '1959-06-01 00:00:00',
+ '1932-06-01 00:00:00', '1929-12-01 00:00:00', '1938-05-01 00:00:00',
+ '1949-11-01 00:00:00']
+Length: 957, dtype: datetime64[us]
+NACIMIENTO
+2007-01-01    49
+2008-07-01    49
+2008-04-01    47
+2006-03-01    46
+2004-08-01    46
+              ..
+1959-06-01     1
+1932-06-01     1
+1929-12-01     1
+1938-05-01     1
+1949-11-01     1
+Name: count, Length: 956, dtype: int64
+GRUPO_EDAD_ tiene 4601 valores nulos
+GRUPO_EDAD_ tiene 23 valores únicos.
+[  nan  17.5  32.5  22.5  67.5  27.5  72.5  57.5  37.5  52.5  77.5  12.5
+  62.5  47.5  42.5  82.5  87.5  92.5   7.5   2.5  97.5 112.5 102.5]
+GRUPO_EDAD_
+17.5     2172
+22.5     1930
+27.5     1561
+32.5     1150
+37.5     1025
+42.5      774
+47.5      728
+12.5      680
+52.5      526
+57.5      395
+62.5      321
+67.5      233
+72.5      176
+77.5      120
+82.5      116
+87.5       50
+92.5       25
+2.5        20
+7.5        14
+97.5        5
+112.5       1
+102.5       1
+Name: count, dtype: int64
+METODO_IAE_FRECUENTE_ tiene 0 valores nulos
+METODO_IAE_FRECUENTE_ tiene 6 valores únicos.
+<StringArray>
+[                  'Otros', 'Lesiones autoinfligidas',
+ 'Ingesta de Medicamentos',  'Ahorcamiento o asfixia',
+          'Armas de fuego',                   'Caída']
+Length: 6, dtype: str
+METODO_IAE_FRECUENTE_
+Ingesta de Medicamentos    8803
+Otros                      3111
+Ahorcamiento o asfixia     2926
+Lesiones autoinfligidas    1176
+Armas de fuego              424
+Caída                       184
+Name: count, dtype: int64
+METODO_IAE_ACTUAL_ tiene 0 valores nulos
+METODO_IAE_ACTUAL_ tiene 6 valores únicos.
+<StringArray>
+[                  'Otros', 'Lesiones autoinfligidas',
+ 'Ingesta de Medicamentos',  'Ahorcamiento o asfixia',
+          'Armas de fuego',                   'Caída']
+Length: 6, dtype: str
+METODO_IAE_ACTUAL_
+Ingesta de Medicamentos    8643
+Otros                      3278
+Ahorcamiento o asfixia     2858
+Lesiones autoinfligidas    1238
+Armas de fuego              423
+Caída                       184
+Name: count, dtype: int64
+METODO_IAE_PREVIO_ tiene 14684 valores nulos
+METODO_IAE_PREVIO_ tiene 6 valores únicos.
+<StringArray>
+[                      nan, 'Ingesta de Medicamentos',
+ 'Lesiones autoinfligidas',  'Ahorcamiento o asfixia',
+                   'Otros',          'Armas de fuego']
+Length: 6, dtype: str
+METODO_IAE_PREVIO_
+Ingesta de Medicamentos    1371
+Otros                       257
+Lesiones autoinfligidas     175
+Ahorcamiento o asfixia      135
+Armas de fuego                2
+Name: count, dtype: int64
+METODO_IAE_PREVIO_2_ tiene 16065 valores nulos
+METODO_IAE_PREVIO_2_ tiene 5 valores únicos.
+<StringArray>
+[                      nan, 'Ingesta de Medicamentos',
+ 'Lesiones autoinfligidas',                   'Otros',
+  'Ahorcamiento o asfixia']
+Length: 5, dtype: str
+METODO_IAE_PREVIO_2_
+Ingesta de Medicamentos    388
+Otros                       71
+Lesiones autoinfligidas     65
+Ahorcamiento o asfixia      35
+Name: count, dtype: int64
+IAE_PREVIO tiene 0 valores nulos
+IAE_PREVIO tiene 4 valores únicos.
+<StringArray>
+['NO SE INDICA', 'SI', 'NO', 'Tratamiento']
+Length: 4, dtype: str
+IAE_PREVIO
+NO SE INDICA    6597
+SI              5622
+NO              4314
+Tratamiento       91
+Name: count, dtype: int64
+IAE_PREVIO_CORREGIDO_ tiene 0 valores nulos
+IAE_PREVIO_CORREGIDO_ tiene 4 valores únicos.
+<StringArray>
+['NO SE INDICA', 'SI', 'NO', 'Tratamiento']
+Length: 4, dtype: str
+IAE_PREVIO_CORREGIDO_
+NO SE INDICA    6432
+SI              5867
+NO              4234
+Tratamiento       91
+Name: count, dtype: int64
+PRESTADOR_RECODIFICADO tiene 4285 valores nulos
+PRESTADOR_RECODIFICADO tiene 700 valores únicos.
+<StringArray>
+[                                                                                                                                          'ASSE - HOSPITAL DE CLINICAS',
+                                        'INSTITUTO ASISTENCIAL COLECTIVO IAC | DIRECCION NACIONAL DE SANIDAD POLICIAL HOSPITAL POLICIAL INSPECTOR GENERAL URUGUAY GENTA',
+                                                                                                                               'CIRCULO CATOLICO DE OBREROS DEL URUGUAY',
+                                                                                                                                                                     nan,
+                                                                                                      'AMDM IAMPP - ASISTENCIAL MEDICA DEPARTAMENTAL DE MALDONADO IAMPP',
+                                                                                                'ASSE - MALDONADO /DIRECCION NACIONAL DE SANIDAD DE LAS FUERZAS ARMADAS',
+                                                                                                                                                          'COMECA IAMPP',
+                                                                                                                                               'ASSE - HOSPITAL PASTEUR',
+                                                                                                                                                          'ASSE - SALTO',
+                                                                                                                        'ASOCIACION ESPAÑOLA PRIMERA DE SOCORROS MUTUOS',
+ ...
+                                                 'ASSE - HOSPITAL DE FLORIDA | DIRECCION NACIONAL DE SANIDAD POLICIAL HOSPITAL POLICIAL INSPECTOR GENERAL URUGUAY GENTA',
+                                                                                                'ASSE - MALDONADO | INSTITUTO QUIRUGICO SUDAMERICANO - SEGURO AMERICANO',
+                                                                                                    'ASSE - CHUY / DIRECCION NACIONAL DE SANIDAD DE LAS FUERZAS ARMADAS',
+                                                                      'HOSPITAL BRITANICO | SUMMUM MEDICINA PRIVADA | SERVICIO MEDICO INTEGRAL SMI | HOSPITAL BRITANICO',
+ 'HOSPITAL EVANGELICO | DIRECCION NACIONAL DE SANIDAD POLICIAL HOSPITAL POLICIAL INSPECTOR GENERAL URUGUAY GENTA | DIRECCION NACIONAL DE SANIDAD DE LAS FUERZAS ARMADAS',
+                                              'ASSE - JARDINES DEL HIPODROMO | DIRECCION NACIONAL DE SANIDAD POLICIAL HOSPITAL POLICIAL INSPECTOR GENERAL URUGUAY GENTA',
+                                                 'CUDAM | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO | DIRECCION NACIONAL DE SANIDAD DE LAS FUERZAS ARMADAS',
+                                                                                                'GREMEDA IAMPP | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO',
+                                                'CAMDEL IAMPP - CENTRO DE ASISTENCIA MEDICA DE LAVALLEJA IAMPP | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO',
+                                                                                                                                                 'ASSE - FRANCISCO SOCA']
+Length: 700, dtype: str
+PRESTADOR_RECODIFICADO
+MEDICA URUGUAYA MUCAM                                                                                                       937
+CASMU                                                                                                                       532
+ASOCIACION ESPAÑOLA PRIMERA DE SOCORROS MUTUOS                                                                              495
+SERVICIO MEDICO INTEGRAL SMI                                                                                                484
+ASSE - HOSPITAL PASTEUR                                                                                                     473
+                                                                                                                           ... 
+ASSE - JARDINES DEL HIPODROMO | DIRECCION NACIONAL DE SANIDAD POLICIAL HOSPITAL POLICIAL INSPECTOR GENERAL URUGUAY GENTA      1
+CUDAM | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO | DIRECCION NACIONAL DE SANIDAD DE LAS FUERZAS ARMADAS         1
+GREMEDA IAMPP | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO                                                        1
+CAMDEL IAMPP - CENTRO DE ASISTENCIA MEDICA DE LAVALLEJA IAMPP | ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO        1
+ASSE - FRANCISCO SOCA                                                                                                         1
+Name: count, Length: 699, dtype: int64
+PRESTADOR_PUBLICO_ tiene 4285 valores nulos
+PRESTADOR_PUBLICO_ tiene 3 valores únicos.
+[True False None]
+PRESTADOR_PUBLICO_
+False    6879
+True     5460
+Name: count, dtype: int64
+PRESTADOR_PRIVADO_ tiene 4285 valores nulos
+PRESTADOR_PRIVADO_ tiene 3 valores únicos.
+[False True None]
+PRESTADOR_PRIVADO_
+True     7251
+False    5088
+Name: count, dtype: int64
+REGISTRO_ultimo_no_nulo tiene 3169 valores nulos
+REGISTRO_ultimo_no_nulo tiene 1088 valores únicos.
+<DatetimeArray>
+['2025-02-17 00:00:00',                 'NaT', '2024-07-23 00:00:00',
+ '2025-08-06 00:00:00', '2025-07-21 00:00:00', '2024-10-04 00:00:00',
+ '2024-04-21 00:00:00', '2023-05-22 00:00:00', '2023-07-17 00:00:00',
+ '2023-03-20 00:00:00',
+ ...
+ '2023-07-31 00:00:00', '2023-06-12 00:00:00', '2023-06-05 00:00:00',
+ '2023-03-26 00:00:00', '2023-01-31 00:00:00', '2025-12-12 00:00:00',
+ '2023-09-23 00:00:00', '2023-04-18 00:00:00', '2023-01-05 00:00:00',
+ '2023-08-13 00:00:00']
+Length: 1088, dtype: datetime64[us]
+REGISTRO_ultimo_no_nulo
+2025-10-24    70
+2025-01-20    46
+2025-07-14    44
+2025-01-29    44
+2025-10-07    44
+              ..
+2023-06-05     1
+2023-01-31     1
+2025-12-12     1
+2023-01-05     1
+2023-08-13     1
+Name: count, Length: 1087, dtype: int64
+REGISTRO_ultimo tiene 3700 valores nulos
+REGISTRO_ultimo tiene 1088 valores únicos.
+<DatetimeArray>
+['2025-02-17 00:00:00',                 'NaT', '2024-07-23 00:00:00',
+ '2025-08-06 00:00:00', '2025-07-21 00:00:00', '2024-10-04 00:00:00',
+ '2024-04-21 00:00:00', '2023-05-22 00:00:00', '2023-07-17 00:00:00',
+ '2023-03-20 00:00:00',
+ ...
+ '2023-07-31 00:00:00', '2023-06-12 00:00:00', '2023-06-05 00:00:00',
+ '2023-03-26 00:00:00', '2023-01-31 00:00:00', '2025-12-12 00:00:00',
+ '2023-09-23 00:00:00', '2023-04-18 00:00:00', '2023-01-05 00:00:00',
+ '2023-08-13 00:00:00']
+Length: 1088, dtype: datetime64[us]
+REGISTRO_ultimo
+2025-10-24    69
+2025-01-29    43
+2025-01-20    43
+2025-07-14    42
+2025-10-07    42
+              ..
+2023-06-05     1
+2023-01-31     1
+2025-12-12     1
+2023-01-05     1
+2023-08-13     1
+Name: count, Length: 1087, dtype: int64
+REGISTRO_cantidad tiene 0 valores nulos
+REGISTRO_cantidad tiene 13 valores únicos.
+[ 1  0  5  3  2  4  6 11  7  9 10  8 12]
+REGISTRO_cantidad
+1     12056
+0      3169
+2      1009
+3       250
+4        61
+5        37
+7        16
+6        14
+9         6
+11        2
+10        2
+8         1
+12        1
+Name: count, dtype: int64
+FECHA_IAE_ultimo_no_nulo tiene 4286 valores nulos
+FECHA_IAE_ultimo_no_nulo tiene 1016 valores únicos.
+<DatetimeArray>
+['2025-02-15 00:00:00', '2023-05-22 00:00:00', '2024-07-22 00:00:00',
+                 'NaT', '2025-07-20 00:00:00', '2024-10-02 00:00:00',
+ '2023-05-15 00:00:00', '2025-06-07 00:00:00', '2023-07-08 00:00:00',
+ '2025-06-15 00:00:00',
+ ...
+ '2024-05-16 00:00:00', '2024-02-08 00:00:00', '2023-05-01 00:00:00',
+ '2024-07-06 00:00:00', '2024-04-09 00:00:00', '2025-07-02 00:00:00',
+ '2024-04-27 00:00:00', '2025-04-24 00:00:00', '2024-04-07 00:00:00',
+ '2024-05-03 00:00:00']
+Length: 1016, dtype: datetime64[us]
+FECHA_IAE_ultimo_no_nulo
+2023-11-10    31
+2025-10-26    30
+2023-12-10    29
+2025-09-16    27
+2023-11-06    27
+              ..
+2024-05-16     1
+2024-04-09     1
+2024-04-27     1
+2024-04-07     1
+2024-05-03     1
+Name: count, Length: 1015, dtype: int64
+FECHA_IAE_ultimo tiene 4287 valores nulos
+FECHA_IAE_ultimo tiene 1016 valores únicos.
+<DatetimeArray>
+['2025-02-15 00:00:00', '2023-05-22 00:00:00', '2024-07-22 00:00:00',
+                 'NaT', '2025-07-20 00:00:00', '2024-10-02 00:00:00',
+ '2023-05-15 00:00:00', '2025-06-07 00:00:00', '2023-07-08 00:00:00',
+ '2025-06-15 00:00:00',
+ ...
+ '2024-05-16 00:00:00', '2024-02-08 00:00:00', '2023-05-01 00:00:00',
+ '2024-07-06 00:00:00', '2024-04-09 00:00:00', '2025-07-02 00:00:00',
+ '2024-04-27 00:00:00', '2025-04-24 00:00:00', '2024-04-07 00:00:00',
+ '2024-05-03 00:00:00']
+Length: 1016, dtype: datetime64[us]
+FECHA_IAE_ultimo
+2023-11-10    31
+2025-10-26    30
+2023-12-10    29
+2025-09-16    27
+2023-11-06    27
+              ..
+2024-05-16     1
+2024-04-09     1
+2024-04-27     1
+2024-04-07     1
+2024-05-03     1
+Name: count, Length: 1015, dtype: int64
+NUMERO_INTENTOS_ tiene 0 valores nulos
+NUMERO_INTENTOS_ tiene 14 valores únicos.
+[ 1  0  5  3  2  6  4 13  7 10  9 12  8 16]
+NUMERO_INTENTOS_
+1     10399
+0      4286
+2      1380
+3       350
+4       102
+5        47
+6        22
+7        19
+9         8
+10        3
+8         3
+13        2
+12        2
+16        1
+Name: count, dtype: int64
+DECISION_ tiene 8291 valores nulos
+DECISION_ tiene 12 valores únicos.
+<StringArray>
+[                                  nan,                                  'SI',
+                 'NO CUMPLE PROTOCOLO',                 'PENDIENTE RESPUESTA',
+                            'SUICIDIO',           'SIN COBERTURA ASISTENCIAL',
+                            'RESUELT0', 'FECHA ERRONEA DE IAE? UN AÑO ATRASO',
+             'SIN DATOS ASISTENCIALES',                 'PRIVADO DE LIBERTAD',
+                      'SEG PARTICULAR',                           'RESPUESTA']
+Length: 12, dtype: str
+DECISION_
+SI                                     5049
+NO CUMPLE PROTOCOLO                    1962
+PENDIENTE RESPUESTA                    1217
+SIN COBERTURA ASISTENCIAL                52
+SUICIDIO                                 44
+SIN DATOS ASISTENCIALES                   4
+RESUELT0                                  1
+FECHA ERRONEA DE IAE? UN AÑO ATRASO       1
+PRIVADO DE LIBERTAD                       1
+SEG PARTICULAR                            1
+RESPUESTA                                 1
+Name: count, dtype: int64
+FECHA SEGUIMIENTO_ tiene 4363 valores nulos
+FECHA SEGUIMIENTO_ tiene 1033 valores únicos.
+<DatetimeArray>
+['2025-02-23 00:00:00', '2023-05-30 00:00:00', '2024-07-30 00:00:00',
+                 'NaT', '2025-07-28 00:00:00', '2024-10-10 00:00:00',
+ '2023-05-23 00:00:00', '2025-06-15 00:00:00', '2023-08-15 00:00:00',
+ '2025-06-23 00:00:00',
+ ...
+ '2024-02-16 00:00:00', '2023-01-13 00:00:00', '2024-07-14 00:00:00',
+ '2024-04-17 00:00:00', '2025-07-10 00:00:00', '2023-11-13 00:00:00',
+ '2024-05-05 00:00:00', '2023-11-11 00:00:00', '2025-05-02 00:00:00',
+ '2024-05-11 00:00:00']
+Length: 1033, dtype: datetime64[us]
+FECHA SEGUIMIENTO_
+2024-08-15    33
+2025-11-03    30
+2025-02-05    29
+2025-02-04    29
+2025-09-25    28
+              ..
+2024-05-24     1
+2024-04-17     1
+2024-05-05     1
+2025-05-02     1
+2024-05-11     1
+Name: count, Length: 1032, dtype: int64
+FECHA LLAMADA PRESTADOR_ tiene 4618 valores nulos
+FECHA LLAMADA PRESTADOR_ tiene 3709 valores únicos.
+<StringArray>
+[                '28/2/2025 - 12/03',                '07/06/2023 - 30/06',
+    '2/8/2024 - 20/08 - 26/08-30/08',                                 nan,
+                         '29/7/2025',                '14/11/2024 - 21/11',
+                         '29/5/2023', '20/6/2025 - 08/07 - 17/07 - 24/07',
+                         '23/8/2023',                         '30/6/2025',
+ ...
+    '26/08/2024-04/09 - 09/09-25/09',                         '21/3/2025',
+                 '25/9/2024 - 11/10',              '3/6/2025-25/06-03/07',
+         '16/5/2025 - 21/05 - 28/05',                '11/03/2024 - 12/03',
+           '05/01/2023 - 18/01/2023',        '15/08/2023 - 17/08 - 05/09',
+           '15/8/2024-21/08 - 28/08',        '15/09/2023 - 22/09 - 10/10']
+Length: 3709, dtype: str
+FECHA LLAMADA PRESTADOR_
+28/11/2025 - 01/12            113
+7/11/2025                      61
+3/12/2025                      51
+28/11/2024 - 01/12             50
+6/3/2025                       47
+                             ... 
+11/03/2024 - 12/03              1
+05/01/2023 - 18/01/2023         1
+15/08/2023 - 17/08 - 05/09      1
+15/8/2024-21/08 - 28/08         1
+15/09/2023 - 22/09 - 10/10      1
+Name: count, Length: 3708, dtype: int64
+AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_ tiene 4507 valores nulos
+AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_ tiene 7 valores únicos.
+<StringArray>
+[                        'NO',                         'SI',
+                          nan,        'PENDIENTE RESPUESTA',
+                   'SUICIDIO', 'DOBLE IAE ? 10/10 Y 11/10?',
+ 'DOBLE IAE ? 29/09 Y 30/09?']
+Length: 7, dtype: str
+AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_
+SI                            7331
+NO                            2959
+PENDIENTE RESPUESTA           1772
+SUICIDIO                        53
+DOBLE IAE ? 10/10 Y 11/10?       1
+DOBLE IAE ? 29/09 Y 30/09?       1
+Name: count, dtype: int64
+FECHA DE CONSULTA_ tiene 11816 valores nulos
+FECHA DE CONSULTA_ tiene 1495 valores únicos.
+<StringArray>
+[                       nan,          '27/05/2023 PSIQ',
+      '2023-08-14 00:00:00',      '2025-06-16 00:00:00',
+      '2024-09-09 00:00:00',      '2024-08-21 00:00:00',
+      '2023-08-28 00:00:00',          '10/01/2024 PSIQ',
+      '2023-06-02 00:00:00',          '04/05/2023 PSIQ',
+ ...
+          '30/10/2023 PSIC', '14/02 TEL Y 14/02 COMITÉ',
+          '16/01/2024 PSIQ',        '03/10/2023 COMITÉ',
+           '15/08/2023 SEG',      '2025-07-12 00:00:00',
+   '31/01/2024 LLAMADA TEL',         '13/12/2023  PSIQ',
+          '06/03/2024 PSIQ',            '13/01/2023 SM']
+Length: 1495, dtype: str
+FECHA DE CONSULTA_
+2023-09-28 00:00:00       19
+2023-09-18 00:00:00       16
+2023-09-22 00:00:00       16
+2023-09-21 00:00:00       16
+2023-06-05 00:00:00       16
+                          ..
+2025-07-12 00:00:00        1
+31/01/2024 LLAMADA TEL     1
+13/12/2023  PSIQ           1
+06/03/2024 PSIQ            1
+13/01/2023 SM              1
+Name: count, Length: 1494, dtype: int64
+CONCURRIO_ tiene 10577 valores nulos
+CONCURRIO_ tiene 498 valores únicos.
+[nan 'SI' Timestamp('2024-08-29 00:00:00')
+ Timestamp('2025-07-24 00:00:00') 'SI ' Timestamp('2025-06-20 00:00:00')
+ Timestamp('2024-09-14 00:00:00') Timestamp('2024-08-27 00:00:00')
+ Timestamp('2025-08-08 00:00:00') Timestamp('2025-08-07 00:00:00')
+ Timestamp('2025-07-10 00:00:00') Timestamp('2025-01-02 00:00:00')
+ Timestamp('2025-10-08 00:00:00') Timestamp('2025-05-15 00:00:00')
+ Timestamp('2025-10-01 00:00:00') 'no' Timestamp('2024-11-06 00:00:00')
+ Timestamp('2024-11-26 00:00:00') Timestamp('2024-12-09 00:00:00') 'si'
+ Timestamp('2025-03-12 00:00:00') Timestamp('2024-09-05 00:00:00')
+ Timestamp('2025-05-05 00:00:00') Timestamp('2025-06-23 00:00:00') 'pend'
+ Timestamp('2024-12-02 00:00:00') Timestamp('2025-08-04 00:00:00') 'NO'
+ Timestamp('2025-04-02 00:00:00') Timestamp('2024-09-25 00:00:00')
+ Timestamp('2025-01-17 00:00:00') Timestamp('2024-10-25 00:00:00')
+ Timestamp('2024-10-17 00:00:00') Timestamp('2025-07-21 00:00:00')
+ Timestamp('2025-04-07 00:00:00') Timestamp('2025-03-27 00:00:00')
+ Timestamp('2025-03-20 00:00:00') Timestamp('2025-09-09 00:00:00')
+ Timestamp('2024-06-21 00:00:00') Timestamp('2024-09-23 00:00:00')
+ Timestamp('2025-11-03 00:00:00') Timestamp('2024-08-19 00:00:00') 'NO '
+ Timestamp('2025-10-06 00:00:00') Timestamp('2025-01-27 00:00:00')
+ Timestamp('2024-11-25 00:00:00') Timestamp('2025-11-05 00:00:00')
+ Timestamp('2025-07-22 00:00:00') Timestamp('2025-01-22 00:00:00')
+ Timestamp('2025-07-08 00:00:00') Timestamp('2024-10-08 00:00:00')
+ Timestamp('2025-08-28 00:00:00') Timestamp('2024-07-16 00:00:00')
+ Timestamp('2025-05-02 00:00:00') Timestamp('2025-04-03 00:00:00')
+ Timestamp('2024-11-05 00:00:00') Timestamp('2025-05-06 00:00:00')
+ Timestamp('2025-10-21 00:00:00') Timestamp('2025-09-12 00:00:00')
+ Timestamp('2025-10-28 00:00:00') Timestamp('2025-11-17 00:00:00')
+ Timestamp('2025-09-04 00:00:00') Timestamp('2025-03-26 00:00:00')
+ Timestamp('2025-07-29 00:00:00') Timestamp('2025-02-01 00:00:00')
+ Timestamp('2024-09-16 00:00:00') Timestamp('2024-07-11 00:00:00')
+ Timestamp('2025-05-27 00:00:00') Timestamp('2025-11-06 00:00:00')
+ Timestamp('2025-04-17 00:00:00') Timestamp('2025-09-16 00:00:00')
+ Timestamp('2024-09-30 00:00:00') Timestamp('2024-10-14 00:00:00')
+ Timestamp('2025-10-23 00:00:00') Timestamp('2025-01-23 00:00:00')
+ Timestamp('2025-02-05 00:00:00') Timestamp('2024-10-21 00:00:00')
+ Timestamp('2024-08-23 00:00:00') Timestamp('2025-03-07 00:00:00')
+ Timestamp('2025-09-26 00:00:00') Timestamp('2024-07-05 00:00:00')
+ Timestamp('2024-10-11 00:00:00') Timestamp('2025-06-18 00:00:00')
+ Timestamp('2024-09-28 00:00:00') Timestamp('2024-12-11 00:00:00')
+ Timestamp('2024-10-02 00:00:00') Timestamp('2024-11-07 00:00:00')
+ Timestamp('2025-09-05 00:00:00') Timestamp('2025-05-20 00:00:00')
+ Timestamp('2024-07-03 00:00:00') Timestamp('2025-11-14 00:00:00')
+ Timestamp('2025-11-10 00:00:00') Timestamp('2024-08-21 00:00:00')
+ Timestamp('2024-09-19 00:00:00') Timestamp('2024-08-01 00:00:00')
+ Timestamp('2024-12-18 00:00:00') Timestamp('2025-05-23 00:00:00')
+ Timestamp('2025-02-04 00:00:00') Timestamp('2025-08-12 00:00:00')
+ Timestamp('2025-02-10 00:00:00') Timestamp('2024-10-29 00:00:00')
+ Timestamp('2025-07-16 00:00:00') Timestamp('2024-07-01 00:00:00')
+ Timestamp('2024-11-20 00:00:00') Timestamp('2025-01-16 00:00:00')
+ Timestamp('2024-11-15 00:00:00') Timestamp('2025-05-08 00:00:00')
+ Timestamp('2025-04-28 00:00:00') Timestamp('2024-07-19 00:00:00')
+ Timestamp('2024-10-22 00:00:00') Timestamp('2024-08-07 00:00:00')
+ Timestamp('2025-07-01 00:00:00') Timestamp('2024-10-28 00:00:00')
+ Timestamp('2025-01-20 00:00:00') Timestamp('2024-11-19 00:00:00')
+ Timestamp('2025-03-10 00:00:00') Timestamp('2025-07-31 00:00:00')
+ Timestamp('2025-04-22 00:00:00') Timestamp('2024-08-14 00:00:00')
+ Timestamp('2025-04-21 00:00:00') Timestamp('2024-10-05 00:00:00')
+ Timestamp('2024-10-23 00:00:00') Timestamp('2025-02-28 00:00:00')
+ Timestamp('2025-03-31 00:00:00') Timestamp('2025-09-18 00:00:00')
+ Timestamp('2025-02-26 00:00:00') Timestamp('2025-09-30 00:00:00')
+ Timestamp('2024-07-15 00:00:00') Timestamp('2025-03-11 00:00:00')
+ Timestamp('2024-09-26 00:00:00') Timestamp('2025-11-04 00:00:00')
+ Timestamp('2025-07-28 00:00:00') Timestamp('2024-08-20 00:00:00')
+ Timestamp('2025-11-11 00:00:00') Timestamp('2025-07-25 00:00:00')
+ Timestamp('2025-08-19 00:00:00') Timestamp('2025-10-02 00:00:00')
+ Timestamp('2025-03-21 00:00:00') Timestamp('2024-09-10 00:00:00')
+ Timestamp('2025-09-15 00:00:00') Timestamp('2025-04-24 00:00:00')
+ Timestamp('2025-05-16 00:00:00') Timestamp('2025-08-22 00:00:00')
+ Timestamp('2025-08-27 00:00:00') Timestamp('2024-12-19 00:00:00')
+ Timestamp('2024-12-12 00:00:00') Timestamp('2025-08-13 00:00:00')
+ Timestamp('2024-11-13 00:00:00') Timestamp('2025-02-19 00:00:00')
+ Timestamp('2024-08-12 00:00:00') Timestamp('2025-05-22 00:00:00')
+ Timestamp('2024-12-27 00:00:00') Timestamp('2024-07-09 00:00:00')
+ Timestamp('2024-07-23 00:00:00') Timestamp('2025-01-21 00:00:00')
+ Timestamp('2024-11-11 00:00:00') Timestamp('2024-06-14 00:00:00')
+ Timestamp('2025-07-14 00:00:00') Timestamp('2025-06-17 00:00:00')
+ Timestamp('2025-05-21 00:00:00') Timestamp('2025-09-17 00:00:00')
+ Timestamp('2024-12-04 00:00:00') Timestamp('2024-12-30 00:00:00')
+ Timestamp('2024-07-02 00:00:00') Timestamp('2024-08-15 00:00:00')
+ Timestamp('2025-06-11 00:00:00') Timestamp('2024-11-28 00:00:00')
+ Timestamp('2025-08-06 00:00:00') Timestamp('2025-06-12 00:00:00')
+ Timestamp('2025-03-08 00:00:00') Timestamp('2025-07-15 00:00:00')
+ Timestamp('2024-12-16 00:00:00') Timestamp('2025-10-17 00:00:00')
+ Timestamp('2025-01-03 00:00:00') Timestamp('2025-09-22 00:00:00')
+ Timestamp('2024-11-21 00:00:00') Timestamp('2025-08-25 00:00:00')
+ Timestamp('2025-04-11 00:00:00') '28/10/2025 (pendiente)'
+ Timestamp('2024-06-13 00:00:00') Timestamp('2025-08-29 00:00:00')
+ Timestamp('2025-03-19 00:00:00') Timestamp('2025-07-17 00:00:00')
+ Timestamp('2025-01-14 00:00:00') Timestamp('2025-09-24 00:00:00')
+ Timestamp('2025-08-11 00:00:00') Timestamp('2025-03-14 00:00:00')
+ Timestamp('2025-11-01 00:00:00') Timestamp('2025-09-25 00:00:00')
+ Timestamp('2025-07-03 00:00:00') Timestamp('2024-11-23 00:00:00')
+ Timestamp('2025-04-09 00:00:00') Timestamp('2024-12-23 00:00:00')
+ Timestamp('2025-02-17 00:00:00') Timestamp('2024-07-30 00:00:00')
+ Timestamp('2024-06-07 00:00:00') Timestamp('2025-10-27 00:00:00')
+ Timestamp('2025-02-03 00:00:00') Timestamp('2024-10-09 00:00:00')
+ Timestamp('2025-05-28 00:00:00') Timestamp('2024-06-03 00:00:00')
+ Timestamp('2025-08-01 00:00:00') Timestamp('2024-12-26 00:00:00')
+ Timestamp('2024-12-20 00:00:00') Timestamp('2025-05-12 00:00:00')
+ Timestamp('2025-06-09 00:00:00') Timestamp('2025-04-29 00:00:00')
+ Timestamp('2024-11-14 00:00:00') Timestamp('2024-10-31 00:00:00')
+ Timestamp('2024-11-29 00:00:00') Timestamp('2025-08-26 00:00:00')
+ Timestamp('2024-07-08 00:00:00') Timestamp('2025-02-12 00:00:00')
+ Timestamp('2024-11-08 00:00:00') Timestamp('2025-08-20 00:00:00')
+ Timestamp('2024-09-20 00:00:00') Timestamp('2024-09-27 00:00:00')
+ Timestamp('2024-06-04 00:00:00') Timestamp('2025-10-16 00:00:00')
+ Timestamp('2024-06-20 00:00:00') Timestamp('2025-03-18 00:00:00')
+ Timestamp('2024-10-18 00:00:00') Timestamp('2024-07-24 00:00:00')
+ Timestamp('2025-10-24 00:00:00') Timestamp('2024-07-26 00:00:00')
+ Timestamp('2025-02-21 00:00:00') Timestamp('2024-07-10 00:00:00')
+ Timestamp('2025-04-10 00:00:00') Timestamp('2025-08-10 00:00:00')
+ Timestamp('2024-12-03 00:00:00') Timestamp('2025-06-10 00:00:00')
+ Timestamp('2025-10-13 00:00:00') Timestamp('2025-05-19 00:00:00')
+ Timestamp('2025-03-28 00:00:00') Timestamp('2025-10-29 00:00:00')
+ Timestamp('2025-06-25 00:00:00') Timestamp('2025-08-21 00:00:00')
+ Timestamp('2025-02-27 00:00:00') Timestamp('2025-10-09 00:00:00')
+ Timestamp('2024-07-12 00:00:00') Timestamp('2024-10-07 00:00:00')
+ Timestamp('2024-08-28 00:00:00') Timestamp('2025-01-30 00:00:00')
+ Timestamp('2024-09-09 00:00:00') Timestamp('2025-09-23 00:00:00')
+ Timestamp('2025-04-23 00:00:00') Timestamp('2025-09-10 00:00:00')
+ Timestamp('2025-05-09 00:00:00') Timestamp('2024-08-08 00:00:00')
+ Timestamp('2025-08-14 00:00:00') Timestamp('2025-10-22 00:00:00')
+ Timestamp('2024-07-17 00:00:00') Timestamp('2025-01-08 00:00:00')
+ Timestamp('2025-08-15 00:00:00') Timestamp('2024-07-27 00:00:00')
+ Timestamp('2024-12-17 00:00:00') Timestamp('2025-07-30 00:00:00')
+ Timestamp('2025-02-20 00:00:00') Timestamp('2025-03-22 00:00:00')
+ Timestamp('2024-06-18 00:00:00') Timestamp('2025-02-06 00:00:00')
+ Timestamp('2024-10-03 00:00:00') Timestamp('2025-02-07 00:00:00')
+ Timestamp('2025-08-18 00:00:00') Timestamp('2024-12-05 00:00:00')
+ Timestamp('2025-01-29 00:00:00') Timestamp('2025-09-02 00:00:00')
+ Timestamp('2025-07-07 00:00:00') Timestamp('2025-03-24 00:00:00')
+ Timestamp('2024-11-12 00:00:00') Timestamp('2024-06-12 00:00:00')
+ Timestamp('2025-07-23 00:00:00') Timestamp('2024-09-06 00:00:00')
+ Timestamp('2025-01-07 00:00:00') Timestamp('2024-12-06 00:00:00')
+ Timestamp('2025-05-26 00:00:00') Timestamp('2024-09-17 00:00:00')
+ Timestamp('2025-05-17 00:00:00') Timestamp('2025-06-19 00:00:00')
+ Timestamp('2025-11-12 00:00:00') Timestamp('2025-10-03 00:00:00')
+ Timestamp('2024-06-06 00:00:00') Timestamp('2025-04-08 00:00:00')
+ Timestamp('2025-03-15 00:00:00') Timestamp('2024-09-04 00:00:00')
+ Timestamp('2025-06-26 00:00:00') Timestamp('2025-06-16 00:00:00')
+ Timestamp('2025-05-13 00:00:00') Timestamp('2025-02-24 00:00:00')
+ Timestamp('2024-09-02 00:00:00') Timestamp('2025-05-29 00:00:00')
+ Timestamp('2025-04-25 00:00:00') Timestamp('2024-11-01 00:00:00')
+ Timestamp('2024-07-04 00:00:00') Timestamp('2025-04-14 00:00:00')
+ Timestamp('2024-12-10 00:00:00') Timestamp('2024-11-04 00:00:00')
+ Timestamp('2024-08-13 00:00:00') Timestamp('2025-03-17 00:00:00')
+ Timestamp('2025-04-01 00:00:00') Timestamp('2025-10-07 00:00:00')
+ Timestamp('2025-04-15 00:00:00') Timestamp('2025-10-15 00:00:00')
+ Timestamp('2025-04-30 00:00:00') Timestamp('2025-01-04 00:00:00')
+ Timestamp('2025-02-11 00:00:00') Timestamp('2025-08-05 00:00:00')
+ Timestamp('2025-09-29 00:00:00') Timestamp('2024-10-01 00:00:00')
+ Timestamp('2024-10-16 00:00:00') Timestamp('2024-08-26 00:00:00')
+ Timestamp('2025-03-05 00:00:00') Timestamp('2025-09-03 00:00:00')
+ Timestamp('2025-07-04 00:00:00') Timestamp('2024-09-12 00:00:00')
+ Timestamp('2025-07-11 00:00:00') Timestamp('2025-03-06 00:00:00')
+ Timestamp('2024-05-29 00:00:00') '25/2025'
+ Timestamp('2025-10-14 00:00:00') Timestamp('2024-12-24 00:00:00')
+ Timestamp('2024-02-24 00:00:00') Timestamp('2025-01-25 00:00:00')
+ Timestamp('2025-01-09 00:00:00') Timestamp('2024-09-18 00:00:00')
+ Timestamp('2025-10-31 00:00:00') Timestamp('2024-10-04 00:00:00')
+ Timestamp('2024-08-30 00:00:00') Timestamp('2025-01-28 00:00:00')
+ Timestamp('2024-07-29 00:00:00') Timestamp('2025-11-13 00:00:00')
+ Timestamp('2025-09-01 00:00:00') Timestamp('2025-07-09 00:00:00')
+ Timestamp('2025-01-10 00:00:00') Timestamp('2024-08-22 00:00:00')
+ Timestamp('2025-06-13 00:00:00') Timestamp('2024-08-02 00:00:00')
+ Timestamp('2025-09-19 00:00:00') Timestamp('2025-09-08 00:00:00')
+ Timestamp('2024-05-31 00:00:00') Timestamp('2024-09-24 00:00:00')
+ Timestamp('2025-01-24 00:00:00') Timestamp('2024-08-09 00:00:00')
+ Timestamp('2024-10-24 00:00:00') Timestamp('2025-03-13 00:00:00')
+ Timestamp('2025-04-16 00:00:00') '10/10/20255'
+ Timestamp('2025-07-02 00:00:00') '18/06/20254'
+ Timestamp('2024-07-22 00:00:00') Timestamp('2025-06-24 00:00:00')
+ Timestamp('2024-06-11 00:00:00') Timestamp('2024-10-10 00:00:00')
+ Timestamp('2025-01-31 00:00:00') Timestamp('2024-11-22 00:00:00')
+ Timestamp('2025-02-13 00:00:00') Timestamp('2024-06-25 00:00:00')
+ Timestamp('2024-10-15 00:00:00') Timestamp('2024-08-10 00:00:00')
+ Timestamp('2025-04-26 00:00:00') Timestamp('2024-06-08 00:00:00')
+ Timestamp('2025-06-27 00:00:00') Timestamp('2024-08-05 00:00:00')
+ Timestamp('2024-11-18 00:00:00') Timestamp('2024-08-16 00:00:00') 'PPL'
+ Timestamp('2024-06-05 00:00:00') Timestamp('2024-06-24 00:00:00')
+ Timestamp('2024-12-22 00:00:00') Timestamp('2024-10-30 00:00:00')
+ Timestamp('2024-05-30 00:00:00') Timestamp('2025-02-22 00:00:00')
+ Timestamp('2025-10-20 00:00:00') Timestamp('2024-06-27 00:00:00')
+ Timestamp('2025-03-25 00:00:00') Timestamp('2025-07-19 00:00:00')
+ Timestamp('2025-05-07 00:00:00') Timestamp('2024-08-17 00:00:00')
+ Timestamp('2025-09-28 00:00:00') 'TELEFONICO '
+ Timestamp('2024-09-03 00:00:00') Timestamp('2005-07-07 00:00:00')
+ Timestamp('2025-06-03 00:00:00') Timestamp('2025-01-13 00:00:00')
+ Timestamp('2024-06-15 00:00:00') Timestamp('2025-11-07 00:00:00')
+ Timestamp('2025-11-24 00:00:00') Timestamp('2024-06-26 00:00:00')
+ Timestamp('2024-09-07 00:00:00') Timestamp('2025-03-09 00:00:00')
+ Timestamp('2024-11-02 00:00:00') Timestamp('2024-07-25 00:00:00')
+ '28/10/025' Timestamp('2025-09-11 00:00:00')
+ Timestamp('2024-06-28 00:00:00') Timestamp('2025-02-14 00:00:00')
+ Timestamp('2024-11-27 00:00:00') Timestamp('2025-10-30 00:00:00')
+ Timestamp('2024-07-31 00:00:00') Timestamp('2025-08-24 00:00:00')
+ Timestamp('2025-11-08 00:00:00') Timestamp('2024-12-13 00:00:00')
+ Timestamp('2025-05-24 00:00:00') '27/10/205'
+ Timestamp('2025-06-21 00:00:00') Timestamp('2024-10-26 00:00:00')
+ Timestamp('2024-08-06 00:00:00') Timestamp('2024-09-29 00:00:00')
+ Timestamp('2024-12-14 00:00:00') Timestamp('2024-06-17 00:00:00')
+ Timestamp('2024-09-13 00:00:00') Timestamp('2025-09-06 00:00:00')
+ Timestamp('2025-08-09 00:00:00') Timestamp('2025-05-14 00:00:00')
+ Timestamp('2025-06-30 00:00:00') Timestamp('2025-03-03 00:00:00')
+ '06/08/20255' Timestamp('2025-05-30 00:00:00')
+ Timestamp('2025-06-05 00:00:00') Timestamp('2025-06-04 00:00:00')
+ Timestamp('2025-04-04 00:00:00') Timestamp('2025-07-12 00:00:00')
+ Timestamp('2025-06-07 00:00:00') Timestamp('2025-02-25 00:00:00')
+ Timestamp('2024-10-19 00:00:00') Timestamp('2023-09-23 00:00:00') 'no '
+ '17/09/2024 PSIQ' Timestamp('2024-01-04 00:00:00')
+ Timestamp('2025-05-31 00:00:00') '07/07/20255'
+ Timestamp('2024-06-10 00:00:00') Timestamp('2025-06-02 00:00:00')
+ Timestamp('2024-12-25 00:00:00') '05/05/205'
+ Timestamp('2025-01-15 00:00:00') Timestamp('2025-01-11 00:00:00')
+ Timestamp('2025-10-10 00:00:00') '31/09/2024'
+ Timestamp('2024-05-28 00:00:00') Timestamp('2025-03-29 00:00:00')
+ Timestamp('2025-01-26 00:00:00') Timestamp('2025-09-14 00:00:00')
+ Timestamp('2025-08-16 00:00:00') Timestamp('2024-06-09 00:00:00')
+ '25/06/20258' Timestamp('2055-09-18 00:00:00')
+ Timestamp('2025-08-02 00:00:00') Timestamp('2025-09-13 00:00:00')
+ Timestamp('2025-06-29 00:00:00') Timestamp('2024-06-19 00:00:00')
+ '29/08/205' 'sd' 'PENDIENTE DATO' Timestamp('2025-02-18 00:00:00')
+ Timestamp('2025-05-03 00:00:00') Timestamp('2024-09-08 00:00:00')
+ Timestamp('2024-11-30 00:00:00') Timestamp('2021-11-26 00:00:00')
+ Timestamp('2024-09-11 00:00:00') Timestamp('2024-08-31 00:00:00')
+ '10/06/20258' '20/102025' Timestamp('2025-01-06 00:00:00')
+ Timestamp('2024-05-25 00:00:00') Timestamp('2025-06-08 00:00:00')
+ '13/08/205' '19/08/205' Timestamp('2025-04-05 00:00:00')
+ Timestamp('2024-06-22 00:00:00') Timestamp('2024-06-23 00:00:00')
+ Timestamp('2025-08-03 00:00:00') Timestamp('2025-09-27 00:00:00')
+ Timestamp('2025-11-19 00:00:00') 'sI' Timestamp('2020-07-04 00:00:00')
+ Timestamp('2024-05-27 00:00:00') Timestamp('2025-06-06 00:00:00')
+ '14/10/2024 psiq' Timestamp('2025-08-23 00:00:00') '25/07/204 '
+ Timestamp('2025-10-04 00:00:00') Timestamp('2025-02-16 00:00:00')
+ Timestamp('2024-11-16 00:00:00') Timestamp('2025-10-18 00:00:00')
+ Timestamp('2024-11-09 00:00:00') 'N0' Timestamp('2025-12-30 00:00:00')
+ Timestamp('2024-01-06 00:00:00') Timestamp('2025-01-18 00:00:00')
+ Timestamp('2024-10-12 00:00:00') 'PEND' '23/12/204'
+ Timestamp('2024-12-21 00:00:00') Timestamp('2024-12-15 00:00:00')
+ Timestamp('2025-07-27 00:00:00') '08/10/20255'
+ Timestamp('2024-07-13 00:00:00')]
+CONCURRIO_
+SI                     778
+SI                     360
+si                     211
+NO                     195
+NO                     159
+                      ... 
+2024-12-21 00:00:00      1
+2024-12-15 00:00:00      1
+2025-07-27 00:00:00      1
+08/10/20255              1
+2024-07-13 00:00:00      1
+Name: count, Length: 497, dtype: int64
+SE LLAMO A USUARIO Y/O REFERENTE_ tiene 11060 valores nulos
+SE LLAMO A USUARIO Y/O REFERENTE_ tiene 11 valores únicos.
+<StringArray>
+[                  nan,                  'SI',                  'NO',
+                  'ZI',                'PEND',                  'SD',
+      'INTERNACION NO',          '02/02 PSIQ',              'BRASIL',
+                   '8', '2025-10-06 00:00:00']
+Length: 11, dtype: str
+SE LLAMO A USUARIO Y/O REFERENTE_
+SI                     4815
+NO                      725
+PEND                     13
+SD                        4
+INTERNACION NO            2
+ZI                        1
+02/02 PSIQ                1
+BRASIL                    1
+8                         1
+2025-10-06 00:00:00       1
+Name: count, dtype: int64
+AGENDO NUEVA CONSULTA_ tiene 13084 valores nulos
+AGENDO NUEVA CONSULTA_ tiene 16 valores únicos.
+[nan 'SI' 'SI ' 'NO' 'pen' 'si' 'NO ' 'PEND' 'no' 'PENDIENTE' '?'
+ Timestamp('2023-06-02 00:00:00') 'pend' 'BRASIL' 'pend ' 'PEND ']
+AGENDO NUEVA CONSULTA_
+SI                     2473
+NO                      455
+SI                      399
+si                       91
+no                       39
+NO                       37
+PEND                     35
+pend                      4
+pen                       1
+PENDIENTE                 1
+?                         1
+2023-06-02 00:00:00       1
+BRASIL                    1
+pend                      1
+PEND                      1
+Name: count, dtype: int64
+FECHA DE NUEVA CONSULTA_ tiene 16209 valores nulos
+FECHA DE NUEVA CONSULTA_ tiene 135 valores únicos.
+<StringArray>
+[                  nan, '2023-09-09 00:00:00',                 '2.0',
+ '2023-06-16 00:00:00',                 '1.0', '2023-06-06 00:00:00',
+ '2023-07-01 00:00:00', '2023-05-20 00:00:00', '2023-05-10 00:00:00',
+ '2023-03-21 00:00:00',
+ ...
+ '2023-07-05 00:00:00', '2023-02-16 00:00:00', '2025-08-13 00:00:00',
+ '2023-01-26 00:00:00', '2023-12-27 00:00:00', '2023-10-19 00:00:00',
+ '2023-02-23 00:00:00', '2023-04-05 00:00:00', '2023-03-05 00:00:00',
+ '2023-05-03 00:00:00']
+Length: 135, dtype: str
+FECHA DE NUEVA CONSULTA_
+1.0                    71
+4.0                    28
+7.0                    28
+2023-05-10 00:00:00     7
+2023-04-20 00:00:00     7
+                       ..
+2023-10-19 00:00:00     1
+2023-02-23 00:00:00     1
+2023-04-05 00:00:00     1
+2023-03-05 00:00:00     1
+2023-05-03 00:00:00     1
+Name: count, Length: 134, dtype: int64
+INTERNACION_ tiene 14724 valores nulos
+INTERNACION_ tiene 373 valores únicos.
+<StringArray>
+[                      nan,                      'SI',
+     '2023-08-22 00:00:00',                      'NO',
+        '20/11/2023-27/11',       '06/10-09/10-11/10',
+               'INFO PEND',     '2023-10-18 00:00:00',
+     '2023-10-27 00:00:00',     '2023-07-31 00:00:00',
+ ...
+     '2023-01-03 00:00:00', '17/10/2023 Y 15/12/2023',
+     'SITUACION DE CALLE.',         '23/11/2023 PSIQ',
+        '25/07/2023-20/11',     '2023-11-25 00:00:00',
+ '16/08/2023 Y 22/08/2023',     '2024-01-16 00:00:00',
+ '23/10/2023 Y 28/10/2023',        '19/09/2023-10/10']
+Length: 373, dtype: str
+INTERNACION_
+SI                         733
+NO                         302
+1                           71
+2023-09-28 00:00:00         15
+4                           12
+                          ... 
+2023-11-25 00:00:00          1
+16/08/2023 Y 22/08/2023      1
+2024-01-16 00:00:00          1
+23/10/2023 Y 28/10/2023      1
+19/09/2023-10/10             1
+Name: count, Length: 372, dtype: int64
+FECHA ALTA_ tiene 12427 valores nulos
+FECHA ALTA_ tiene 898 valores únicos.
+<StringArray>
+[                             nan,            '2023-05-23 00:00:00',
+            '2025-08-05 00:00:00',            '2024-08-30 00:00:00',
+            '2025-10-28 00:00:00',            '2025-08-12 00:00:00',
+                             'SI',            '2024-08-08 00:00:00',
+            '2024-01-05 00:00:00',            '2023-04-28 00:00:00',
+ ...
+              '04/06 SEGUIMIENTO',            '2025-07-30 00:00:00',
+                  '27/03 Y 10/04',            '2025-10-08 00:00:00',
+                     '15/08 PSIC', '14/09 PSIQ Y 20/09 SEGUIMIENTO',
+                '17/06/2024 PSIQ',                '29/07/2024 PSIC',
+            '2024-01-24 00:00:00',            '2023-01-08 00:00:00']
+Length: 898, dtype: str
+FECHA ALTA_
+SI                                1064
+NO                                 519
+SIGUE                               55
+SD                                  32
+PEND                                26
+                                  ... 
+14/09 PSIQ Y 20/09 SEGUIMIENTO       1
+17/06/2024 PSIQ                      1
+29/07/2024 PSIC                      1
+2024-01-24 00:00:00                  1
+2023-01-08 00:00:00                  1
+Name: count, Length: 897, dtype: int64
+FECHA LLAMADA PRESTADOR.1_ tiene 9491 valores nulos
+FECHA LLAMADA PRESTADOR.1_ tiene 236 valores únicos.
+<StringArray>
+[                  nan,                  'SI',                  'NO',
+                  'SD', '2023-08-25 00:00:00', '2023-11-11 00:00:00',
+ '2023-09-28 00:00:00', '2023-11-09 00:00:00', '2023-02-23 00:00:00',
+ '2023-09-29 00:00:00',
+ ...
+       '06/11 SE FUGA',          'FUGA 02/12',                   '3',
+          'FUGA 03/10', '2023-07-18 00:00:00',          'FUGA 31/12',
+ '2023-02-19 00:00:00', '2023-07-15 00:00:00',      'PRESTADOR PRIV',
+          'FUGA 17/10']
+Length: 236, dtype: str
+FECHA LLAMADA PRESTADOR.1_
+SI                     4755
+NO                     1165
+SD                      151
+FUGA                     19
+2023-09-05 00:00:00      14
+                       ... 
+FUGA 31/12                1
+2023-02-19 00:00:00       1
+2023-07-15 00:00:00       1
+PRESTADOR PRIV            1
+FUGA 17/10                1
+Name: count, Length: 235, dtype: int64
+MSP_ tiene 7786 valores nulos
+MSP_ tiene 810 valores únicos.
+<StringArray>
+[                                nan,                  'VALENTINA ACOSTA',
+               '2024-08-24 00:00:00',               '2025-07-20 00:00:00',
+                        'LIC ROMANO',               '2024-09-07 00:00:00',
+               '2025-08-02 00:00:00',                  'FUGA SD DE FECHA',
+               '2024-12-30 00:00:00',               '2024-12-31 00:00:00',
+ ...
+ '10/11 ALTA CONTRA VOLUNTAD MEDICA',  'SE RETIRA CONTRA VOLUNTAD MEDICA',
+               '2014-02-07 00:00:00',                        'FUGA 29/10',
+                        'FUGA 18/01',                       '02/09/20204',
+               '2024-08-25 00:00:00',                                  '',
+                       '12/02/20214',    '20/10 SE REIRA SIN ALTA MEDICA']
+Length: 810, dtype: str
+MSP_
+VALENTINA ACOSTA                  2563
+LIC ROMANO                        1122
+LIC ROMANO - VALENTINA ACOSTA      182
+VALENTINA ACOSTA - LIC ROMANO      124
+SIGUE                               86
+                                  ... 
+FUGA 18/01                           1
+02/09/20204                          1
+                                     1
+12/02/20214                          1
+20/10 SE REIRA SIN ALTA MEDICA       1
+Name: count, Length: 809, dtype: int64
+FECHA DE LLAMADA AL PRESTADOR_ tiene 16535 valores nulos
+FECHA DE LLAMADA AL PRESTADOR_ tiene 50 valores únicos.
+<StringArray>
+[                                                 nan,
+                                '2023-03-19 00:00:00',
+                                  '26/6/2023 - 14/07',
+                                '2023-07-06 00:00:00',
+                                  '11/7/2023 - 12/07',
+       '10/7/2023 - 11/7 - 21/07-26/07-02/08 - 17/08',
+                                '2023-07-04 00:00:00',
+                 '14/07/2023 - 21/08 - 04/09 - 06/09',
+                             '6/7/2023 - 11/07-12/07',
+                                 '04/07/2023 - 19/07',
+                                 '03/07/2023 - 07/07',
+                                '2023-07-05 00:00:00',
+                                '2023-06-29 00:00:00',
+                                '2023-07-07 00:00:00',
+                                '2023-07-13 00:00:00',
+                     '30/06/2023-15/11 - 06/12-13/12',
+                     '10/7/2023 - 11/7 - 21/07-26/07',
+                                 '15/04/2024 - 09/05',
+                           '31/07/2023 - 07/08-15/08',
+                                '2023-07-27 00:00:00',
+                           '6/7/2023 - 12/07 - 23/08',
+                                   '4/7/2023 - 12/07',
+                                  '10/7/2023 - 14/07',
+                         '03/07/2023 - 07/07 - 24/07',
+                         '05/07/2023 - 04/10 - 23/10',
+                                 '07/08/2023 / 08/09',
+                                '2023-08-16 00:00:00',
+                                   '05/07/2023-04/10',
+                                '2023-07-10 00:00:00',
+                          '30/6/2023 - 04/07 - 17/07',
+                                 '30/06/2023 - 31/07',
+                                   '03/07/2023-03/08',
+                                 '06/07/2023 - 25/10',
+ '03/07/2023 - 07/07 - 24/07 - 09/08 - 14/08 - 06/09',
+                                 '30/06/2023 - 19/07',
+                                '2023-08-02 00:00:00',
+                                 '05/07/2023 - 07/07',
+                                   '15/09/2023-12/10',
+                                                  'N',
+                              '30/06/2023 - 4/7/2023',
+                                 '07/07/2023 - 31/07',
+                   '4/7/2023 - 12/07 - 17/07 - 21/07',
+                                 '05/07/2023 - 19/07',
+                         '08/09/2023 - 09/11 - 14/11',
+                         '10/07/2023 - 25/10 - 27/10',
+                                      'RT 20/03/2024',
+                   '26/06/2023 - 21/07-03/08 - 15/08',
+                                   '19/07/2023-25/10',
+                                '2023-06-30 00:00:00',
+                                '2023-08-10 00:00:00']
+Length: 50, dtype: str
+FECHA DE LLAMADA AL PRESTADOR_
+2023-07-06 00:00:00                                   15
+2023-07-07 00:00:00                                    6
+03/07/2023 - 07/07                                     5
+2023-07-13 00:00:00                                    4
+2023-07-04 00:00:00                                    3
+6/7/2023 - 11/07-12/07                                 3
+2023-07-05 00:00:00                                    3
+2023-06-29 00:00:00                                    3
+10/7/2023 - 14/07                                      3
+11/7/2023 - 12/07                                      2
+10/7/2023 - 11/7 - 21/07-26/07                         2
+2023-07-10 00:00:00                                    2
+05/07/2023 - 07/07                                     2
+2023-03-19 00:00:00                                    1
+26/6/2023 - 14/07                                      1
+10/7/2023 - 11/7 - 21/07-26/07-02/08 - 17/08           1
+14/07/2023 - 21/08 - 04/09 - 06/09                     1
+04/07/2023 - 19/07                                     1
+30/06/2023-15/11 - 06/12-13/12                         1
+15/04/2024 - 09/05                                     1
+31/07/2023 - 07/08-15/08                               1
+2023-07-27 00:00:00                                    1
+6/7/2023 - 12/07 - 23/08                               1
+4/7/2023 - 12/07                                       1
+03/07/2023 - 07/07 - 24/07                             1
+05/07/2023 - 04/10 - 23/10                             1
+07/08/2023 / 08/09                                     1
+2023-08-16 00:00:00                                    1
+05/07/2023-04/10                                       1
+30/6/2023 - 04/07 - 17/07                              1
+30/06/2023 - 31/07                                     1
+03/07/2023-03/08                                       1
+06/07/2023 - 25/10                                     1
+03/07/2023 - 07/07 - 24/07 - 09/08 - 14/08 - 06/09     1
+30/06/2023 - 19/07                                     1
+2023-08-02 00:00:00                                    1
+15/09/2023-12/10                                       1
+N                                                      1
+30/06/2023 - 4/7/2023                                  1
+07/07/2023 - 31/07                                     1
+4/7/2023 - 12/07 - 17/07 - 21/07                       1
+05/07/2023 - 19/07                                     1
+08/09/2023 - 09/11 - 14/11                             1
+10/07/2023 - 25/10 - 27/10                             1
+RT 20/03/2024                                          1
+26/06/2023 - 21/07-03/08 - 15/08                       1
+19/07/2023-25/10                                       1
+2023-06-30 00:00:00                                    1
+2023-08-10 00:00:00                                    1
+Name: count, dtype: int64
+CONCURRIO_binaria tiene 10577 valores nulos
+CONCURRIO_binaria tiene 22 valores únicos.
+<StringArray>
+[                     nan,                     'SI',                     'NO',
+                   'PEND', '28/10/2025 (PENDIENTE)',                '25/2025',
+            '10/10/20255',            '18/06/20254',                    'PPL',
+             'TELEFONICO',            '06/08/20255',        '17/09/2024 PSIQ',
+            '07/07/20255',             '31/09/2024',            '25/06/20258',
+                     'SD',         'PENDIENTE DATO',            '10/06/20258',
+              '20/102025',        '14/10/2024 PSIQ',                     'N0',
+            '08/10/20255']
+Length: 22, dtype: str
+CONCURRIO_binaria
+SI                        5619
+NO                         402
+PEND                         6
+10/10/20255                  2
+06/08/20255                  2
+28/10/2025 (PENDIENTE)       1
+25/2025                      1
+18/06/20254                  1
+PPL                          1
+TELEFONICO                   1
+17/09/2024 PSIQ              1
+07/07/20255                  1
+31/09/2024                   1
+25/06/20258                  1
+SD                           1
+PENDIENTE DATO               1
+10/06/20258                  1
+20/102025                    1
+14/10/2024 PSIQ              1
+N0                           1
+08/10/20255                  1
+Name: count, dtype: int64
+NO_CONCURRIO_CONSULTA_ tiene 0 valores nulos
+NO_CONCURRIO_CONSULTA_ tiene 2 valores únicos.
+[False  True]
+NO_CONCURRIO_CONSULTA_
+False    16222
+True       402
+Name: count, dtype: int64
+ULTIMO_INTENTO_ tiene 4287 valores nulos
+ULTIMO_INTENTO_ tiene 1015 valores únicos.
+<DatetimeArray>
+['2025-02-15 00:00:00', '2023-05-22 00:00:00', '2024-07-22 00:00:00',
+                 'NaT', '2025-07-20 00:00:00', '2024-10-02 00:00:00',
+ '2023-05-15 00:00:00', '2025-06-07 00:00:00', '2023-07-08 00:00:00',
+ '2025-06-15 00:00:00',
+ ...
+ '2024-05-16 00:00:00', '2024-02-08 00:00:00', '2023-05-01 00:00:00',
+ '2023-08-17 00:00:00', '2024-07-06 00:00:00', '2024-04-09 00:00:00',
+ '2025-07-02 00:00:00', '2023-05-14 00:00:00', '2024-04-07 00:00:00',
+ '2024-05-03 00:00:00']
+Length: 1015, dtype: datetime64[us]
+ULTIMO_INTENTO_
+2025-10-26    32
+2023-12-10    31
+2025-09-16    29
+2023-11-10    29
+2023-12-03    29
+              ..
+2023-01-12     1
+2024-05-16     1
+2024-04-09     1
+2024-04-07     1
+2024-05-03     1
+Name: count, Length: 1014, dtype: int64
+DIAS_PROMEDIO_INTENTOS_ tiene 14685 valores nulos
+DIAS_PROMEDIO_INTENTOS_ tiene 827 valores únicos.
+[           nan 2.77500000e+01 1.65000000e+02 2.50000000e+01
+ 2.56500000e+02 2.48000000e+02 3.28000000e+02 1.31200000e+02
+ 2.27500000e+02 1.27000000e+02 2.70000000e+02 4.60000000e+02
+ 6.90000000e+02 1.26000000e+02 1.00000000e+02 1.10000000e+01
+ 1.45000000e+01 6.30000000e+01 2.05000000e+02 3.86500000e+02
+ 8.00000000e+00 1.60000000e+02 3.70000000e+01 2.90000000e+01
+ 2.17000000e+02 7.47000000e+02 5.20000000e+01 4.50000000e+01
+ 1.00000000e+00 3.60000000e+02 2.18000000e+02 3.35000000e+02
+ 1.20000000e+02 7.00000000e+00 2.55000000e+02 3.60000000e+01
+ 3.66000000e+02 3.13500000e+02 4.28000000e+02 4.20000000e+01
+ 0.00000000e+00 3.10500000e+02 1.85000000e+02 5.14000000e+02
+ 3.47000000e+02 2.49000000e+02 3.80000000e+02 7.40000000e+01
+ 8.17000000e+02 7.09000000e+02 2.79000000e+02 9.30000000e+01
+ 3.12000000e+02 2.61000000e+02 4.01000000e+02 4.35000000e+02
+ 1.74000000e+02 1.59000000e+02 1.65000000e+01 1.70000000e+02
+ 9.00000000e+00 2.16000000e+02 2.10000000e+01 4.22000000e+02
+ 2.40000000e+02 3.50000000e+01 1.82000000e+02 5.98000000e+02
+ 2.21000000e+02 5.60000000e+01 1.02500000e+02 2.15000000e+02
+ 7.70000000e+01 3.87000000e+02 1.03800000e+03 4.04000000e+02
+ 1.62000000e+02 1.13000000e+02 5.96666667e+01 2.68666667e+02
+ 5.88000000e+02 3.54000000e+02 7.07000000e+02 6.13000000e+02
+ 1.17000000e+02 8.00000000e+01 9.00000000e+01 2.04000000e+02
+ 2.00000000e+00 3.86000000e+02 4.15000000e+01 6.90000000e+01
+ 1.12000000e+02 5.38000000e+01 2.02000000e+02 2.20000000e+01
+ 1.96000000e+02 2.10000000e+02 9.76666667e+01 2.73000000e+02
+ 1.50000000e+02 7.95000000e+02 2.42000000e+02 1.66000000e+02
+ 3.00000000e+01 8.90000000e+01 2.19000000e+02 1.73000000e+02
+ 6.14000000e+01 1.57000000e+02 4.48000000e+02 1.06500000e+02
+ 6.00000000e+00 2.30000000e+01 1.52000000e+02 3.10000000e+01
+ 1.15000000e+02 3.79000000e+02 7.10000000e+01 4.03000000e+02
+ 3.08000000e+02 4.55000000e+02 2.07000000e+02 2.30000000e+02
+ 3.80000000e+01 1.03000000e+02 1.94000000e+02 1.46333333e+02
+ 5.79000000e+02 5.50000000e+00 7.73333333e+01 7.35000000e+01
+ 3.84500000e+02 5.37000000e+02 5.00000000e+01 2.65500000e+02
+ 5.44000000e+02 3.65000000e+01 2.00000000e+02 1.00000000e+01
+ 8.31000000e+02 1.60000000e+01 2.69000000e+02 2.27000000e+02
+ 4.00000000e+00 3.85000000e+02 4.30000000e+01 1.53000000e+02
+ 6.60000000e+01 8.81666667e+01 3.82000000e+02 1.67000000e+02
+ 3.63000000e+02 6.40000000e+01 6.22000000e+02 1.24500000e+02
+ 8.50000000e+01 5.00000000e+00 3.14000000e+02 9.60000000e+01
+ 8.20000000e+02 1.80000000e+01 6.87000000e+02 3.09000000e+02
+ 2.76000000e+02 4.39000000e+02 1.31000000e+02 4.93500000e+02
+ 8.40000000e+01 3.52000000e+02 4.40000000e+02 3.22000000e+02
+ 5.32000000e+02 2.12500000e+02 3.76000000e+02 6.20000000e+01
+ 2.45000000e+02 2.43000000e+02 5.39000000e+02 6.03333333e+01
+ 1.50000000e+01 1.39500000e+02 1.58500000e+02 2.20000000e+02
+ 4.07500000e+02 5.06000000e+02 3.40000000e+02 5.75000000e+02
+ 1.88500000e+02 1.90000000e+01 1.69000000e+02 9.65000000e+01
+ 4.55000000e+01 1.30000000e+01 3.65000000e+02 2.86000000e+02
+ 2.09000000e+02 3.24000000e+02 4.88000000e+02 2.50000000e+00
+ 2.60000000e+01 5.30000000e+01 1.32000000e+02 9.28000000e+02
+ 4.10000000e+01 7.08000000e+02 1.42000000e+02 7.33333333e+01
+ 9.50000000e+01 7.65000000e+02 1.63000000e+02 1.01000000e+02
+ 1.14500000e+02 9.16666667e+01 1.84000000e+02 1.55000000e+02
+ 5.66666667e+01 5.93000000e+02 5.15000000e+01 5.85000000e+01
+ 1.09000000e+02 2.00000000e+01 1.01500000e+02 1.24000000e+02
+ 1.72000000e+02 1.86000000e+02 9.80000000e+01 1.41000000e+02
+ 9.90000000e+01 2.86000000e+01 1.30000000e+02 2.26000000e+02
+ 7.80000000e+01 3.20000000e+01 2.23000000e+02 6.50000000e+01
+ 4.46000000e+02 1.76000000e+02 2.03000000e+02 1.54666667e+02
+ 2.07500000e+02 3.50500000e+02 9.83333333e+01 2.97500000e+02
+ 2.81000000e+02 8.02000000e+02 1.82333333e+02 2.13000000e+02
+ 6.57000000e+02 4.78000000e+02 3.11000000e+02 5.18000000e+02
+ 6.63000000e+02 2.94000000e+02 3.23000000e+02 1.54000000e+02
+ 3.55000000e+01 1.46500000e+02 1.72200000e+02 6.62000000e+02
+ 1.78000000e+02 4.51666667e+01 1.10000000e+02 4.90000000e+01
+ 9.70000000e+01 3.62000000e+02 7.82222222e+01 6.27000000e+02
+ 2.17500000e+01 3.00000000e+00 1.57666667e+02 1.20000000e+01
+ 1.19750000e+02 9.20000000e+01 2.65000000e+02 5.07000000e+02
+ 9.10000000e+01 2.22000000e+02 2.64000000e+02 1.88000000e+02
+ 1.39000000e+02 2.70000000e+01 8.07000000e+02 4.42000000e+02
+ 2.44000000e+02 1.16000000e+02 5.36000000e+02 7.45000000e+01
+ 5.40000000e+01 5.70000000e+01 3.01000000e+02 2.47000000e+02
+ 3.37000000e+02 7.90000000e+01 4.12000000e+02 8.10000000e+01
+ 1.79000000e+02 1.93000000e+02 2.80000000e+01 8.70000000e+01
+ 4.73000000e+02 1.21000000e+02 1.07000000e+02 5.27000000e+02
+ 7.85000000e+01 2.32000000e+02 4.91000000e+02 9.45000000e+01
+ 2.66000000e+02 3.05000000e+01 7.88000000e+02 4.67000000e+02
+ 5.03000000e+02 7.50000000e+01 6.43000000e+02 1.96666667e+01
+ 8.15000000e+02 7.02500000e+01 1.68000000e+02 1.80000000e+02
+ 9.36000000e+02 7.39000000e+02 6.85000000e+01 4.60000000e+01
+ 1.08500000e+02 3.26000000e+02 1.99000000e+02 1.30500000e+02
+ 6.02000000e+02 6.05000000e+02 2.58000000e+02 1.37000000e+02
+ 2.12000000e+02 4.77500000e+02 5.13000000e+02 7.33000000e+02
+ 5.59000000e+02 4.69000000e+02 1.23000000e+02 3.90000000e+01
+ 5.67000000e+02 7.25000000e+01 1.35000000e+02 1.02000000e+02
+ 1.20500000e+02 2.98000000e+02 1.04000000e+02 2.51000000e+02
+ 1.76500000e+02 7.34000000e+02 7.00000000e+01 7.60000000e+01
+ 2.65000000e+01 6.49000000e+02 1.62500000e+02 6.00000000e+01
+ 6.68000000e+02 7.37500000e+01 9.40000000e+01 1.35750000e+02
+ 2.40000000e+01 1.58000000e+02 1.22000000e+02 2.00500000e+02
+ 2.37000000e+02 2.71000000e+02 8.85000000e+01 2.76333333e+02
+ 1.28000000e+02 5.92000000e+02 4.16000000e+02 3.27000000e+02
+ 9.52500000e+01 7.24000000e+02 5.11000000e+02 2.26750000e+02
+ 2.62500000e+02 5.25000000e+01 2.83000000e+02 4.80000000e+01
+ 1.00500000e+02 4.68000000e+02 2.52000000e+02 1.13666667e+02
+ 7.26666667e+01 2.25500000e+02 7.15000000e+01 6.48000000e+02
+ 6.97000000e+02 6.18000000e+02 1.48000000e+02 1.36000000e+02
+ 1.40000000e+01 3.05000000e+02 8.60000000e+01 6.70000000e+01
+ 4.86000000e+02 4.05000000e+01 4.11500000e+02 8.94000000e+02
+ 4.10000000e+02 3.49000000e+02 6.98000000e+02 3.77000000e+02
+ 4.38000000e+02 1.05000000e+02 2.25000000e+02 3.63333333e+01
+ 3.46000000e+02 7.76666667e+01 4.56000000e+02 6.59000000e+02
+ 2.90000000e+02 4.65000000e+02 2.67000000e+02 5.32500000e+01
+ 1.11000000e+02 5.01000000e+02 4.64000000e+01 8.85000000e+02
+ 1.40000000e+02 1.99666667e+02 2.85000000e+02 1.83000000e+02
+ 2.24000000e+02 8.80000000e+01 8.75000000e+01 2.29500000e+02
+ 6.12000000e+02 3.70000000e+02 4.70000000e+02 7.17000000e+02
+ 9.30000000e+02 1.09500000e+02 7.26000000e+02 4.00000000e+01
+ 3.06666667e+01 3.40000000e+01 1.47000000e+02 4.40000000e+01
+ 6.79000000e+02 5.89000000e+02 3.75000000e+02 1.33000000e+02
+ 3.16500000e+02 3.37500000e+02 4.33500000e+02 3.30000000e+01
+ 2.99000000e+02 4.13000000e+02 1.97333333e+02 3.25666667e+02
+ 5.80000000e+02 4.64000000e+02 2.29000000e+02 5.22000000e+02
+ 1.90666667e+02 8.25000000e+02 1.18000000e+02 1.98000000e+02
+ 6.24000000e+01 1.64000000e+02 9.11250000e+01 4.79000000e+02
+ 6.65000000e+01 2.80000000e+02 6.51666667e+01 8.20000000e+01
+ 2.11000000e+02 1.40500000e+02 3.33000000e+02 1.44500000e+02
+ 3.55000000e+02 6.08000000e+02 2.53750000e+02 1.19000000e+02
+ 1.14666667e+02 7.50000000e+02 6.33333333e+01 1.95500000e+02
+ 5.41000000e+02 8.50000000e+00 5.55000000e+01 1.85500000e+02
+ 2.84000000e+02 1.38333333e+02 6.10000000e+01 4.77000000e+02
+ 3.84000000e+02 1.90000000e+02 2.35000000e+02 7.30000000e+01
+ 1.97000000e+02 7.22000000e+02 3.53333333e+01 2.78500000e+02
+ 1.18500000e+02 2.16666667e+01 1.06000000e+02 2.77000000e+02
+ 3.70500000e+02 1.34000000e+02 1.12333333e+02 2.54000000e+02
+ 3.13000000e+02 2.60666667e+02 2.72000000e+02 2.55000000e+01
+ 6.32000000e+02 2.31500000e+02 7.59000000e+02 1.55500000e+02
+ 7.02000000e+01 6.04000000e+02 9.20909091e+01 5.04000000e+02
+ 8.84000000e+02 1.51000000e+02 2.60000000e+02 3.06000000e+02
+ 1.25000000e+02 2.37333333e+02 2.52500000e+02 5.10000000e+01
+ 1.54500000e+02 3.88000000e+02 2.28000000e+02 3.25000000e+02
+ 2.56000000e+02 2.74500000e+02 7.65000000e+01 2.07500000e+01
+ 5.45000000e+01 3.08333333e+02 7.88750000e+01 5.86000000e+02
+ 4.70000000e+01 3.18000000e+02 2.41000000e+02 5.20000000e+02
+ 5.16000000e+01 2.97000000e+02 1.64500000e+02 3.18500000e+02
+ 3.18000000e+01 1.80500000e+02 3.45000000e+02 3.59000000e+02
+ 2.39000000e+02 8.45000000e+01 5.31000000e+02 1.99750000e+02
+ 1.47500000e+02 1.38833333e+02 8.86666667e+01 1.11250000e+02
+ 1.26500000e+02 4.04500000e+02 1.24142857e+02 4.28750000e+01
+ 3.42000000e+02 1.94666667e+02 1.35500000e+02 1.29000000e+02
+ 3.00666667e+02 8.50000000e+02 8.30000000e+01 2.59750000e+02
+ 1.44000000e+02 7.15000000e+02 3.90000000e+02 7.06000000e+02
+ 3.97000000e+02 6.67000000e+02 1.50500000e+02 5.75000000e+01
+ 4.09000000e+02 1.38666667e+02 1.68500000e+02 5.99000000e+02
+ 4.20000000e+02 4.38500000e+02 1.93333333e+01 9.39000000e+02
+ 3.06500000e+02 3.11333333e+02 1.93250000e+02 4.86666667e+01
+ 5.46000000e+02 5.09000000e+02 1.17500000e+02 1.56000000e+02
+ 8.95000000e+01 6.93000000e+02 4.65000000e+01 2.66500000e+02
+ 5.00000000e-01 4.59000000e+02 2.63000000e+02 5.47000000e+02
+ 1.08000000e+02 7.41000000e+02 3.64000000e+02 4.15000000e+02
+ 6.75000000e+01 5.90000000e+01 2.36666667e+02 5.50000000e+01
+ 6.99000000e+02 9.32000000e+02 3.58500000e+02 3.10000000e+02
+ 1.75000000e+02 7.35000000e+02 2.95500000e+02 2.14000000e+02
+ 2.91000000e+02 1.49600000e+02 1.15666667e+02 6.15000000e+01
+ 3.68000000e+02 4.76000000e+02 4.41000000e+02 1.92000000e+02
+ 4.29000000e+02 2.08571429e+01 1.43250000e+02 5.68000000e+02
+ 7.46000000e+02 5.58333333e+01 5.02500000e+01 1.71000000e+02
+ 1.05750000e+02 4.06000000e+02 6.41000000e+02 1.79333333e+02
+ 1.69750000e+02 1.46000000e+02 4.33000000e+02 1.89000000e+02
+ 8.82000000e+02 3.39500000e+02 6.51000000e+02 1.70000000e+01
+ 3.06666667e+02 6.29000000e+02 1.88800000e+02 2.11500000e+02
+ 9.35000000e+01 7.20000000e+01 1.35250000e+02 1.10375000e+02
+ 2.08000000e+02 2.63666667e+02 2.91500000e+02 4.82000000e+02
+ 2.50500000e+02 2.59000000e+02 1.48666667e+02 3.56666667e+01
+ 8.88000000e+02 2.25666667e+02 6.55000000e+02 2.47500000e+02
+ 8.15000000e+01 2.62500000e+01 1.68333333e+02 3.74000000e+02
+ 3.67500000e+01 4.62000000e+02 3.04000000e+02 6.66000000e+02
+ 2.02500000e+02 1.59500000e+02 1.25500000e+02 1.94333333e+02
+ 2.51500000e+02 4.97000000e+02 3.71000000e+02 6.30000000e+02
+ 1.24666667e+02 2.06000000e+02 1.32666667e+02 5.17000000e+02
+ 6.96000000e+02 5.30000000e+02 1.38000000e+02 2.31000000e+02
+ 5.52000000e+02 5.10000000e+02 1.42500000e+02 2.92500000e+02
+ 1.61000000e+02 3.27500000e+02 6.11666667e+01 3.78000000e+02
+ 4.45000000e+02 7.69000000e+02 2.34000000e+02 5.97000000e+02
+ 6.44000000e+02 6.15000000e+02 1.43500000e+02 9.55000000e+01
+ 4.58000000e+01 3.31000000e+02 1.56333333e+02 2.85500000e+02
+ 1.82666667e+02 1.31750000e+02 1.14000000e+02 7.81000000e+02
+ 6.55000000e+01 2.68000000e+02 3.16000000e+02 1.63750000e+02
+ 1.50000000e+00 4.34000000e+02 1.43285714e+02 3.50000000e+00
+ 1.54200000e+02 1.95000000e+02 3.91000000e+02 1.45000000e+02
+ 1.21500000e+02 1.04900000e+03 4.26000000e+02 4.05000000e+02
+ 8.58000000e+02 7.79000000e+02 1.56800000e+02 3.68500000e+02
+ 1.45500000e+02 1.38500000e+02 6.09000000e+02 2.08333333e+02
+ 2.89000000e+02 2.45000000e+01 2.38000000e+02 3.21000000e+02
+ 1.89500000e+02 1.12500000e+02 1.78500000e+02 4.61000000e+02
+ 9.34000000e+02 1.91000000e+02 9.37777778e+01 2.87000000e+02
+ 2.85000000e+01 3.98000000e+02 1.05000000e+01 5.56000000e+02
+ 2.96000000e+02 1.87000000e+02 5.66000000e+02 2.82000000e+02
+ 5.40000000e+02 1.90750000e+02 4.95000000e+01 3.39000000e+02
+ 1.25666667e+02 8.05000000e+01 5.71818182e+01 2.74000000e+02
+ 4.11666667e+01 1.86333333e+02 8.21000000e+02 3.82500000e+01
+ 6.80000000e+01 3.48000000e+02 3.13666667e+02 8.65000000e+01
+ 4.93000000e+02 5.85333333e+01 4.78333333e+01 3.28666667e+02
+ 4.18000000e+02 1.81000000e+02 4.32500000e+02 4.96000000e+02
+ 3.67000000e+02 1.26250000e+02 3.25500000e+02 1.74500000e+02
+ 5.35000000e+01 3.83000000e+02 3.45000000e+01 1.95750000e+02
+ 1.01750000e+02 4.34000000e+01 3.17500000e+02 4.08500000e+02
+ 3.57000000e+02 2.93000000e+02 5.38000000e+02 8.13333333e+01
+ 4.28000000e+01 3.02000000e+02 7.98000000e+02 1.41500000e+02
+ 2.14666667e+02 8.28000000e+02 9.88000000e+01 3.99000000e+02
+ 3.30000000e+02 5.15000000e+02 1.70666667e+02 1.43000000e+02
+ 1.55333333e+02 9.05000000e+01 6.52000000e+02 4.27500000e+02
+ 4.72000000e+02 2.35000000e+01 4.57000000e+02 5.65000000e+01
+ 3.22500000e+02 4.44000000e+02 3.96000000e+02 3.53000000e+02
+ 8.55000000e+02 4.75000000e+02 6.06250000e+01 1.48500000e+02
+ 2.83500000e+02 2.00666667e+02 5.21000000e+02]
+DIAS_PROMEDIO_INTENTOS_
+1.000000      55
+0.000000      52
+2.000000      17
+16.000000     14
+15.000000     14
+              ..
+60.625000      1
+148.500000     1
+283.500000     1
+200.666667     1
+521.000000     1
+Name: count, Length: 826, dtype: int64
+MIN_DIAS_IAE_MUERTE_ tiene 16232 valores nulos
+MIN_DIAS_IAE_MUERTE_ tiene 270 valores únicos.
+<TimedeltaArray>
+[        NaT,   '66 days',  '485 days',  '144 days',    '4 days',   '17 days',
+ '-109 days',  '495 days',    '0 days',    '9 days',
+ ...
+  '151 days',   '91 days',  '722 days',  '211 days',  '282 days',  '127 days',
+  '479 days',  '616 days',  '239 days',  '225 days']
+Length: 270, dtype: timedelta64[us]
+MIN_DIAS_IAE_MUERTE_
+0 days      13
+2 days      11
+4 days      10
+1 days       7
+9 days       6
+            ..
+127 days     1
+479 days     1
+616 days     1
+239 days     1
+225 days     1
+Name: count, Length: 269, dtype: int64
+IAE_en_CDE_ tiene 0 valores nulos
+IAE_en_CDE_ tiene 2 valores únicos.
+[0 1]
+IAE_en_CDE_
+0    11947
+1     4677
+Name: count, dtype: int64
+FECHA_DEFUNCION tiene 11947 valores nulos
+FECHA_DEFUNCION tiene 1093 valores únicos.
+<DatetimeArray>
+[                'NaT', '2025-08-06 00:00:00', '2024-04-21 00:00:00',
+ '2023-05-22 00:00:00', '2023-07-17 00:00:00', '2023-03-20 00:00:00',
+ '2024-10-22 00:00:00', '2024-07-08 00:00:00', '2024-01-01 00:00:00',
+ '2023-08-18 00:00:00',
+ ...
+ '2023-01-31 00:00:00', '2025-12-12 00:00:00', '2025-04-06 00:00:00',
+ '2023-01-05 00:00:00', '2025-09-27 00:00:00', '2026-01-28 00:00:00',
+ '2026-01-29 00:00:00', '2025-09-11 00:00:00', '2023-08-13 00:00:00',
+ '2026-01-07 00:00:00']
+Length: 1093, dtype: datetime64[us]
+FECHA_DEFUNCION
+2024-07-07    15
+2023-05-28    12
+2024-03-22    11
+2023-05-15    11
+2024-01-27    11
+              ..
+2025-09-27     1
+2026-01-28     1
+2026-01-29     1
+2023-08-13     1
+2026-01-07     1
+Name: count, Length: 1092, dtype: int64
+CAT_SUI_ tiene 11947 valores nulos
+CAT_SUI_ tiene 3 valores únicos.
+[nan  1.  0.]
+CAT_SUI_
+0.0    2496
+1.0    2181
+Name: count, dtype: int64
+CAT_MCEXSUI_ tiene 11947 valores nulos
+CAT_MCEXSUI_ tiene 3 valores únicos.
+[nan  0.  1.]
+CAT_MCEXSUI_
+0.0    2610
+1.0    2067
+Name: count, dtype: int64
+MOTIVO_EXT_SUI_ tiene 0 valores nulos
+MOTIVO_EXT_SUI_ tiene 2 valores únicos.
+[False  True]
+MOTIVO_EXT_SUI_
+False    14493
+True      2131
+Name: count, dtype: int64
+MOTIVO_EXTERNO_ tiene 13739 valores nulos
+MOTIVO_EXTERNO_ tiene 6 valores únicos.
+<StringArray>
+[nan, 'SUICIDIO', 'SE DESCONOCE', 'ACCIDENTE', 'OTRO', 'HOMICIDIO']
+Length: 6, dtype: str
+MOTIVO_EXTERNO_
+SUICIDIO        2131
+ACCIDENTE        504
+SE DESCONOCE     205
+OTRO              42
+HOMICIDIO          3
+Name: count, dtype: int64
+ES_MOTIVO_EXTERNO_ tiene 11950 valores nulos
+ES_MOTIVO_EXTERNO_ tiene 4 valores únicos.
+<StringArray>
+[nan, 'S', 'D', 'N']
+Length: 4, dtype: str
+ES_MOTIVO_EXTERNO_
+S    2885
+N    1659
+D     130
+Name: count, dtype: int64
+CNV_ tiene 0 valores nulos
+CNV_ tiene 2 valores únicos.
+[0 1]
+CNV_
+0    13117
+1     3507
+Name: count, dtype: int64
+CNV_ultimo_cant_hijos_ tiene 0 valores nulos
+CNV_ultimo_cant_hijos_ tiene 8 valores únicos.
+[0 1 6 2 3 4 5 7]
+CNV_ultimo_cant_hijos_
+0    13859
+1     1682
+2      771
+3      231
+4       61
+5       15
+6        4
+7        1
+Name: count, dtype: int64
+CNV_ultimo_edad_hijo_mayor_ tiene 13854 valores nulos
+CNV_ultimo_edad_hijo_mayor_ tiene 2206 valores únicos.
+[        nan  9.64544832 17.25393566 ...  7.70704997  4.44626968
+  7.37850787]
+CNV_ultimo_edad_hijo_mayor_
+7.972621     5
+12.777550    4
+11.321013    4
+10.138261    4
+8.958248     4
+            ..
+4.194387     1
+9.127995     1
+7.707050     1
+4.446270     1
+7.378508     1
+Name: count, Length: 2205, dtype: int64
+CNV_ultimo_edad_hijo_menor_ tiene 13854 valores nulos
+CNV_ultimo_edad_hijo_menor_ tiene 2180 valores únicos.
+[        nan  9.64544832  3.17043121 ...  3.70704997  4.44626968
+ 12.45174538]
+CNV_ultimo_edad_hijo_menor_
+3.663244     4
+7.972621     4
+6.644764     4
+8.547570     4
+8.213552     4
+            ..
+2.940452     1
+1.596167     1
+3.707050     1
+4.446270     1
+12.451745    1
+Name: count, Length: 2179, dtype: int64
+persona_en_CNV_nro_rese_ tiene 0 valores nulos
+persona_en_CNV_nro_rese_ tiene 2 valores únicos.
+[0 1]
+persona_en_CNV_nro_rese_
+0    16595
+1       29
+Name: count, dtype: int64
+CNV_otro_progenitor_ tiene 16582 valores nulos
+CNV_otro_progenitor_ tiene 43 valores únicos.
+<StringArray>
+[                                                               nan,
+ '887933f333f071774580c6cfa1602c16184b7fec7c9672d75de82c3a9ff6ddf6',
+ '66d00990d058a31cc672f606ce6c12b33a81f5fc35c0693d307977fbd9bb4a3f',
+ '51f6795a77361975a9e7a34c8ce52704f09cb606c629ef41583b146f40a44086',
+ 'c38f11daddd2d0b63377ae98d25f8e25161e07925145de15b3d0f27490199dde',
+ 'b6e9e9fdc89b5e719e1cd1088febf07e4c44c46d9085e516dbd88e4dcf24acff',
+ '2400f3f2a950a619dfded3b80c374d71e31d3273152a16261b14dd196dd1a014',
+ 'b4be9d4177079416bc266592dffa5c57279aac6756306c4cdab083152be64299',
+ '9e0ba34eb3328cf8f81a2cec69a186778f1523aedea78da0c1f52f1334ff73ab',
+ 'ff33f944b338d5cdcc3e569f49d5c309fcca1835a1d88578f095789cc8192b49',
+ '6faba3634623e4fd86861f9923db33980f2230a48c8385cf2e9d9f8147007773',
+ '0d1907bfba2bdeacc7d3cfa875465dda5b51ce60eabdf9cc76758c122018969c',
+ 'c531e33bc41c2397b1bcce38f7ffeb83959d8bf92cc0568522917aa035130852',
+ 'fc4a88a48edecee8768fcd3950db17add398dc0cb2037bbb0adb57d4c66cd971',
+ 'c9061d6c64b76df0f672f58bf554bfa17b07e1ac049ba39c2a42cdc661023a0d',
+ 'b94a0617dd2572482a39c4552cc3017a348ed890f57ec17a2f2ccdd986992a95',
+ '07880b2e81bf1df3b8510505884043fda6bd1ff486d0ff9f2c880520e454df4a',
+ '681eeff12274f7f63194cb17bace2e6d909483c603a8fcdc35f47fde5178d047',
+ 'd717e5fe53c8c259c94ae5b2e9f0f48a9c4475d48a0798435f9d6903b3e66a22',
+ '06c16042670dcad84014c64f41526d91d9170c427d9a776222612d0eecce531f',
+ '5b0e6bdf404e362a96e98789b4b99bf08e3158413b808b268b4aa5c4fc95312c',
+ '21177d92813e4e94ff3f04fd2adb20e96dcf976ff261055d3824531e328fd883',
+ 'eda132d0d414245aa394dad90653d1d80cb2eff752d9e54e02f9d450d270e8ce',
+ '8de4dafe93b1f9e662539e6cc52606e8a6257d3435d70e95a74813a83e8f1d8f',
+ '01c2116bd357418f7cae8dcf4ebf979f93ce6c1f9105de9975fecdf97c5c2e46',
+ 'd1042f6cdeecb1d309833411af8622e5f8adfcdf7b61931295e47e898259c894',
+ '836c27762f48b1bddaa28572dec50908f04aa5446020460aadad58b118364689',
+ 'b71ac5e20439cfbadf2d4782197531b5c3a5f6b74f541d026b9029be609f4762',
+ 'ad68f0df7012601021541677de4be4fce1f835e996053c9c47ec85c81cc77abc',
+ '9f4c2ac6d5fd16cefbb3ccc7201e77d15cb119df1e4c0051d5b3a17a2955b88f',
+ '123eeac0e36377400bb526c58ecfc92fd6295880edf8e992b6c4c2a9d440cf26',
+ '0c2269468da218bf0d16e8a1665fd3a65f5296e1f3539a9817123ed22cc74a25',
+ '8f56907e122b08d4ae9129becb5c3fb37056117b098742bf70682a9197862575',
+ '4b35b6b86d42cb53e7e24e8abebe45a56bd13940bf20ed99a46ef34ca3c27f89',
+ '0b1dea5a0ff3bfbba4ec6db0836446f787350c535964fef4b4b09b8d58410e0e',
+ '2ec55ffa3028fae2dec3a68352395890645341e778de92320593cc45d4c3129b',
+ '3c58d4fabb5370ee7ff7aa8e5e8c472d03250004d49744131f8c0dff3d31acec',
+ '8c0ea67a0ff51e7c769a2075cd40c29fa0f29abdc63b5f973de069ac37b56570',
+ '6438eef2d1c6d47ed39fe6f8155a7fe0ba6fb3918fc6ba6e8fcc5693fe0f819b',
+ '7a63ef7118854423069a6161113dfcb4a3f808b0c5b1227f6ca8a9d0d782ea7c',
+ '37a452dba730aa15da64becd1b712292e336ee0f17beb383c0c740ba5fb432d9',
+ '35a41c3672f308a9e4a0d99c0d04043fa6ff1928f584765ca06439e5633d6d61',
+ '20520d420e3d0b4b3dbe741628f9cad442f8a00e5884c10530cecbcca37f5b2d']
+Length: 43, dtype: str
+CNV_otro_progenitor_
+887933f333f071774580c6cfa1602c16184b7fec7c9672d75de82c3a9ff6ddf6    1
+66d00990d058a31cc672f606ce6c12b33a81f5fc35c0693d307977fbd9bb4a3f    1
+51f6795a77361975a9e7a34c8ce52704f09cb606c629ef41583b146f40a44086    1
+c38f11daddd2d0b63377ae98d25f8e25161e07925145de15b3d0f27490199dde    1
+b6e9e9fdc89b5e719e1cd1088febf07e4c44c46d9085e516dbd88e4dcf24acff    1
+2400f3f2a950a619dfded3b80c374d71e31d3273152a16261b14dd196dd1a014    1
+b4be9d4177079416bc266592dffa5c57279aac6756306c4cdab083152be64299    1
+9e0ba34eb3328cf8f81a2cec69a186778f1523aedea78da0c1f52f1334ff73ab    1
+ff33f944b338d5cdcc3e569f49d5c309fcca1835a1d88578f095789cc8192b49    1
+6faba3634623e4fd86861f9923db33980f2230a48c8385cf2e9d9f8147007773    1
+0d1907bfba2bdeacc7d3cfa875465dda5b51ce60eabdf9cc76758c122018969c    1
+c531e33bc41c2397b1bcce38f7ffeb83959d8bf92cc0568522917aa035130852    1
+fc4a88a48edecee8768fcd3950db17add398dc0cb2037bbb0adb57d4c66cd971    1
+c9061d6c64b76df0f672f58bf554bfa17b07e1ac049ba39c2a42cdc661023a0d    1
+b94a0617dd2572482a39c4552cc3017a348ed890f57ec17a2f2ccdd986992a95    1
+07880b2e81bf1df3b8510505884043fda6bd1ff486d0ff9f2c880520e454df4a    1
+681eeff12274f7f63194cb17bace2e6d909483c603a8fcdc35f47fde5178d047    1
+d717e5fe53c8c259c94ae5b2e9f0f48a9c4475d48a0798435f9d6903b3e66a22    1
+06c16042670dcad84014c64f41526d91d9170c427d9a776222612d0eecce531f    1
+5b0e6bdf404e362a96e98789b4b99bf08e3158413b808b268b4aa5c4fc95312c    1
+21177d92813e4e94ff3f04fd2adb20e96dcf976ff261055d3824531e328fd883    1
+eda132d0d414245aa394dad90653d1d80cb2eff752d9e54e02f9d450d270e8ce    1
+8de4dafe93b1f9e662539e6cc52606e8a6257d3435d70e95a74813a83e8f1d8f    1
+01c2116bd357418f7cae8dcf4ebf979f93ce6c1f9105de9975fecdf97c5c2e46    1
+d1042f6cdeecb1d309833411af8622e5f8adfcdf7b61931295e47e898259c894    1
+836c27762f48b1bddaa28572dec50908f04aa5446020460aadad58b118364689    1
+b71ac5e20439cfbadf2d4782197531b5c3a5f6b74f541d026b9029be609f4762    1
+ad68f0df7012601021541677de4be4fce1f835e996053c9c47ec85c81cc77abc    1
+9f4c2ac6d5fd16cefbb3ccc7201e77d15cb119df1e4c0051d5b3a17a2955b88f    1
+123eeac0e36377400bb526c58ecfc92fd6295880edf8e992b6c4c2a9d440cf26    1
+0c2269468da218bf0d16e8a1665fd3a65f5296e1f3539a9817123ed22cc74a25    1
+8f56907e122b08d4ae9129becb5c3fb37056117b098742bf70682a9197862575    1
+4b35b6b86d42cb53e7e24e8abebe45a56bd13940bf20ed99a46ef34ca3c27f89    1
+0b1dea5a0ff3bfbba4ec6db0836446f787350c535964fef4b4b09b8d58410e0e    1
+2ec55ffa3028fae2dec3a68352395890645341e778de92320593cc45d4c3129b    1
+3c58d4fabb5370ee7ff7aa8e5e8c472d03250004d49744131f8c0dff3d31acec    1
+8c0ea67a0ff51e7c769a2075cd40c29fa0f29abdc63b5f973de069ac37b56570    1
+6438eef2d1c6d47ed39fe6f8155a7fe0ba6fb3918fc6ba6e8fcc5693fe0f819b    1
+7a63ef7118854423069a6161113dfcb4a3f808b0c5b1227f6ca8a9d0d782ea7c    1
+37a452dba730aa15da64becd1b712292e336ee0f17beb383c0c740ba5fb432d9    1
+35a41c3672f308a9e4a0d99c0d04043fa6ff1928f584765ca06439e5633d6d61    1
+20520d420e3d0b4b3dbe741628f9cad442f8a00e5884c10530cecbcca37f5b2d    1
+Name: count, dtype: int64
+CNV_ultimo_estado_civil_ tiene 13854 valores nulos
+CNV_ultimo_estado_civil_ tiene 7 valores únicos.
+<StringArray>
+[nan, 'SOLTERO/A', 'CASADO/A', ' ', 'DESCONOCIDO', 'DIVORCIADO/A', 'VIUDO/A']
+Length: 7, dtype: str
+CNV_ultimo_estado_civil_
+SOLTERO/A       1871
+DESCONOCIDO      465
+CASADO/A         366
+DIVORCIADO/A      62
+VIUDO/A            5
+                   1
+Name: count, dtype: int64
+CNV_ultimo_pais_nac_ tiene 13854 valores nulos
+CNV_ultimo_pais_nac_ tiene 12 valores únicos.
+<StringArray>
+[                        nan,                   'URUGUAY',
+                      'PERÚ',                    'ESPAÑA',
+                    'BRASIL',                 'ARGENTINA',
+                  'COLOMBIA',                  'PARAGUAY',
+                 'VENEZUELA',                'AFGANISTÁN',
+ 'ESTADOS UNIDOS DE AMÉRICA',                      'CUBA']
+Length: 12, dtype: str
+CNV_ultimo_pais_nac_
+URUGUAY                      2725
+ARGENTINA                      23
+BRASIL                          7
+VENEZUELA                       4
+PERÚ                            2
+ESPAÑA                          2
+PARAGUAY                        2
+ESTADOS UNIDOS DE AMÉRICA       2
+COLOMBIA                        1
+AFGANISTÁN                      1
+CUBA                            1
+Name: count, dtype: int64
+CNV_ultimo_pais_residencia_ tiene 13854 valores nulos
+CNV_ultimo_pais_residencia_ tiene 3 valores únicos.
+<StringArray>
+[nan, 'URUGUAY', ' ']
+Length: 3, dtype: str
+CNV_ultimo_pais_residencia_
+URUGUAY    2739
+             31
+Name: count, dtype: int64
+CNV_ultimo_mayor_nivel_estudio_ tiene 13854 valores nulos
+CNV_ultimo_mayor_nivel_estudio_ tiene 8 valores únicos.
+<StringArray>
+[                        nan,                  'PRIMARIA',
+                         ' ', 'SECUNDARIA - BACHILLERATO',
+ 'TERCIARIA - UNIVERSITARIA', 'SECUNDARIA - CICLO BASICO',
+               'DESCONOCIDO',                   'NINGUNO']
+Length: 8, dtype: str
+CNV_ultimo_mayor_nivel_estudio_
+SECUNDARIA - CICLO BASICO    998
+SECUNDARIA - BACHILLERATO    490
+                             484
+PRIMARIA                     460
+TERCIARIA - UNIVERSITARIA    227
+DESCONOCIDO                  110
+NINGUNO                        1
+Name: count, dtype: int64
+CNV_ultimo_sexo_ tiene 13854 valores nulos
+CNV_ultimo_sexo_ tiene 3 valores únicos.
+<StringArray>
+[nan, 'F', 'M']
+Length: 3, dtype: str
+CNV_ultimo_sexo_
+M    1453
+F    1317
+Name: count, dtype: int64
+CNV_ultimo_embarazo_anteriores_ tiene 14535 valores nulos
+CNV_ultimo_embarazo_anteriores_ tiene 14 valores únicos.
+[nan  0.  1.  2.  4.  6.  5.  3.  7.  9. 99. 10.  8. 19.]
+CNV_ultimo_embarazo_anteriores_
+0.0     833
+1.0     537
+2.0     316
+3.0     197
+4.0      93
+5.0      48
+6.0      25
+99.0     14
+7.0      11
+8.0       8
+9.0       3
+10.0      3
+19.0      1
+Name: count, dtype: int64
+CNV_ultimo_semana_embarazo_primer_consulta_ tiene 14535 valores nulos
+CNV_ultimo_semana_embarazo_primer_consulta_ tiene 41 valores únicos.
+[nan  5. 13. 10. 11.  8.  7. 15.  0. 16.  6. 21. 22. 17. 32.  9.  4. 12.
+ 26. 14. 27. 31. 19. 25. 18. 24. 20. 23. 35. 29. 34.  3. 37. 30. 38. 36.
+ 40. 28. 33.  1. 39.]
+CNV_ultimo_semana_embarazo_primer_consulta_
+8.0     239
+7.0     225
+6.0     207
+10.0    196
+9.0     193
+12.0    136
+11.0    126
+5.0     124
+13.0     88
+14.0     67
+15.0     63
+16.0     48
+17.0     44
+18.0     36
+20.0     35
+0.0      33
+19.0     32
+21.0     30
+22.0     21
+4.0      21
+23.0     18
+24.0     16
+27.0     14
+25.0     12
+26.0      9
+29.0      8
+31.0      7
+30.0      7
+34.0      6
+28.0      5
+38.0      4
+33.0      4
+32.0      3
+40.0      3
+35.0      2
+3.0       2
+37.0      2
+36.0      1
+1.0       1
+39.0      1
+Name: count, dtype: int64
+CNV_ultimo_total_consultas_ tiene 14535 valores nulos
+CNV_ultimo_total_consultas_ tiene 24 valores únicos.
+[ nan   9.  11.  13.   7.  10.   6.   0.  12.   8.   3.   5.   4.  14.
+  18.   2.  99.  15.   1. 912.  17.  16. 109.  40.]
+CNV_ultimo_total_consultas_
+10.0     327
+11.0     277
+9.0      275
+12.0     226
+8.0      196
+7.0      137
+13.0     135
+6.0      125
+5.0      124
+4.0       68
+14.0      50
+3.0       45
+15.0      28
+2.0       21
+0.0       20
+1.0       12
+99.0      10
+17.0       5
+16.0       3
+18.0       2
+912.0      1
+109.0      1
+40.0       1
+Name: count, dtype: int64
+RUCAF_prestador tiene 0 valores nulos
+RUCAF_prestador tiene 250 valores únicos.
+<StringArray>
+[          'ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO',
+                              'INSTITUTO ASISTENCIAL COLECTIVO IAC',
+                                                                 '',
+ 'AMDM IAMPP - ASISTENCIAL MEDICA DEPARTAMENTAL DE MALDONADO IAMPP',
+                                                             'ASSE',
+                                                           'COMECA',
+                   'ASOCIACION ESPAÑOLA PRIMERA DE SOCORROS MUTUOS',
+                                                            'CRAMI',
+                          'CIRCULO CATOLICO DE OBREROS DEL URUGUAY',
+                                                            'COMEF',
+ ...
+                                                      'ASSE|CAMDEL',
+                                      'SANIDAD DE LAS FF.AA|COMERI',
+                        'CUDAM|CASA DE GALICIA|ASOCIACIÓN ESPAÑOLA',
+                                                       'COMEF|ASSE',
+                                            'SEGURO AMERICANO|ASSE',
+                                          'HOSPITAL POLICIAL|CASMU',
+                                                    'UNIVERSAL|SMI',
+                                 'ASSE|UNIVERSAL|HOSPITAL POLICIAL',
+                            'CIRCULO CATOLICO|MEDICA URUGUAYA|ASSE',
+                           'HOSPITAL BRITANICO|ASOCIACIÓN ESPAÑOLA']
+Length: 250, dtype: str
+RUCAF_prestador
+                                                          5205
+ASSE                                                      2399
+ASSE - ADMINISTRACION DE SERVICIOS DE SALUD DEL ESTADO    2139
+MEDICA URUGUAYA MUCAM                                      562
+CASMU                                                      452
+                                                          ... 
+HOSPITAL POLICIAL|CASMU                                      1
+UNIVERSAL|SMI                                                1
+ASSE|UNIVERSAL|HOSPITAL POLICIAL                             1
+CIRCULO CATOLICO|MEDICA URUGUAYA|ASSE                        1
+HOSPITAL BRITANICO|ASOCIACIÓN ESPAÑOLA                       1
+Name: count, Length: 250, dtype: int64
+RUCAF_PRESTADOR_PUBLICO_ tiene 0 valores nulos
+RUCAF_PRESTADOR_PUBLICO_ tiene 2 valores únicos.
+[ True False]
+RUCAF_PRESTADOR_PUBLICO_
+False    11365
+True      5259
+Name: count, dtype: int64
+RUCAF_PRESTADOR_PRIVADO_ tiene 0 valores nulos
+RUCAF_PRESTADOR_PRIVADO_ tiene 2 valores únicos.
+[False  True]
+RUCAF_PRESTADOR_PRIVADO_
+False    9958
+True     6666
+Name: count, dtype: int64
+RUCAF_pais tiene 0 valores nulos
+RUCAF_pais tiene 6 valores únicos.
+<StringArray>
+['UY', '', 'CU', 'PE', 'AR', 'BR']
+Length: 6, dtype: str
+RUCAF_pais
+UY    11414
+       5205
+AR        2
+CU        1
+PE        1
+BR        1
+Name: count, dtype: int64
+RUCAF_departamento tiene 0 valores nulos
+RUCAF_departamento tiene 20 valores únicos.
+<StringArray>
+[    'TACUAREMBO', 'TREINTA Y TRES',               '',      'MALDONADO',
+        'ARTIGAS',     'MONTEVIDEO',          'SALTO',      'CANELONES',
+       'SAN JOSE',      'RIO NEGRO',        'FLORIDA',       'PAYSANDU',
+    'CERRO LARGO',          'ROCHA',         'RIVERA',        'COLONIA',
+         'FLORES',        'DURAZNO',        'SORIANO',      'LAVALLEJA']
+Length: 20, dtype: str
+RUCAF_departamento
+                  5326
+MONTEVIDEO        4753
+CANELONES         1718
+MALDONADO         1024
+PAYSANDU           591
+ROCHA              362
+SAN JOSE           350
+ARTIGAS            308
+COLONIA            284
+SORIANO            277
+LAVALLEJA          242
+SALTO              221
+RIVERA             217
+CERRO LARGO        214
+FLORIDA            186
+TREINTA Y TRES     169
+DURAZNO            146
+RIO NEGRO          114
+FLORES              88
+TACUAREMBO          34
+Name: count, dtype: int64
+RUCAF_region_ tiene 0 valores nulos
+RUCAF_region_ tiene 5 valores únicos.
+<StringArray>
+['Norte', 'Este', '', 'Sur', 'Oeste']
+Length: 5, dtype: str
+RUCAF_region_
+Sur      6471
+         5326
+Este     2011
+Oeste    1445
+Norte    1371
+Name: count, dtype: int64
+RUCAF_localidad tiene 0 valores nulos
+RUCAF_localidad tiene 265 valores únicos.
+<StringArray>
+[             'TACUAREMBO',          'TREINTA Y TRES',
+                        '',               'MALDONADO',
+             'BELLA UNION',                 'VERGARA',
+              'MONTEVIDEO',                   'SALTO',
+                 'SALINAS',                  'MIGUES',
+ ...
+                 'ALGORTA',         'RINCON DEL PINO',
+              'LAS FLORES',               'ARAMENDIA',
+ 'EJIDO DE TREINTA Y TRES',              'JUAN SOLER',
+  'SAN RAFAEL - EL PLACER',            'GUAZU - VIRA',
+           'EL EUCALIPTUS',              'BLANQUILLO']
+Length: 265, dtype: str
+RUCAF_localidad
+                          5613
+MONTEVIDEO                4684
+MALDONADO                  607
+PAYSANDU                   519
+LAS PIEDRAS                288
+                          ... 
+JUAN SOLER                   1
+SAN RAFAEL - EL PLACER       1
+GUAZU - VIRA                 1
+EL EUCALIPTUS                1
+BLANQUILLO                   1
+Name: count, Length: 265, dtype: int64
+RUCAF_cobertura tiene 0 valores nulos
+RUCAF_cobertura tiene 5 valores únicos.
+<StringArray>
+['Fonasa', '', 'No Fonasa', 'Fonasa|No Fonasa', 'No Fonasa|Fonasa']
+Length: 5, dtype: str
+RUCAF_cobertura
+Fonasa              7350
+                    5205
+No Fonasa           3582
+Fonasa|No Fonasa     250
+No Fonasa|Fonasa     237
+Name: count, dtype: int64
+RUCAF_fonasa tiene 0 valores nulos
+RUCAF_fonasa tiene 2 valores únicos.
+[ True False]
+RUCAF_fonasa
+False    8787
+True     7837
+Name: count, dtype: int64
+RUCAF_no_fonasa tiene 0 valores nulos
+RUCAF_no_fonasa tiene 2 valores únicos.
+[False  True]
+RUCAF_no_fonasa
+False    12555
+True      4069
+Name: count, dtype: int64
+SHARPS_ tiene 0 valores nulos
+SHARPS_ tiene 2 valores únicos.
+[0 1]
+SHARPS_
+0    15780
+1      844
+Name: count, dtype: int64
+SIV_ tiene 0 valores nulos
+SIV_ tiene 2 valores únicos.
+[1 0]
+SIV_
+1    16085
+0      539
+Name: count, dtype: int64
+ANTIPOLIOMELITICA tiene 8809 valores nulos
+ANTIPOLIOMELITICA tiene 6 valores únicos.
+[nan  4.  1.  3.  2.  5.]
+ANTIPOLIOMELITICA
+4.0    7096
+3.0     551
+2.0      86
+1.0      78
+5.0       4
+Name: count, dtype: int64
+COVID 19 tiene 2386 valores nulos
+COVID 19 tiene 7 valores únicos.
+[ 3. nan  4.  2.  5.  1.  6.]
+COVID 19
+3.0    5607
+2.0    4725
+4.0    2140
+1.0    1295
+5.0     468
+6.0       3
+Name: count, dtype: int64
+EH_cercano_a_IAE_cedula tiene 13114 valores nulos
+EH_cercano_a_IAE_cedula tiene 3511 valores únicos.
+<StringArray>
+[                                                               nan,
+ '00038a5392a55a75ead4cc22801ce5fb4aa1e94d0b70db8d78c72df7ea548a22',
+ '00127d6bb76d70724ef073fe967dd80f6b77df38a959ae4dafefff2789cd8326',
+ '00133099d10f0d6d56bd2f58267ff271fd097b1682638fc7405967ed68fbeff5',
+ '0030bb8c07a67297c77cf5517bcce3430a311da7e5e14d8b454a1a91a81db92f',
+ '0032097781d6234e08d6d3034d49bb174722254cc33215ddd67c82882f686cfc',
+ '004f9b8237cdb9714e3b7b6d9cd9c47960a85dece51f9e61ff243ac74fa03677',
+ '0051602677e128d5e59113b46589c7818f3de12e4d493ae759218f324cf495fc',
+ '0064e230db26bdf9da80017cc9f69dd7200a028c856939cd19ed154d10705493',
+ '0071e99c981f18715a3168bd92bc1498ac42bb1832863a4ec5552c3ab42f750f',
+ ...
+ 'ff18bbe560c23d48379168b46443f8c372e6ac4c94c3658e5b97626e3e0fc058',
+ 'ff33f944b338d5cdcc3e569f49d5c309fcca1835a1d88578f095789cc8192b49',
+ 'ff751db5ddbd632278422e3053013b12acbb3e38d5340f799c0c1299cad60ae4',
+ 'ff840aae094b1df98b5d3b5a63b70c0d1cf3553d0a9578b914937329c43f3d6a',
+ 'ff8cd8b4d9e85d353836df7d5bd97f3b697b89c71c7ed5ea91b278d1fc9fc2ca',
+ 'ffad450c91e4fdb4831fefbbe1214c36557a8c2715e957513e51498f913d2cce',
+ 'ffaf5b59e48dd061bdd1ad719e6b378feaa5a9e6db02560474b1ffa62cb97ecd',
+ 'ffc6e7a4e1d9bc63fd7177a25837cc8a6eab8670daedd737ad97902d88108538',
+ 'ffcb5416f84c389ce136fed3c0d4af924b470721ddce27bd0153645fb0c1253c',
+ 'ffe42d723da45d0e54737c67fccc747dcc8aceb73075fb598b755045e8c6ff56']
+Length: 3511, dtype: str
+EH_cercano_a_IAE_cedula
+00038a5392a55a75ead4cc22801ce5fb4aa1e94d0b70db8d78c72df7ea548a22    1
+00127d6bb76d70724ef073fe967dd80f6b77df38a959ae4dafefff2789cd8326    1
+00133099d10f0d6d56bd2f58267ff271fd097b1682638fc7405967ed68fbeff5    1
+0030bb8c07a67297c77cf5517bcce3430a311da7e5e14d8b454a1a91a81db92f    1
+0032097781d6234e08d6d3034d49bb174722254cc33215ddd67c82882f686cfc    1
+                                                                   ..
+ffad450c91e4fdb4831fefbbe1214c36557a8c2715e957513e51498f913d2cce    1
+ffaf5b59e48dd061bdd1ad719e6b378feaa5a9e6db02560474b1ffa62cb97ecd    1
+ffc6e7a4e1d9bc63fd7177a25837cc8a6eab8670daedd737ad97902d88108538    1
+ffcb5416f84c389ce136fed3c0d4af924b470721ddce27bd0153645fb0c1253c    1
+ffe42d723da45d0e54737c67fccc747dcc8aceb73075fb598b755045e8c6ff56    1
+Name: count, Length: 3510, dtype: int64
+EH_cercano_a_IAE_Institución tiene 13114 valores nulos
+EH_cercano_a_IAE_Institución tiene 48 valores únicos.
+<StringArray>
+[                   nan,                 'CCOU',                 'AMDM',
+     'HOSPITAL MILITAR',  'HOSPITAL EVANGÉLICO',                'ASESP',
+                'COMEF',              'GREMEDA',                  'IAC',
+                 'ASSE',               'CAMCEL',                'COSEM',
+                'MUCAM',               'COMEPA',                'CAMEC',
+            'UNIVERSAL',                'CRAME',                 'CAMY',
+              'CAAMEPA',                'CRAMI',                 'CAMS',
+               'COMERO',               'CASMER',               'COMECA',
+               'GREMCA',                  'SMI',                 'AMSJ',
+              'COMEFLO',                'CASMU',    'HOSPITAL POLICIAL',
+                  'BSE', 'HOSPITAL DE CLINICAS',               'COMERI',
+  'HOSPITAL EVANGELICO',   'HOSPITAL BRITÁNICO',              'CAMEDUR',
+                'CAMOC',                 'SMQS',                'CUDAM',
+              'AMEDRIN',               'SUMMUM',   'HOSPITAL BRITANICO',
+               'CAMDEL',                   'MP',        'SEG AMERICANO',
+                'BCBSU',                'COMTA',       'BPS CRENADECER']
+Length: 48, dtype: str
+EH_cercano_a_IAE_Institución
+ASSE                    1261
+MUCAM                    234
+ASESP                    179
+SMI                      177
+AMDM                     140
+UNIVERSAL                125
+COSEM                     86
+CCOU                      82
+COMEPA                    76
+CASMU                     73
+SMQS                      64
+CAMS                      63
+CAMEC                     62
+HOSPITAL MILITAR          52
+COMERI                    52
+CRAME                     50
+CASMER                    50
+CRAMI                     49
+COMERO                    49
+CUDAM                     46
+CAMCEL                    44
+AMSJ                      44
+CAAMEPA                   42
+COMECA                    41
+CAMEDUR                   35
+HOSPITAL POLICIAL         33
+COMEF                     31
+HOSPITAL EVANGELICO       31
+HOSPITAL EVANGÉLICO       29
+CAMDEL                    28
+IAC                       26
+GREMCA                    22
+COMEFLO                   21
+HOSPITAL DE CLINICAS      18
+BSE                       15
+HOSPITAL BRITÁNICO        12
+GREMEDA                   11
+MP                        10
+CAMOC                      9
+CAMY                       7
+BCBSU                      7
+AMEDRIN                    6
+HOSPITAL BRITANICO         6
+SEG AMERICANO              5
+SUMMUM                     4
+COMTA                      2
+BPS CRENADECER             1
+Name: count, dtype: int64
+EH_cercano_a_IAE_Sector tiene 13114 valores nulos
+EH_cercano_a_IAE_Sector tiene 3 valores únicos.
+<StringArray>
+[nan, 'PRIVADO', 'PUBLICO']
+Length: 3, dtype: str
+EH_cercano_a_IAE_Sector
+PRIVADO    2130
+PUBLICO    1380
+Name: count, dtype: int64
+EH_cercano_a_IAE_Fecha ingreso tiene 13114 valores nulos
+EH_cercano_a_IAE_Fecha ingreso tiene 719 valores únicos.
+<DatetimeArray>
+[                'NaT', '2024-03-06 00:00:00', '2024-11-27 00:00:00',
+ '2024-05-29 00:00:00', '2023-06-19 00:00:00', '2024-11-21 00:00:00',
+ '2024-04-28 00:00:00', '2023-08-11 00:00:00', '2023-04-15 00:00:00',
+ '2023-05-08 00:00:00',
+ ...
+ '2024-02-08 00:00:00', '2023-02-24 00:00:00', '2024-06-01 00:00:00',
+ '2023-10-20 00:00:00', '2022-12-21 00:00:00', '2024-06-16 00:00:00',
+ '2024-06-26 00:00:00', '2024-07-13 00:00:00', '2023-11-19 00:00:00',
+ '2024-08-02 00:00:00']
+Length: 719, dtype: datetime64[us]
+EH_cercano_a_IAE_Fecha ingreso
+2023-08-11    19
+2023-02-08    18
+2023-09-11    18
+2023-04-11    17
+2023-05-08    16
+              ..
+2024-06-16     1
+2024-06-26     1
+2024-07-13     1
+2023-11-19     1
+2024-08-02     1
+Name: count, Length: 718, dtype: int64
+EH_cercano_a_IAE_Fecha Egreso tiene 13114 valores nulos
+EH_cercano_a_IAE_Fecha Egreso tiene 701 valores únicos.
+<DatetimeArray>
+[                'NaT', '2024-03-19 00:00:00', '2024-12-09 00:00:00',
+ '2024-05-31 00:00:00', '2023-06-23 00:00:00', '2024-12-03 00:00:00',
+ '2024-05-15 00:00:00', '2023-08-25 00:00:00', '2023-04-19 00:00:00',
+ '2023-05-09 00:00:00',
+ ...
+ '2024-11-03 00:00:00', '2024-09-21 00:00:00', '2023-11-11 00:00:00',
+ '2024-09-14 00:00:00', '2023-02-12 00:00:00', '2024-03-30 00:00:00',
+ '2024-12-08 00:00:00', '2024-03-24 00:00:00', '2024-05-08 00:00:00',
+ '2023-01-08 00:00:00']
+Length: 701, dtype: datetime64[us]
+EH_cercano_a_IAE_Fecha Egreso
+2023-02-09    18
+2023-04-14    18
+2023-05-16    14
+2023-06-16    14
+2023-05-26    13
+              ..
+2024-03-30     1
+2024-12-08     1
+2024-03-24     1
+2024-05-08     1
+2023-01-08     1
+Name: count, Length: 700, dtype: int64
+EH_cercano_a_IAE_Diagnostico principal según CIE-10 tiene 13114 valores nulos
+EH_cercano_a_IAE_Diagnostico principal según CIE-10 tiene 784 valores únicos.
+<StringArray>
+[    nan, 'F60.3', 'M79.6', 'F60.9', 'F60.8', 'T42.4', 'F42.2', 'F41.9',
+ 'O04.9', 'M99.6',
+ ...
+ 'D73.5', 'J12.8', 'K56.5', 'E11.9', 'H80.9', 'I30.9', 'S06.4', 'D25.2',
+ 'G93.4', 'S30.0']
+Length: 784, dtype: str
+EH_cercano_a_IAE_Diagnostico principal según CIE-10
+T42.4    290
+F32.9    284
+F60.9    151
+Z91.5    111
+F32.2     89
+        ... 
+I30.9      1
+S06.4      1
+D25.2      1
+G93.4      1
+S30.0      1
+Name: count, Length: 783, dtype: int64
+EH_cercano_a_IAE_Causa externa según CIE-10 tiene 15695 valores nulos
+EH_cercano_a_IAE_Causa externa según CIE-10 tiene 165 valores únicos.
+<StringArray>
+[    nan, 'X61.0', 'X78.0', 'X61.9', 'X78.8', 'X67.9', 'X60.9', 'X60.0',
+ 'X64.0', 'W25.1',
+ ...
+ 'V22.4', 'W83.0', 'X70.4', 'V21.9', 'W34.9', 'V03.1', 'X50.3', 'W02.9',
+ 'Y76.1', 'W13.2']
+Length: 165, dtype: str
+EH_cercano_a_IAE_Causa externa según CIE-10
+X61.0    167
+X61.9    130
+X64.9    100
+X64.0     57
+X78.9     43
+        ... 
+V03.1      1
+X50.3      1
+W02.9      1
+Y76.1      1
+W13.2      1
+Name: count, Length: 164, dtype: int64
+EH_antecedente_EH_intento_suicidio tiene 13114 valores nulos
+EH_antecedente_EH_intento_suicidio tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_intento_suicidio
+0.0    2451
+1.0    1059
+Name: count, dtype: int64
+EH_antecedente_EH_ideacion_suicida tiene 13114 valores nulos
+EH_antecedente_EH_ideacion_suicida tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_ideacion_suicida
+0.0    3222
+1.0     288
+Name: count, dtype: int64
+EH_antecedente_EH_antecedente_autolesion tiene 13114 valores nulos
+EH_antecedente_EH_antecedente_autolesion tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_antecedente_autolesion
+0.0    3074
+1.0     436
+Name: count, dtype: int64
+EH_antecedente_EH_vulnerabilidad_laboral tiene 13114 valores nulos
+EH_antecedente_EH_vulnerabilidad_laboral tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_vulnerabilidad_laboral
+0.0    3507
+1.0       3
+Name: count, dtype: int64
+EH_antecedente_EH_vulnerabilidad_economica tiene 13114 valores nulos
+EH_antecedente_EH_vulnerabilidad_economica tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_vulnerabilidad_economica
+0.0    3482
+1.0      28
+Name: count, dtype: int64
+EH_antecedente_EH_conflicto_soporte_familiar tiene 13114 valores nulos
+EH_antecedente_EH_conflicto_soporte_familiar tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_conflicto_soporte_familiar
+0.0    3451
+1.0      59
+Name: count, dtype: int64
+EH_antecedente_EH_historia_trauma_infantil tiene 13114 valores nulos
+EH_antecedente_EH_historia_trauma_infantil tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_historia_trauma_infantil
+0.0    3502
+1.0       8
+Name: count, dtype: int64
+EH_antecedente_EH_trastorno_depresivo tiene 13114 valores nulos
+EH_antecedente_EH_trastorno_depresivo tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_trastorno_depresivo
+0.0    2529
+1.0     981
+Name: count, dtype: int64
+EH_antecedente_EH_trastorno_bipolar tiene 13114 valores nulos
+EH_antecedente_EH_trastorno_bipolar tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_trastorno_bipolar
+0.0    3433
+1.0      77
+Name: count, dtype: int64
+EH_antecedente_EH_consumo_sustancias tiene 13114 valores nulos
+EH_antecedente_EH_consumo_sustancias tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_consumo_sustancias
+0.0    3033
+1.0     477
+Name: count, dtype: int64
+EH_antecedente_EH_trastorno_personalidad tiene 13114 valores nulos
+EH_antecedente_EH_trastorno_personalidad tiene 3 valores únicos.
+[nan  1.  0.]
+EH_antecedente_EH_trastorno_personalidad
+0.0    2981
+1.0     529
+Name: count, dtype: int64
+EH_antecedente_EH_ansiedad_y_estres tiene 13114 valores nulos
+EH_antecedente_EH_ansiedad_y_estres tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_ansiedad_y_estres
+0.0    3045
+1.0     465
+Name: count, dtype: int64
+EH_antecedente_EH_enfermedad_oncologica tiene 13114 valores nulos
+EH_antecedente_EH_enfermedad_oncologica tiene 3 valores únicos.
+[nan  0.  1.]
+EH_antecedente_EH_enfermedad_oncologica
+0.0    3434
+1.0      76
+Name: count, dtype: int64
+EH_cercano_a_IAE_dias_internacion_ tiene 13114 valores nulos
+EH_cercano_a_IAE_dias_internacion_ tiene 85 valores únicos.
+[ nan  13.  12.   2.   4.  17.  14.   1.  28.  57.   7.   9.   3.  18.
+   6.   0. 152.   5.   8.  24.  42.  15.  49.  11.  23.  10.  19.  31.
+ 133.  32.  16.  43.  66.  84.  30.  46.  50.  20.  36.  40. 233.  56.
+  29.  21.  22.  33.  27.  35.  59.  39. 104.  54.  25.  34.  44.  67.
+  45.  26.  37.  51. 112. 123.  99.  53.  48. 117. 124.  38.  70.  77.
+  62. 141.  64.  75.  60.  58.  88.  92.  76.  61.  41. 139. 153. 149.
+  68.]
+EH_cercano_a_IAE_dias_internacion_
+1.0      449
+2.0      431
+3.0      354
+4.0      302
+5.0      249
+        ... 
+61.0       1
+139.0      1
+153.0      1
+149.0      1
+68.0       1
+Name: count, Length: 84, dtype: int64

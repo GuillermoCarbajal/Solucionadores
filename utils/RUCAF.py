@@ -1,5 +1,7 @@
 import numpy as np 
 import pandas as pd
+from .utils import conservar_filas_con_n_no_nulos, eliminar_duplicados
+from .IAE import agregar_tipo_prestador_IAE
 
 def agregar_datos_RUCAF_en_IAE_old(df_RUCAF, df_IAE):
     
@@ -117,3 +119,14 @@ def agregar_datos_RUCAF_en_IAE(intento, df_RUCAF_agrupada):
         result[k] = v
 
     return result
+
+
+def preprocesar_RUCAF(df_IAE_RUCAF):
+
+    df_IAE_RUCAF = conservar_filas_con_n_no_nulos(df_IAE_RUCAF, 2)
+    df_IAE_RUCAF = eliminar_duplicados(df_IAE_RUCAF)
+    df_IAE_RUCAF = agregar_RUCAF_region(df_IAE_RUCAF)
+    df_IAE_RUCAF = agregar_tipo_prestador_IAE(df_IAE_RUCAF,'prestador','tipo_prestador_RUCAF')
+
+
+    return df_IAE_RUCAF

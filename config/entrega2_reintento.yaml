@@ -27,19 +27,19 @@ data:
     #- CNV_otro_progenitor_
     #- ANTIPOLIOMELITICA
     #- COVID 19
-    - NO_CONCURRIO_CONSULTA_
+    #- NO_CONCURRIO_CONSULTA_
     #- EH_cercano_a_IAE_EH_intento_suicidio
     - EH_antecedente_EH_ideacion_suicida
     - EH_antecedente_EH_antecedente_autolesion
-    - EH_antecedente_EH_vulnerabilidad_laboral
-    - EH_antecedente_EH_vulnerabilidad_economica
+    #- EH_antecedente_EH_vulnerabilidad_laboral
+    #- EH_antecedente_EH_vulnerabilidad_economica
     - EH_antecedente_EH_conflicto_soporte_familiar
-    - EH_antecedente_EH_historia_trauma_infantil
+    #- EH_antecedente_EH_historia_trauma_infantil
     - EH_antecedente_EH_trastorno_bipolar
     - EH_antecedente_EH_consumo_sustancias
     - EH_antecedente_EH_trastorno_personalidad
     - EH_antecedente_EH_ansiedad_y_estres
-    - EH_antecedente_EH_enfermedad_oncologica
+    #- EH_antecedente_EH_enfermedad_oncologica
     - EH_cercano_a_IAE_dias_internacion_
   cat_features:
     - METODO_

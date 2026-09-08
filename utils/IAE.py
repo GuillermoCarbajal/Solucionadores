@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from .utils import obtener_palabras_en_campo_que_contienen_substr, convertir_enteros_a_fecha
+from .utils import obtener_palabras_en_campo_que_contienen_substr, convertir_enteros_a_fecha, discretizar
 
 def filtrar_IAES_por_fecha_registro(df_IAE, fecha_inicial, fecha_fin):
     '''
@@ -226,13 +226,7 @@ def agregar_campo_DECISION(df_IAE, campo_decision, nuevo_nombre):
 
     return df_IAE
 
-def agregar_si_intentos_en_CDE(df_IAE, df_IAE_CDE, nombre_nuevo_campo='DEFUNCION_'):
-    df_IAE[nombre_nuevo_campo] = df_IAE["CEDULA"].isin(df_IAE_CDE["cedula"]).astype(int)
-    cantidad_intentos_fallecidos = np.sum(df_IAE[nombre_nuevo_campo])
-    print(f'Se agrego el campo {nombre_nuevo_campo} que vale 1 si la persona falleció (no necesariamente suicidio)')
-    print(f'{cantidad_intentos_fallecidos} de los {df_IAE.shape[0]} intentos están asociados a personas fallecidas') 
 
-    return df_IAE
 
 def agregar_si_es_IAE(df_IAE,  nombre_nuevo_campo='es_IAE_'):
     df_IAE[nombre_nuevo_campo] = ~df_IAE["FECHA IAE"].isnull()
@@ -437,4 +431,76 @@ def agregar_tiempo_reincidencia(df_IAE):
     df_IAE['reint_muerte_90dias_'] = df_IAE['tiempo_reintento_muerte_'] < 90 #pd.Timedelta(days=90)
     df_IAE['reintento_muerte_'] = ~pd.isnull(df_IAE['tiempo_reintento_muerte_']) 
   
+    return df_IAE
+
+
+def preprocesar_IAE(df_IAE, dataset=2, eliminar_descartadas_por_rastreador = True):
+
+    campo_decision = 'DECISION' if dataset==2 else 'DECISIÓN'
+    campo_nacimiento = 'FECHA NACIMIENTO' if dataset==2 else 'NACIMIENTO'
+    campo_prestador = 'PRESTADOR' if dataset==2 else 'PRESTADOR RECODIFICADO'
+    campo_edad = 'EDAD_' if dataset==2 else 'EDAD' 
+
+    df_IAE = agregar_si_tiene_fecha_registro(df_IAE)
+    df_IAE = agregar_si_es_IAE(df_IAE)
+
+
+ 
+    df_IAE = agregar_tipo_prestador_IAE(df_IAE, campo_prestador)
+
+    df_IAE = acondicionar_atributo_metodo(df_IAE)
+
+    df_IAE = agregar_categoria_metodo(df_IAE)
+    #mostrar_frecuencias(df_IAE, 'METODO_')
+
+    df_IAE = acondicionar_IAE_PREVIO(df_IAE)
+    #mostrar_frecuencias(df_IAE,'IAE PREVIO')
+    #mostrar_unicos(df_IAE,'IAE PREVIO')
+
+    df_IAE = calcular_y_agregar_campo_edad(df_IAE, 'FECHA IAE', campo_nacimiento)
+    #mostrar_rango(df_IAE, 'EDAD_')
+
+    df_IAE = discretizar(df_IAE, campo_edad, "GRUPO_EDAD_", 5)
+
+    df_IAE = acondicionar_campo_DECISION(df_IAE, campo_decision)
+    #mostrar_unicos(df_IAE, campo_decision)
+    #mostrar_frecuencias(df_IAE, campo_decision)
+
+    agregar_campo_DECISION(df_IAE, campo_decision, 'DECISION_')
+    #mostrar_unicos(df_IAE,campo_decision)
+    #mostrar_frecuencias(df_IAE,campo_decision)
+    #mostrar_unicos(df_IAE, 'DECISION_')
+    #mostrar_frecuencias(df_IAE, 'DECISION_')
+
+    if dataset==2:
+        df_IAE = corregir_fechas_enteras_prestadores(df_IAE)
+        df_IAE = acondicionar_campos_prestadores(df_IAE)
+        df_IAE = acondicionar_CONCURRIO(df_IAE, 'CONCURRIO_', 'CONCURRIO_binaria')
+        df_IAE = acondicionar_campo_agendo_consulta_en_7dias(df_IAE,'AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_')
+        #mostrar_frecuencias(df_IAE,'AGENDO CONSULTA ESM 7DIAS SI/NO/INTERNADO_')
+
+        print('Campo CONCURRIO crudo:', df_IAE['CONCURRIO'].unique().tolist())
+        df_IAE['CONCURRIO_'] = convertir_enteros_a_fecha(df_IAE['CONCURRIO'])
+        print('Campo CONCURRIO_ luego de convertir enteros a fechas:',df_IAE['CONCURRIO_'].unique().tolist())        
+    
+        print(df_IAE['AGENDO NUEVA CONSULTA'].unique().tolist())
+        df_IAE['AGENDO NUEVA CONSULTA_'] = convertir_enteros_a_fecha(df_IAE['AGENDO NUEVA CONSULTA'])
+        print(df_IAE['AGENDO NUEVA CONSULTA_'].unique().tolist())
+
+  
+    if eliminar_descartadas_por_rastreador:
+        n_antes = df_IAE.shape[0]
+        print('Antes de eliminar los intentos descartados por rastreador habían: ', n_antes)
+        df_IAE = df_IAE[df_IAE['DESCARTADA_POR_RASTREADOR']==False]
+        n_despues = df_IAE.shape[0]
+        print('Luego de eliminar los intentos descartados por rastreador hay: ', n_despues)
+        print('Se eliminaron ', n_antes-n_despues, 'intentos descartados por los rastreadores')   
+
+
+    print('Agregando info de intentos anteriores')
+    df_IAE = agregar_info_intentos_previos(df_IAE)
+
+    print('Agregando info de intentos posteriores')
+    df_IAE = agregar_fecha_IAE_siguiente(df_IAE)
+
     return df_IAE

@@ -54,7 +54,7 @@ def agregar_campo(base, campo, funcion_criterio, nombre_nuevo_atributo):
     return campo_agregado
 
 
-def agregar_base_intentos(df_IAE, dataset):
+def agregar_base_intentos(df_IAE, dataset, training_mode=False):
 
     if dataset==1:
         campo_nacimiento = 'NACIMIENTO'
@@ -111,19 +111,21 @@ def agregar_base_intentos(df_IAE, dataset):
 
     agg_dict['ULTIMO_INTENTO_'] = ("FECHA IAE", ultimo_intento)
     agg_dict['DIAS_PROMEDIO_INTENTOS_'] = ("FECHA IAE", promedio_entre_intentos)
-    agg_dict['MIN_DIAS_IAE_MUERTE_'] = ("DIAS_IAE_MUERTE_", min_o_nan)
 
-    agg_dict['IAE_en_CDE_'] = ('IAE_en_CDE', ultimo_no_nulo)
-    agg_dict['FECHA_DEFUNCION'] = ("FECHA_DEFUNCION", ultimo_no_nulo)
-    agg_dict['CAT_SUI_'] = ('CAT_SUI_', ultimo_no_nulo)
-    agg_dict['CAT_MCEXSUI_'] = ('CAT_MCEXSUI_', ultimo_no_nulo)
+    if training_mode:
+        # Los datos de la base de defunciones se conocen durante el entrenamiento pero no en test  
+        agg_dict['MIN_DIAS_IAE_MUERTE_'] = ("DIAS_IAE_MUERTE_", min_o_nan)
+        agg_dict['IAE_en_CDE_'] = ('IAE_en_CDE', ultimo_no_nulo)
+        agg_dict['FECHA_DEFUNCION'] = ("FECHA_DEFUNCION", ultimo_no_nulo)
+        agg_dict['CAT_SUI_'] = ('CAT_SUI_', ultimo_no_nulo)
+        agg_dict['CAT_MCEXSUI_'] = ('CAT_MCEXSUI_', ultimo_no_nulo)
 
 
-    if dataset==2:
-        agg_dict['MOTIVO_EXT_SUI_'] = ('MOTIVO_EXT_SUI_', moda_o_nan)
-        agg_dict['MOTIVO_EXTERNO_'] = ('MOTIVO_EXTERNO_', moda_o_nan)
-        agg_dict['ES_MOTIVO_EXTERNO_'] = ('ES_MOTIVO_EXTERNO_', moda_o_nan)
-    
+        if dataset==2:
+            agg_dict['MOTIVO_EXT_SUI_'] = ('MOTIVO_EXT_SUI_', moda_o_nan)
+            agg_dict['MOTIVO_EXTERNO_'] = ('MOTIVO_EXTERNO_', moda_o_nan)
+            agg_dict['ES_MOTIVO_EXTERNO_'] = ('ES_MOTIVO_EXTERNO_', moda_o_nan)
+        
     agg_dict['CNV_'] = ("CNV_", moda_o_nan)
     
     agg_dict['CNV_ultimo_cant_hijos_'] = ("CNV_cant_hijos_cuando_IAE", ultimo_no_nulo)
