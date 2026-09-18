@@ -272,7 +272,12 @@ if __name__ == "__main__":
         ET.SubElement(
             classifier_node,
             "Probability"
-        ).text = str(float(predictions[0, 1]))
+        ).text = str(float(calib_predictions[0, 1]))
+
+        ET.SubElement(
+            classifier_node,
+            "Prevalence"
+        ).text = str(float(calibrated_clf.prevalence))
 
     xml_string = ET.tostring(root, encoding="unicode")
 

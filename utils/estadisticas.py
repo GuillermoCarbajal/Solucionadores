@@ -36,10 +36,14 @@ def graficar_segun_fecha(base, atributo_fecha, frecuencia):
     '''
     base[atributo_fecha].value_counts()
     #conteo = df_IAE['REGISTRO'].dt.date.value_counts().sort_index() # por día
-    frecuencias = base.set_index(atributo_fecha).resample('W').size()
+    frecuencias = base.set_index(atributo_fecha).resample(frecuencia).size()
 
-    if frecuencia=='W':
+    if frecuencia == 'W':
         periodo = 'semana'
+    elif frecuencia == 'ME':
+        periodo = 'mes'
+    else:
+        raise ValueError("frecuencia debe ser 'W' o 'ME'")
         
     plt.figure()
     frecuencias.plot()

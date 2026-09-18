@@ -945,11 +945,28 @@ def run_experiment(args):
         reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment, calibr_transform=calibrator)
 
         prevalence = y.mean()
+        print('prevalencia: ', prevalence)
         if args.log_comet:
             cometExperiment.log_metric('prevalencia', prevalence)
 
             
         calibrated_model = CalibratedModel(gs_pipeline.best_estimator_, calibrator, prevalence)
+
+        
+        # Predicciones del modelo final sobre train
+        train_probabilities = calibrated_model.predict_proba(X)[:, 1]
+
+        # Guardar predicciones de referencia
+        reference = pd.DataFrame({
+            'index': data.index,
+            'y': y,
+            'probability': train_probabilities
+        })
+
+        reference.to_csv(
+            f"{model_type}_{target}_train_predictions.csv",
+            index=False
+        )
 
         # Guardar modelo calibrado
         joblib.dump(calibrated_model, f"{model_type}_{target}_{'calib'}.joblib")
