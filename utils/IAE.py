@@ -22,6 +22,31 @@ def etiquetar_prestador(institucion):
     else:
         return 'Privada'
 
+
+# def recodificar_prestador(prestador, lista_prestadores):
+#     for prestador in 
+# def asignar_prestador(institucion, lista_prestadores):
+#     ''' 
+#     Codificar los prestadores asociados a un IAE utilizando la lista de prestadores. 
+#     '''
+#     if institucion=='No indicado':
+#         return institucion
+#     elif institucion == 'NaN' or pd.isna(institucion):
+#         return 'nan'
+#     elif '|' in institucion:
+#         instituciones =  institucion.split('|')
+#         etiqueta = [etiquetar_prestador(inst) for inst in instituciones]
+#         etiqueta = '|'.join(etiqueta)
+#         return etiqueta
+#     elif '/' in institucion:
+#         instituciones =  institucion.split('/')
+#         etiqueta = [etiquetar_prestador(inst) for inst in instituciones]
+#         etiqueta = '|'.join(etiqueta)  # uniformizo para que queden separados por barra vertical
+#         #print(institucion, etiqueta)
+#         return etiqueta
+#     else:
+#         return etiquetar_prestador(institucion)
+    
 def tipo_prestador_IAE(institucion):
     ''' 
     Etiqueta los prestadores asociados a un IAE. Puede haber varios prestadores asociados al intento. Se separan por el símbolo "|".
@@ -35,6 +60,11 @@ def tipo_prestador_IAE(institucion):
         instituciones =  institucion.split('|')
         etiqueta = [etiquetar_prestador(inst) for inst in instituciones]
         etiqueta = '|'.join(etiqueta)
+        return etiqueta
+    elif '/' in institucion:
+        instituciones =  institucion.split('/')
+        etiqueta = [etiquetar_prestador(inst) for inst in instituciones]
+        etiqueta = '|'.join(etiqueta)  # uniformizo para que queden separados por barra vertical
         #print(institucion, etiqueta)
         return etiqueta
     else:
@@ -441,6 +471,8 @@ def preprocesar_IAE(df_IAE, dataset=2, eliminar_descartadas_por_rastreador = Tru
     campo_prestador = 'PRESTADOR' if dataset==2 else 'PRESTADOR RECODIFICADO'
     campo_edad = 'EDAD_' if dataset==2 else 'EDAD' 
 
+
+
     df_IAE = agregar_si_tiene_fecha_registro(df_IAE)
     df_IAE = agregar_si_es_IAE(df_IAE)
 
@@ -459,6 +491,9 @@ def preprocesar_IAE(df_IAE, dataset=2, eliminar_descartadas_por_rastreador = Tru
 
     df_IAE = calcular_y_agregar_campo_edad(df_IAE, 'FECHA IAE', campo_nacimiento)
     #mostrar_rango(df_IAE, 'EDAD_')
+     #####    Verificaciones de valores  #########
+    #edades_en_rango = df_IAE[campo_edad] < 120 * df_IAE[campo_edad] >= 0
+    #print(f'Hay {np.sum(~edades_en_rango)} edades fuera del rango [0, 120]')
 
     df_IAE = discretizar(df_IAE, campo_edad, "GRUPO_EDAD_", 5)
 
@@ -504,3 +539,4 @@ def preprocesar_IAE(df_IAE, dataset=2, eliminar_descartadas_por_rastreador = Tru
     df_IAE = agregar_fecha_IAE_siguiente(df_IAE)
 
     return df_IAE
+

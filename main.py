@@ -1,5 +1,6 @@
 from utils.comet_utils import create_experiment, save_gs_results, save_cv_results
 from utils.load_data import load_config
+from utils.calibration import CalibratedModel
 import os
 
 import numpy as np
@@ -613,7 +614,7 @@ def mostrar_histogramas(X, y, nombres=None):
 
 
 def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None, 
-                                indices_subgrupo=[], nombre_subgrupo=''):
+                                indices_subgrupo=[], nombre_subgrupo='', calibr_transform=None):
     
     y_eval = y[indices_subgrupo] if len(indices_subgrupo)>0 else y
     cv_scores_eval =cv_scores[indices_subgrupo] if len(indices_subgrupo)>0 else cv_scores
@@ -637,12 +638,11 @@ def reportar_validacion_cruzada(cv_scores, y, threshold=0.5, cmt_exp=None,
     titulo_curva_calib = 'Curva de probabilidad (val. cruzada)' if nombre_subgrupo=='' else f'Curva de probabilidad (val. curzada) para {nombre_subgrupo}'
     log_calibration_analysis(y_score=cv_scores_eval, y_true=y_eval,  name=titulo_curva_calib, experiment=cmt_exp)
 
-    calibr_transform = LogisticRegression()
-    calibr_transform.fit( cv_scores.reshape(-1, 1), y)
-    scores_eval_cal = calibr_transform.predict_proba(  cv_scores_eval.reshape(-1, 1))[:, 1]
+    if calibr_transform is not None:
+        scores_eval_cal = calibr_transform.predict_proba(  cv_scores_eval.reshape(-1, 1))[:, 1]
 
-    titulo_curva_calib = 'Curva de probabilidad calibrada (val. cruzada)' if nombre_subgrupo=='' else f'Curva de probabilidad calibrada (val. curzada) para {nombre_subgrupo}'
-    log_calibration_analysis(y_score=scores_eval_cal, y_true=y_eval,  name=titulo_curva_calib, experiment=cmt_exp)
+        titulo_curva_calib = 'Curva de probabilidad calibrada (val. cruzada)' if nombre_subgrupo=='' else f'Curva de probabilidad calibrada (val. curzada) para {nombre_subgrupo}'
+        log_calibration_analysis(y_score=scores_eval_cal, y_true=y_eval,  name=titulo_curva_calib, experiment=cmt_exp)
 
 
     if cmt_exp:
@@ -697,6 +697,8 @@ def run_experiment(args):
     trained_classifiers = []
     trained_classifiers_scores = []
     combination_criteria = ['hard_voting', 'soft_voting', 'weighted_soft_voting']
+
+    print('classifiers: ', args.classifiers)
     for model_type in args.classifiers:
        
         cometExperiment = create_experiment(model_type)   if args.log_comet else None
@@ -936,8 +938,23 @@ def run_experiment(args):
         cv_scores = cross_val_predict(gs_pipeline.best_estimator_, X, y,
                                         cv=folds, groups=grupo, method='predict_proba')[:, 1]
         trained_classifiers_scores.append(cv_scores)
+
+        calibrator = LogisticRegression()
+        calibrator.fit( cv_scores.reshape(-1, 1), y)
         
-        reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment)
+        reportar_validacion_cruzada(cv_scores,y,threshold=0.5, cmt_exp=cometExperiment, calibr_transform=calibrator)
+
+        prevalence = y.mean()
+        if args.log_comet:
+            cometExperiment.log_metric('prevalencia', prevalence)
+
+            
+        calibrated_model = CalibratedModel(gs_pipeline.best_estimator_, calibrator, prevalence)
+
+        # Guardar modelo calibrado
+        joblib.dump(calibrated_model, f"{model_type}_{target}_{'calib'}.joblib")
+
+        
 
         
 

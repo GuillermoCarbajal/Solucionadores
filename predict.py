@@ -251,6 +251,18 @@ if __name__ == "__main__":
 
         predictions = estimator.predict_proba(X)
 
+
+        calibrated_clf = joblib.load(f'./modelos/{model_name}_calib.joblib')
+
+        calib_predictions = calibrated_clf.predict_proba(X)
+        raw_predictions = calibrated_clf.predict_proba_raw(X)
+
+        #print(predictions)
+        #print(raw_predictions)
+        print('prevalncia: ', calibrated_clf.prevalence)
+        print('max prediction: ', calib_predictions[:,1].max())
+        print(calib_predictions)
+
         classifier_node = ET.SubElement(
             root,
             "Classifier",
