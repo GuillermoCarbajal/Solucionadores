@@ -25,12 +25,6 @@ El proceso incluye el preprocesamiento de los datos, la construcción de los atr
 
 ### Ejemplos de ejecución
 
-**Realizar inferencia utilizando Random Forest y la configuración por defecto:**
-
-```bash
-python predict.py
-```
-
 **Realizar inferencia utilizando una configuración y un mensaje XML específicos:**
 
 ```bash
