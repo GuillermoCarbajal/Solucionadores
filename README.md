@@ -6,14 +6,14 @@ pip install -r requirements.txt
 
 Se sugiere realizar la instalación en un entorno de Python creado con conda o venv para evitar conflictos con otras instalaciones. El motor fue desarrollado en Python 3.12. 
 
-### Entrenamiento
+## Entrenamiento
 
 
-## Parámetros de ejecución
+### Parámetros de ejecución
 
 El script permite configurar el entrenamiento y la evaluación de los clasificadores mediante argumentos de línea de comandos.
 
-### Argumentos disponibles
+#### Argumentos disponibles
 
 | Argumento | Valor por defecto | Descripción |
 |---|---|---|
@@ -27,7 +27,7 @@ El script permite configurar el entrenamiento y la evaluación de los clasificad
 
 Los argumentos booleanos (`--disable_class_weights`, `--tsne`, `--log_comet` y `--combine`) se activan simplemente incluyéndolos en el comando, sin necesidad de indicar un valor.
 
-### Ejemplos de ejecución
+#### Ejemplos de ejecución
 
 **Entrenar un clasificador Random Forest con la configuración por defecto:**
 
