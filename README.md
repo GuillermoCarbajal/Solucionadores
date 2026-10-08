@@ -4,7 +4,7 @@
 pip install -r requirements.txt
 ```
 
-Se sugiere hacer la instalación en un entorno de python creado con conda o venv para evitar conflictos con otras instalaciones.
+Se sugiere realizar la instalación en un entorno de Python creado con conda o venv para evitar conflictos con otras instalaciones. El motor fue desarrollado en Python 3.12. 
 
 ### Entrenamiento
 
