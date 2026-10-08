@@ -4,6 +4,8 @@
 pip install -r requirements.txt
 ```
 
+Se sugiere hacer la instalación en un entorno de python creado con conda o venv para evitar conflictos con otras instalaciones.
+
 ### Entrenamiento
 
 ```python
