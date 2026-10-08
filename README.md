@@ -15,8 +15,9 @@ python main.py --config config/entrega2_reintento.yaml --classifiers LogisticReg
 ### Preprocesamiento de los datos
 
 ```python
-python main_preprocesar.py
+python main_preprocesar.py --path path/to/2da entrega 20260210/Planilla completa.xlsx
 ```
+El entrenamiento se realizó con los datos de la segunda entrega.
 
 ### Ejecución de modelos ya entrenados
 
