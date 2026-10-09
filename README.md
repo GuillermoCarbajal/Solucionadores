@@ -18,125 +18,168 @@ Se sugiere realizar la instalación en un entorno de Python creado con conda o v
 
 ## Inferencia
 
-El script de inferencia permite cargar modelos previamente entrenados y generar predicciones a partir de los datos recibidos en un mensaje XML.
+El script `predict.py` permite generar predicciones utilizando los modelos previamente entrenados a partir de los datos recibidos en un mensaje XML.
 
-El proceso incluye el preprocesamiento de los datos, la construcción de los atributos utilizados por los modelos y la generación de probabilidades calibradas.
+Cada modelo calibrado contiene su propia configuración, por lo que no es necesario proporcionar un archivo YAML durante la inferencia.
 
-### Argumentos disponibles
+El proceso incluye:
 
-| Argumento | Valor por defecto | Descripción |
+1. Lectura e interpretación del mensaje XML.
+2. Preprocesamiento e integración de los datos.
+3. Carga de los modelos solicitados.
+4. Recuperación de la configuración asociada a cada modelo.
+5. Construcción de los atributos correspondientes.
+6. Generación de probabilidades calibradas.
+7. Generación de un mensaje XML con las predicciones.
+
+### 2.1. Parámetros de ejecución
+
+| Argumento | Obligatorio | Descripción |
 |---|---|---|
-| `--config` | `config/default.yaml` | Ruta al archivo YAML que contiene la configuración del modelo, incluyendo la variable objetivo y los atributos utilizados. |
-| `--message` | `/home/carbajal/Documents/SaludMental/protocolo_mensaje_tipos.xml` | Ruta al archivo XML que contiene los datos sobre los que se realizará la inferencia. |
-| `--classifiers` | `RandomForest` | Clasificadores a utilizar. Se pueden especificar uno o varios entre `RandomForest`, `XGBoost`, `LogisticRegression` y `DecisionTree`. |
-| `--log_comet` | `False` | Argumento definido, pero actualmente no utilizado en el proceso de inferencia. |
-| `--combine` | `False` | Argumento definido, pero actualmente no utilizado en el proceso de inferencia. |
+| `--message` | Sí | Ruta al archivo XML que contiene los datos sobre los que se realizará la inferencia. |
+| `--models` | Sí | Nombres de los modelos que se utilizarán, sin la extensión `.joblib` ni el sufijo `_calib`. Se pueden especificar uno o varios. |
 
-### Ejemplos de ejecución
+### 2.2. Ejemplos de ejecución
 
-**Realizar inferencia utilizando una configuración y un mensaje XML específicos:**
+**Realizar inferencia utilizando un modelo:**
 
 ```bash
 python predict.py \
-    --config config/default.yaml \
-    --message datos/mensaje.xml
-```
-
-**Realizar inferencia utilizando varios clasificadores:**
-
-```bash
-python predict.py \
-    --config config/default.yaml \
     --message datos/mensaje.xml \
-    --classifiers RandomForest XGBoost LogisticRegression
+    --models RandomForest_CAT_SUI_
 ```
 
-### Procesamiento de los datos
+**Realizar inferencia utilizando varios modelos:**
 
-El script recibe un mensaje XML que contiene información de las siguientes fuentes:
-
-- **IAE:** registros de intentos de autoeliminación.
-- **RUCAF**
-- **CNV**
-- **SIV**
-- **EH**
-- **SHARPS**
-
-Los datos son procesados utilizando las mismas funciones de preprocesamiento empleadas durante la preparación de los datos de entrenamiento.
-
-Posteriormente, se construye la matriz de atributos `X` utilizando las variables numéricas y categóricas especificadas en el archivo de configuración.
-
-Cuando la variable objetivo es `CAT_SUI_`, se realiza previamente una agregación de los registros por persona.
-
-### Carga de modelos
+```bash
+python predict.py \
+    --message datos/mensaje.xml \
+    --models RandomForest_CAT_SUI_ XGBoost_CAT_SUI_ LogisticRegression_CAT_SUI_
+```
 
 Los modelos deben encontrarse en el directorio `./modelos/`.
 
-Para cada clasificador se cargan dos archivos:
+### 2.3. Preprocesamiento de los datos
 
-| Archivo | Descripción |
-|---|---|
-| `{classifier}_{target}.joblib` | Modelo entrenado, incluyendo el preprocesamiento y la selección de hiperparámetros. |
-| `{classifier}_{target}_calib.joblib` | Modelo calibrado utilizado para obtener las probabilidades finales. |
+El mensaje XML contiene información proveniente de las siguientes fuentes:
 
-El valor de `target` se obtiene del archivo de configuración y debe coincidir con el utilizado durante el entrenamiento.
+- IAE
+- RUCAF
+- CNV
+- SIV
+- EH
+- SHARPS
 
-### Formato de salida
+Los datos se procesan e integran utilizando las funciones de preprocesamiento correspondientes a cada fuente.
 
-El script genera un mensaje XML con las predicciones de los clasificadores seleccionados.
+Posteriormente, para cada modelo se recuperan de su configuración los atributos numéricos y categóricos necesarios para construir la matriz de entrada `X`.
 
-Para cada clasificador se incluyen:
+**Preprocesamiento específico según el target:**
 
-- **Classifier:** nombre del clasificador y variable objetivo.
+- **`CAT_SUI_`:** se utiliza `agregar_base_intentos()` para agregar los registros por persona antes de construir los atributos.
+- **Otros targets:** se utilizan directamente los registros de la base IAE procesada, sin realizar la agregación anterior.
+
+La función `getX()` realiza las transformaciones de atributos necesarias, de acuerdo con la configuración de cada modelo.
+
+### 2.4. Carga de modelos
+
+Para cada nombre recibido mediante `--models`, el programa carga:
+
+```text
+./modelos/{model_name}_calib.joblib
+```
+
+A partir del modelo se recuperan:
+
+- El estimador entrenado.
+- El calibrador de probabilidades.
+- La prevalencia de la clase positiva en los datos de entrenamiento.
+- La configuración utilizada durante el entrenamiento.
+
+Esto permite utilizar modelos con diferentes variables objetivo y conjuntos de atributos en una misma ejecución.
+
+### 2.5. Formato de salida
+
+El programa genera un mensaje XML que contiene las predicciones de todos los modelos solicitados.
+
+Para cada modelo se incluyen:
+
+- **Classifier:** nombre del modelo.
+- **Prediction:** predicción correspondiente a una observación.
 - **Probability:** probabilidad calibrada de pertenecer a la clase positiva.
-- **Prevalence:** prevalencia de la clase positiva en los datos utilizados para entrenar el modelo.
+- **Prevalence:** prevalencia de la clase positiva en los datos de entrenamiento.
 
-Ejemplo de salida:
+Ejemplo de salida para dos modelos y tres observaciones:
 
 ```xml
 <Predictions>
     <Classifier name="RandomForest_CAT_SUI_">
-        <Probability>0.15</Probability>
-        <Prevalence>0.08</Prevalence>
+        <Prediction index="0">
+            <Probability>0.15</Probability>
+        </Prediction>
+        <Prediction index="1">
+            <Probability>0.32</Probability>
+        </Prediction>
+        <Prediction index="2">
+            <Probability>0.08</Probability>
+        </Prediction>
+        <Prevalence>0.05</Prevalence>
     </Classifier>
     <Classifier name="XGBoost_CAT_SUI_">
-        <Probability>0.12</Probability>
-        <Prevalence>0.08</Prevalence>
+        <Prediction index="0">
+            <Probability>0.12</Probability>
+        </Prediction>
+        <Prediction index="1">
+            <Probability>0.28</Probability>
+        </Prediction>
+        <Prediction index="2">
+            <Probability>0.09</Probability>
+        </Prediction>
+        <Prevalence>0.05</Prevalence>
     </Classifier>
 </Predictions>
 ```
 
-Los valores anteriores son ilustrativos.
+Los valores son ilustrativos.
 
-Actualmente, el script devuelve la probabilidad correspondiente a la primera fila de la matriz de atributos (`X`). Por lo tanto, la salida está diseñada para obtener una predicción por clasificador.
+Se genera una predicción por cada fila de la matriz de atributos correspondiente al modelo. Para `CAT_SUI_`, las filas corresponden a los registros agregados por persona; para los demás targets, corresponden a los registros procesados de IAE.
 
-El XML generado se imprime en la salida estándar y no se guarda automáticamente en un archivo.
+Actualmente, las predicciones se identifican mediante un índice que indica su posición en la matriz de entrada.
+
+El XML generado se imprime en la salida estándar.
 
 
 ## Entrenamiento
 
+El script `main.py` permite entrenar uno o varios clasificadores utilizando la configuración especificada en un archivo YAML.
 
-### Parámetros de ejecución
+El entrenamiento incluye:
 
-El script permite configurar el entrenamiento y la evaluación de los clasificadores mediante argumentos de línea de comandos.
-
-#### Argumentos disponibles
+1. Carga y filtrado de los datos.
+2. Selección y transformación de atributos.
+3. Búsqueda de hiperparámetros mediante Grid Search con validación cruzada.
+4. Entrenamiento del modelo seleccionado.
+5. Evaluación mediante predicciones de validación cruzada.
+6. Calibración de las probabilidades de predicción.
+7. Almacenamiento de los modelos y resultados.
+   
+### 1.1. Parámetros de ejecución
 
 | Argumento | Valor por defecto | Descripción |
 |---|---|---|
 | `--config` | `config/default.yaml` | Ruta al archivo YAML que contiene la configuración del experimento. |
 | `--classifiers` | `RandomForest` | Clasificadores a entrenar. Se pueden especificar uno o varios entre `RandomForest`, `XGBoost`, `LogisticRegression` y `DecisionTree`. |
-| `--gs_criteria` | `roc_auc` | Métrica utilizada para seleccionar los mejores hiperparámetros durante la búsqueda mediante Grid Search. |
+| `--gs_criteria` | `roc_auc` | Métrica utilizada para seleccionar los mejores hiperparámetros durante Grid Search. |
 | `--disable_class_weights`, `-dcw` | `False` | Desactiva la ponderación de clases utilizada para compensar el desbalance entre clases. |
 | `--tsne` | `False` | Genera una visualización de los datos mediante t-SNE. |
-| `--log_comet` | `False` | Habilita el registro de parámetros, métricas y gráficos del experimento en Comet. |
-| `--combine` | `False` | Evalúa combinaciones de los clasificadores entrenados mediante votación mayoritaria (`hard_voting`), promedio de probabilidades (`soft_voting`) y promedio ponderado (`weighted_soft_voting`). |
+| `--log_comet` | `False` | Habilita el registro de parámetros, métricas y gráficos en Comet. |
+| `--combine` | `False` | Evalúa combinaciones de los clasificadores entrenados mediante `hard_voting`, `soft_voting` y `weighted_soft_voting`. |
 
-Los argumentos booleanos (`--disable_class_weights`, `--tsne`, `--log_comet` y `--combine`) se activan simplemente incluyéndolos en el comando, sin necesidad de indicar un valor.
+Los argumentos booleanos se activan incluyéndolos en el comando, sin necesidad de indicar un valor.
 
-#### Ejemplos de ejecución
+### 1.2. Ejemplos de ejecución
 
-**Entrenar un clasificador Random Forest con la configuración por defecto:**
+**Entrenar un Random Forest con la configuración por defecto:**
 
 ```bash
 python main.py
@@ -146,45 +189,55 @@ python main.py
 
 ```bash
 python main.py \
-    --config config/default.yaml \
+    --config config/entrega2.yaml \
     --classifiers RandomForest XGBoost LogisticRegression
 ```
 
-**Entrenar tres clasificadores, optimizando ROC AUC y registrando los resultados en Comet:**
+**Entrenar los cuatro clasificadores y registrar los resultados en Comet:**
 
 ```bash
 python main.py \
-    --classifiers RandomForest XGBoost LogisticRegression \
+    --config config/entrega2.yaml \
+    --classifiers RandomForest XGBoost LogisticRegression DecisionTree \
     --gs_criteria roc_auc \
     --log_comet
 ```
 
-**Entrenar varios clasificadores sin ponderación de clases y evaluar sus combinaciones:**
+### 1.3. Entrenamiento de múltiples configuraciones
+
+El script `train_all.sh` permite ejecutar secuencialmente los entrenamientos para las siguientes configuraciones:
+
+- `entrega2.yaml`
+- `entrega2_reintento.yaml`
+- `entrega2_reintento_2d.yaml`
+- `entrega2_reintento_10d.yaml`
+- `entrega2_reintento_30d.yaml`
+- `entrega2_reintento_60d.yaml`
+
+Para ejecutarlo:
 
 ```bash
-python main.py \
-    --classifiers RandomForest XGBoost LogisticRegression \
-    --disable_class_weights \
-    --combine
+chmod +x train_all.sh
+./train_all.sh
 ```
 
-### Modelos generados
+El script entrena los cuatro clasificadores para cada configuración, ejecutando un total de 24 entrenamientos.
 
-Para cada clasificador entrenado se generan los siguientes archivos:
+Si alguno de los entrenamientos falla, la ejecución se detiene.
+
+### 1.4. Archivos generados
+
+Para cada clasificador y variable objetivo se generan los siguientes archivos:
 
 | Archivo | Descripción |
 |---|---|
-| `{classifier}_{target}.joblib` | Modelo entrenado, incluyendo el preprocesamiento y la búsqueda de hiperparámetros. |
-| `{classifier}_{target}_calib.joblib` | Modelo con probabilidades calibradas. |
+| `{classifier}_{target}.joblib` | Modelo entrenado, incluyendo el preprocesamiento y los resultados de Grid Search. |
+| `{classifier}_{target}_calib.joblib` | Modelo calibrado, que incluye el estimador entrenado, el calibrador, la prevalencia y la configuración utilizada durante el entrenamiento. |
 | `{classifier}_{target}_train_predictions.csv` | Predicciones del modelo calibrado sobre los datos de entrenamiento. |
-| `{classifier}_{target}.yaml` | Copia del archivo de configuración utilizado para entrenar el modelo (si se implementó el guardado de configuración). |
 
-Donde `classifier` identifica el tipo de clasificador y `target` corresponde a la variable objetivo definida en el archivo de configuración.
+El archivo de configuración YAML también puede conservarse como copia independiente junto con los modelos.
 
-
-```python
-python main.py --config config/entrega2_reintento.yaml --classifiers LogisticRegression DecisionTree RandomForest
-```
+**Importante:** los nombres de los archivos se construyen utilizando el clasificador y la variable objetivo. Si se entrenan dos modelos con el mismo clasificador y target, sus archivos pueden sobrescribirse.
 
 
 ### Preprocesamiento de los datos
