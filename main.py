@@ -61,7 +61,11 @@ operacion = {
 
 def getX(data, num_attribs, cat_attribs):
     # Este data frame (77 casos) incluye personas que tuvieron IAE y además murieron en 2023 (por suicidio u otras causas)
-    
+
+    # Evitar modificar los argumentos originales
+    num_attribs = num_attribs.copy()
+    cat_attribs = cat_attribs.copy() if cat_attribs else []
+
     if 'Sexo' in num_attribs:
         data['Sexo']=data['Sexo']=='Masculino'
     if 'PERSONA' in num_attribs:
@@ -744,10 +748,15 @@ def run_experiment(args):
         # leo del archivo de configuración los atributos a usar 
         num_attribs = config["data"].get('num_features')
         cat_attribs = config["data"].get('cat_features')
-        atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}
         cv_split = config['data'].get('cv_split')  
+
         # obtengo los features que se usan para entrenar
         X = getX(data, num_attribs, cat_attribs)
+        # Actualizar las listas de atributos según las transformaciones de getX
+        cat_attribs = cat_attribs.copy() if cat_attribs else []
+        num_attribs = [col for col in X.columns if col not in cat_attribs]
+        atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}
+
         #y = getY(data, metodo=args.y_method)
         # obtengo el target
         target = config['data'].get('target') 

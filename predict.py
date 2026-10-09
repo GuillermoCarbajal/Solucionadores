@@ -18,7 +18,11 @@ import joblib
 
 def getX(data, num_attribs, cat_attribs):
     # Este data frame (77 casos) incluye personas que tuvieron IAE y además murieron en 2023 (por suicidio u otras causas)
-    
+
+    # Evitar modificar los argumentos originales
+    num_attribs = num_attribs.copy()
+    cat_attribs = cat_attribs.copy() if cat_attribs else []
+        
     if 'Sexo' in num_attribs:
         data['Sexo']=data['Sexo']=='Masculino'
     if 'PERSONA' in num_attribs:
@@ -129,11 +133,25 @@ def parse_message(message):
 
 def parseCommandLineArguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='config/default.yaml')
-    parser.add_argument('--message', type=str, default='/home/carbajal/Documents/SaludMental/protocolo_mensaje_tipos.xml')
-    parser.add_argument( '--classifiers', nargs='+', choices=['RandomForest', 'XGBoost', 'LogisticRegression', 'DecisionTree'],
-                                                    default=['RandomForest']
-)
+    #parser.add_argument('--config', type=str, default='config/default.yaml')
+
+    parser.add_argument(
+        '--message',
+        type=str,
+        required=True,
+        #default='/home/carbajal/Documents/SaludMental/protocolo_mensaje_tipos.xml',
+        help='Archivo XML con los datos para realizar la inferencia'
+    )
+
+    parser.add_argument(
+        '--models',
+        nargs='+',
+        required=True,
+        help='Nombres de los modelos a utilizar, sin extensión'
+    )
+
+    #parser.add_argument( '--classifiers', nargs='+', choices=['RandomForest', 'XGBoost', 'LogisticRegression', 'DecisionTree'],
+    #                                                default=['RandomForest']
     
     parser.add_argument('--log_comet', action='store_true')
     parser.add_argument('--combine', action='store_true', help='combine classifiers')
@@ -143,21 +161,8 @@ def parseCommandLineArguments():
     return args
 
 
-if __name__ == "__main__":
+def preprocesar_mensaje(message):
 
-    args = parseCommandLineArguments()
-
-    # ---------------- LOAD CONFIG ----------------
-    config = load_config(args.config)
-    filepath = config["data"].get('filepath')
-
-    target = config["data"].get('target')  
-
-    with open(args.message, "r", encoding="utf-8") as f:
-        message = f.read()
-
-
-    print(message)
     print('Parseando mensaje...')
     data = parse_message(message)
     #print(data)
@@ -206,79 +211,117 @@ if __name__ == "__main__":
 
     print(df_IAE.keys())
 
-    ################################################
-
-    if target=='CAT_SUI_':
-        print('Agregando los datos por persona...')
-
-        df_IAE_agregada = agregar_base_intentos(df_IAE, dataset=2)
+    return df_IAE
 
 
+from pathlib import Path
 
+def realizar_inferencia(df_IAE, models):
 
-    # leo del archivo de configuración los atributos a usar 
-    num_attribs = config["data"].get('num_features')
-    cat_attribs = config["data"].get('cat_features')
-    atributos = {'numericos':num_attribs, 'categoricos': cat_attribs}
-   
-    # obtengo los features que se usan para entrenar
-    if target=='CAT_SUI_':
-        X = getX(df_IAE_agregada, num_attribs, cat_attribs)
-    else:
-        X = getX(df_IAE, num_attribs, cat_attribs)
-
-    #y = getY(data, metodo=args.y_method)
-
-    print(X.info())
-    print(X.shape)  
-
-    
+    models_dir = Path("./modelos")
 
     root = ET.Element("Predictions")
 
-    for clf_name in args.classifiers:
-        model_name = f'{clf_name}_{target}'
+    # Generar datos agregados por persona solamente si son necesarios
+    df_IAE_agregada = None
 
-        gs_clf = joblib.load(f'./modelos/{model_name}.joblib')
-        estimator = gs_clf.best_estimator_
+    for model_name in models:
 
-        predictions = estimator.predict_proba(X)
+        print(f'Procesando modelo: {model_name}')
 
+        # Cargar modelo calibrado
+        model_path = models_dir / f"{model_name}_calib.joblib"
+        calibrated_clf = joblib.load(model_path)
 
-        calibrated_clf = joblib.load(f'./modelos/{model_name}_calib.joblib')
+        # Recuperar configuración del modelo
+        config = calibrated_clf.config
 
-        calib_predictions = calibrated_clf.predict_proba(X)
-        raw_predictions = calibrated_clf.predict_proba_raw(X)
+        target = config["data"]["target"]
+        num_attribs = config["data"]["num_features"]
+        cat_attribs = config["data"]["cat_features"]
 
-        #print(predictions)
-        #print(raw_predictions)
-        print('prevalncia: ', calibrated_clf.prevalence)
-        print('max prediction: ', calib_predictions[:,1].max())
-        print(calib_predictions)
+        # Preprocesamiento específico según el target
+        if target == 'CAT_SUI_':
 
+            if df_IAE_agregada is None:
+                print('Agregando datos por persona...')
+                df_IAE_agregada = agregar_base_intentos(
+                    df_IAE.copy(),
+                    dataset=2
+                )
+
+            df_model = df_IAE_agregada
+
+        else:
+            df_model = df_IAE
+
+        print("Target:", target)
+
+        print("Atributos relacionados con IAE_PREVIO:")
+        print([col for col in df_model.columns if "IAE_PREVIO" in col])
+
+        print("Atributos faltantes:")
+        features = num_attribs + (cat_attribs or [])
+        print(set(features) - set(df_model.columns))
+        # Construir atributos del modelo
+        X = getX(df_model, num_attribs, cat_attribs)
+
+        print(f'Dimensiones de X: {X.shape}')
+
+        # Realizar predicciones
+        probabilities = calibrated_clf.predict_proba(X)[:, 1]
+
+        # Agregar resultados al XML
         classifier_node = ET.SubElement(
-            root, "Classifier", name=model_name
+            root,
+            "Classifier",
+            name=model_name
         )
 
-        for i, (_, row) in enumerate(X.iterrows()):
+        for i, probability in enumerate(probabilities):
 
-            #person_node = ET.SubElement(
-            #    classifier_node,
-            #    "Person",
-            #    id=str(row["CEDULA"])
-            #)
+            prediction_node = ET.SubElement(
+                classifier_node,
+                "Prediction",
+                index=str(i)
+            )
 
             ET.SubElement(
-                classifier_node,
+                prediction_node,
                 "Probability"
-            ).text = str(float(calib_predictions[i, 1]))
+            ).text = str(float(probability))
 
         ET.SubElement(
             classifier_node,
             "Prevalence"
         ).text = str(float(calibrated_clf.prevalence))
 
-    xml_string = ET.tostring(root, encoding="unicode")
+    return ET.tostring(root, encoding="unicode")
 
-    print(xml_string)
 
+if __name__ == "__main__":
+
+    args = parseCommandLineArguments()
+
+    # ---------------- LOAD CONFIG ----------------
+    #config = load_config(args.config)
+    #filepath = config["data"].get('filepath')
+
+    #target = config["data"].get('target')  
+
+    with open(args.message, "r", encoding="utf-8") as f:
+        message = f.read()
+
+
+    print(message)
+    df_IAE = preprocesar_mensaje(message)
+
+    ################################################
+
+    # Inferencia con todos los modelos solicitados
+    xml_predictions = realizar_inferencia(
+        df_IAE,
+        args.models
+    )
+
+    print(xml_predictions)
