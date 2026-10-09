@@ -242,9 +242,85 @@ El archivo de configuración YAML también puede conservarse como copia independ
 
 # Preprocesamiento de los datos
 
-```python
-python main_preprocesar.py --path path/to/2da entrega 20260210/Planilla completa.xlsx
+
+Antes de entrenar los modelos es necesario procesar e integrar las diferentes bases de datos disponibles. Este procedimiento se realiza mediante el script `main_preprocesar.py`.
+
+El preprocesamiento genera dos bases de datos: una que conserva los registros individuales de intentos de autoeliminación (IAE) y otra que agrega la información por persona. Estas bases se utilizan posteriormente para entrenar los modelos de clasificación según la variable objetivo.
+
+### 1.1. Parámetros de ejecución
+
+| Argumento | Valor por defecto | Descripción |
+|---|---|---|
+| `--path` | `/home/carbajal/Documents/SaludMental/2da entrega 20260210/Planilla completa.xlsx` | Ruta al archivo Excel que contiene las bases de datos originales. |
+
+Actualmente, el código está configurado para procesar la segunda entrega de datos (`dataset = 2`). Esta entrega incorpora la base de egresos hospitalarios (EH), que no está disponible en la primera.
+
+### 1.2. Ejemplo de ejecución
+
+Para procesar las bases de datos:
+
+```bash
+python main_preprocesar.py \
+    --path "datos/Planilla completa.xlsx"
 ```
-El entrenamiento se realizó con los datos de la segunda entrega.
+
+### 1.3. Procesamiento de las bases de datos
+
+El script carga las diferentes bases de datos y realiza tareas de limpieza, transformación de atributos e integración de información.
+
+La base IAE se utiliza como base principal, a la que se incorporan atributos provenientes de las demás fuentes.
+
+| Base | Procesamiento realizado |
+|---|---|
+| **IAE** | Eliminación de registros sin cédula y registros duplicados. Limpieza y transformación de atributos mediante `preprocesar_IAE()`. |
+| **CDE** | Eliminación de registros con menos de cuatro campos no nulos. Generación de las variables objetivo `CAT_SUI` y `CAT_MCEXSUI`, análisis de edades al fallecimiento y discretización de edades en intervalos de cinco años. Incorporación de información de defunciones a IAE y cálculo de tiempos de reincidencia. |
+| **CNV** | Procesamiento e incorporación de información de nacimientos mediante `preprocesar_CNV()`. |
+| **RUCAF** | Limpieza y transformación de los datos mediante `preprocesar_RUCAF()`. Agrupación por cédula e incorporación de información de cobertura a los registros de IAE. |
+| **SHARPS** | Eliminación de registros con menos de dos campos no nulos e incorporación de indicadores de presencia en SHARPS. |
+| **SIV** | Eliminación de registros con menos de dos campos no nulos y de registros duplicados. Incorporación de información de SIV a IAE. |
+| **EH** | Generación de indicadores a partir de los egresos hospitalarios e incorporación de información correspondiente a cada intento. Disponible para la segunda entrega. |
+
+Durante el procesamiento también se realizan controles exploratorios, incluyendo análisis de valores faltantes, valores únicos, frecuencias y rangos de determinados atributos, así como verificaciones de correspondencia entre las diferentes bases.
+
+### 1.4. Generación de las bases procesadas
+
+Una vez integrados los datos, el script genera dos archivos CSV.
+
+**Base sin agregar por persona**
+
+```text
+IAE_sin_agregar_entrega2_YYYY-MM-DD_HH-MM-SS.csv
+```
+
+Contiene los registros individuales de IAE, enriquecidos con la información proveniente de las demás bases.
+
+Esta base permite trabajar con variables objetivo definidas a nivel de intento.
+
+**Base agregada por persona**
+
+```text
+IAE_agregada_entrega2_YYYY-MM-DD_HH-MM-SS.csv
+```
+
+Se obtiene mediante la función `agregar_base_intentos()`, que agrega la información de los distintos intentos correspondientes a una misma persona.
+
+Esta base se utiliza para entrenar modelos cuya variable objetivo está definida a nivel de persona, como `CAT_SUI_`.
+
+Los nombres de ambos archivos incluyen una marca de tiempo para identificar cuándo fueron generados y evitar sobrescribir resultados de ejecuciones anteriores.
+
+### 1.5. Relación con el entrenamiento y la inferencia
+
+Los archivos CSV generados durante el preprocesamiento se utilizan como entrada del script de entrenamiento `main.py`. La ruta a la base correspondiente se especifica mediante el atributo `data.filepath` del archivo YAML de configuración.
+
+Durante la inferencia, `predict.py` recibe los datos en formato XML y reproduce el preprocesamiento necesario para construir los atributos de entrada de cada modelo.
+
+En particular:
+
+- Para modelos con target `CAT_SUI_`, se realiza la agregación de registros por persona mediante `agregar_base_intentos()`.
+- Para los demás targets, se utiliza la información procesada a nivel de intento.
+
+En ambos casos, la función `getX()` construye la matriz de atributos utilizando la configuración almacenada en cada modelo calibrado.
+
+Esto permite mantener la correspondencia entre los atributos utilizados durante el entrenamiento y los generados durante la inferencia.
 
 
