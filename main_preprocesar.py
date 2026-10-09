@@ -211,7 +211,6 @@ def preprocesar(args):
 
 def parseCommandLineArguments():  
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='config/default.yaml')
     parser.add_argument('--path', type=str, default='/home/carbajal/Documents/SaludMental/2da entrega 20260210/Planilla completa.xlsx')
     
           

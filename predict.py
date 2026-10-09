@@ -145,13 +145,6 @@ def parseCommandLineArguments():
 
 if __name__ == "__main__":
 
-    # Nota: el --path es donde está la base de datos
-    # el --working_dir puede estar en cualquier lado, pero con la siguiente estructura:
-    #  ./working_dir/
-    #      models/
-    #      results/
-    #      temp_files/
-
     args = parseCommandLineArguments()
 
     # ---------------- LOAD CONFIG ----------------
@@ -264,15 +257,21 @@ if __name__ == "__main__":
         print(calib_predictions)
 
         classifier_node = ET.SubElement(
-            root,
-            "Classifier",
-            name=model_name
+            root, "Classifier", name=model_name
         )
 
-        ET.SubElement(
-            classifier_node,
-            "Probability"
-        ).text = str(float(calib_predictions[0, 1]))
+        for i, (_, row) in enumerate(X.iterrows()):
+
+            #person_node = ET.SubElement(
+            #    classifier_node,
+            #    "Person",
+            #    id=str(row["CEDULA"])
+            #)
+
+            ET.SubElement(
+                classifier_node,
+                "Probability"
+            ).text = str(float(calib_predictions[i, 1]))
 
         ET.SubElement(
             classifier_node,

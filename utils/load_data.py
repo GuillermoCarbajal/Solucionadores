@@ -1,6 +1,9 @@
 import pandas as pd 
 import matplotlib.pyplot as plt
 import yaml
+from pathlib import Path
+import pandas as pd
+import os
 
 def load_excelfile(filename):
     '''
@@ -40,6 +43,54 @@ def load_databases(filename, entrega=1):
         print('Indique que entrega quiere levantar')
     
     return output
+
+
+
+def cargar_datos(directorio):
+    bases = {}
+
+    for archivo in sorted(os.listdir(directorio)):
+        if not archivo.lower().endswith(".csv"):
+            continue
+
+        ruta = os.path.join(directorio, archivo)
+        print(f"Cargando {archivo}...")
+
+        filas_validas = []
+        filas_invalidas = []
+
+        with open(ruta, "r", encoding="utf-8-sig", errors="replace") as f:
+            encabezado = f.readline().rstrip("\n\r")
+            columnas = encabezado.split(";")
+            n_columnas = len(columnas)
+
+            for num_linea, linea in enumerate(f, start=2):
+                campos = linea.rstrip("\n\r").split(";")
+
+                if len(campos) == n_columnas:
+                    filas_validas.append(campos)
+                else:
+                    filas_invalidas.append((num_linea, len(campos)))
+
+        if filas_invalidas:
+            print(
+                f"  {len(filas_invalidas)} filas no leídas "
+                f"(se esperaban {n_columnas} columnas)."
+            )
+
+            # Mostrar las primeras 10 para poder inspeccionarlas
+            print("  Primeras filas problemáticas:")
+            for num_linea, n_campos in filas_invalidas[:10]:
+                print(f"    Línea {num_linea}: {n_campos} campos")
+
+        df = pd.DataFrame(filas_validas, columns=columnas)
+
+        nombre = os.path.splitext(archivo)[0]
+        bases[nombre] = df
+
+        print(f"  {len(filas_validas)} filas cargadas.")
+
+    return bases
 
 
 def load_config(path):

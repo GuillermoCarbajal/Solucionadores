@@ -281,11 +281,11 @@ def corregir_fechas_enteras_prestadores(df_IAE):
     campos_corregidos =  [   campo + '_' for campo in campos_a_corregir]
 
 
-    #print(df_IAE[campos_a_corregir].dtypes)
+    print(df_IAE[campos_a_corregir].dtypes)
 
-    #print(df_IAE[campos_a_corregir].head())
+    print(df_IAE[campos_a_corregir].head())
 
-    #print(type(df_IAE[campos_a_corregir].iloc[0]))
+    print(type(df_IAE[campos_a_corregir].iloc[0]))
     
     df_IAE[campos_corregidos] = df_IAE[campos_a_corregir].apply(convertir_enteros_a_fecha)
 

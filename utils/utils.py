@@ -141,7 +141,7 @@ def convertir_enteros_a_fecha(serie):
 
     mask = valores.between(20000, 70000)
 
-    resultado = serie.copy()
+    resultado = serie.astype(object).copy()
 
     resultado.loc[mask] = pd.to_datetime(
         valores.loc[mask],

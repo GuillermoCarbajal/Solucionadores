@@ -43,6 +43,8 @@ from sklearn.calibration import CalibratedClassifierCV, CalibrationDisplay
 
 import argparse
 import joblib
+import shutil
+from pathlib import Path
 
 os.environ["COMET_AUTO_LOGGING"] = "0"
 
@@ -713,7 +715,6 @@ def run_experiment(args):
         np.random.seed(seed)
 
         use_class_weights = (not args.disable_class_weights)
-        use_sample_weights = (not args.disable_sample_weights)
 
         if use_class_weights:  
             if model_type=='XGBoost':
@@ -834,8 +835,13 @@ def run_experiment(args):
             gs_pipeline.fit(X, y.values)
 
         # Guardar modelo entrenado
-        joblib.dump(gs_pipeline, f"{model_type}_{target}.joblib")
+        model_name = f"{model_type}_{target}"
+        joblib.dump(gs_pipeline, f"{model_name}.joblib")
         #scores_oof = oof_prediction(X,y, gs_pipeline.best_estimator_)
+
+        # Guardar configuración asociada
+        config_extension = Path(args.config).suffix
+        shutil.copy2(args.config, f"{model_name}{config_extension}")
 
         preprocess = gs_pipeline.best_estimator_.named_steps["preprocessing"]
         feature_names = preprocess.get_feature_names_out()
@@ -951,6 +957,13 @@ def run_experiment(args):
 
             
         calibrated_model = CalibratedModel(gs_pipeline.best_estimator_, calibrator, prevalence)
+
+        # Guardar configuración utilizada durante el entrenamiento
+        calibrated_model.config = config
+        calibrated_model.training_args = vars(args).copy()
+
+        # Guardar modelo calibrado junto con su configuración
+        joblib.dump(calibrated_model, f"{model_type}_{target}_calib.joblib")
 
         
         # Predicciones del modelo final sobre train
@@ -1083,12 +1096,7 @@ def parseCommandLineArguments():
                                                     default=['RandomForest']
 )
     parser.add_argument('--gs_criteria', type=str, default='roc_auc')
-    parser.add_argument('--y_method', type=str, default='defuncion')
-    parser.add_argument('--ams_threshold', type=float, default=0.9)
-    parser.add_argument('--preprocessing', type=str, default='None')
-    parser.add_argument('--split_factor', type=float, default=0.75)
     parser.add_argument('--disable_class_weights', '-dcw', action='store_true')
-    parser.add_argument('--disable_sample_weights', '-dsw', action='store_true')
     parser.add_argument('--tsne', action='store_true')
     parser.add_argument('--log_comet', action='store_true')
     parser.add_argument('--combine', action='store_true', help='combine classifiers')
@@ -1099,13 +1107,6 @@ def parseCommandLineArguments():
 
 
 if __name__ == "__main__":
-
-    # Nota: el --path es donde está la base de datos
-    # el --working_dir puede estar en cualquier lado, pero con la siguiente estructura:
-    #  ./working_dir/
-    #      models/
-    #      results/
-    #      temp_files/
 
     args = parseCommandLineArguments()
 
