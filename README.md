@@ -149,7 +149,7 @@ Actualmente, las predicciones se identifican mediante un índice que indica su p
 El XML generado se imprime en la salida estándar.
 
 
-## Entrenamiento
+## Entrenamiento de modelos
 
 El script `main.py` permite entrenar uno o varios clasificadores utilizando la configuración especificada en un archivo YAML.
 
