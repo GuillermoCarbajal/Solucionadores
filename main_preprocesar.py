@@ -186,7 +186,7 @@ def preprocesar(args):
     ############## Agregar por persona    #############################
     print('Agregando los datos por persona...')
 
-    df_IAE_agregada = agregar_base_intentos(df_IAE, dataset)
+    df_IAE_agregada = agregar_base_intentos(df_IAE, dataset, training_mode=True)
     #agregar_campo(df_IAE,'METODO','ultimo_intento','ULTIMO_INTENTO_')
 
     personas = personas_con_IAE_no_presentes_en_CNV(df_IAE_agregada, df_IAE_CNV)    

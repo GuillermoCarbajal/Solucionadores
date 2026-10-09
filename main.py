@@ -472,6 +472,17 @@ def log_calibration_analysis(
         label="Positive"
     )
 
+    # Prevalencia de la clase positiva
+    prevalence = np.mean(y_true)
+
+    ax.axvline(
+        prevalence,
+        color="red",
+        linestyle="--",
+        linewidth=2,
+        label=f"Prevalence = {prevalence:.4f}"
+    )    
+
     ax.set_xlabel("Predicted probability")
     ax.set_ylabel("Count")
     ax.set_title("Score distribution")

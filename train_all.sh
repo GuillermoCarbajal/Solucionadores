@@ -19,7 +19,7 @@ for config in "${CONFIGS[@]}"; do
 
     python main.py \
         --config "config/$config" \
-        --classifiers RandomForest XGBoost LogisticRegression DecisionTree \
+        --classifiers  LogisticRegression DecisionTree RandomForest \
         --gs_criteria roc_auc --log_comet 
 
 done

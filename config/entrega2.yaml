@@ -1,8 +1,6 @@
 data:
   entrega: 2
-  #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0523/IAE_agregada_entrega2_2026-05-27_18-08-46.csv'
-  #filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0710/IAE_agregada_entrega2_2026-07-11_16-55-36.csv'
-  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_0820/IAE_agregada_entrega2_2026-08-20_16-52-02.csv'
+  filepath: '/home/carbajal/Documents/SaludMental/codigo_solucionadores/2026_1009/IAE_agregada_entrega2_2026-10-09_14-59-57.csv'
   cv_split: 'estratificado'
 
   num_features:
