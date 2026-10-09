@@ -1,3 +1,12 @@
+Este repositorio contiene el código para entrenar modelos de clasificación y realizar inferencia a partir de datos recibidos mediante mensajes XML.
+
+Se implementan cuatro clasificadores:
+
+- Random Forest
+- Regresión logística
+- Árbol de decisión
+
+El sistema permite entrenar modelos para distintas variables objetivo, realizar búsqueda de hiperparámetros mediante validación cruzada y calibrar las probabilidades de predicción.
 ## Instalación
 
 ```python
