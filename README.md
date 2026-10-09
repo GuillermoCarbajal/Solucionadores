@@ -7,7 +7,7 @@ Se implementan cuatro clasificadores:
 - Árbol de decisión
 
 El sistema permite entrenar modelos para distintas variables objetivo, realizar búsqueda de hiperparámetros mediante validación cruzada y calibrar las probabilidades de predicción.
-## Instalación
+# Instalación
 
 ```python
 pip install -r requirements.txt
@@ -16,7 +16,7 @@ pip install -r requirements.txt
 Se sugiere realizar la instalación en un entorno de Python creado con conda o venv para evitar conflictos con otras instalaciones. El motor fue desarrollado en Python 3.12. 
 
 
-## Inferencia
+# Inferencia con modelos ya entrenados
 
 El script `predict.py` permite generar predicciones utilizando los modelos previamente entrenados a partir de los datos recibidos en un mensaje XML.
 
@@ -32,14 +32,14 @@ El proceso incluye:
 6. Generación de probabilidades calibradas.
 7. Generación de un mensaje XML con las predicciones.
 
-### 2.1. Parámetros de ejecución
+### 1.1. Parámetros de ejecución
 
 | Argumento | Obligatorio | Descripción |
 |---|---|---|
 | `--message` | Sí | Ruta al archivo XML que contiene los datos sobre los que se realizará la inferencia. |
 | `--models` | Sí | Nombres de los modelos que se utilizarán, sin la extensión `.joblib` ni el sufijo `_calib`. Se pueden especificar uno o varios. |
 
-### 2.2. Ejemplos de ejecución
+### 1.2. Ejemplos de ejecución
 
 **Realizar inferencia utilizando un modelo:**
 
@@ -59,7 +59,7 @@ python predict.py \
 
 Los modelos deben encontrarse en el directorio `./modelos/`.
 
-### 2.3. Preprocesamiento de los datos
+### 1.3. Preprocesamiento de los datos
 
 El mensaje XML contiene información proveniente de las siguientes fuentes:
 
@@ -81,7 +81,7 @@ Posteriormente, para cada modelo se recuperan de su configuración los atributos
 
 La función `getX()` realiza las transformaciones de atributos necesarias, de acuerdo con la configuración de cada modelo.
 
-### 2.4. Carga de modelos
+### 1.4. Carga de modelos
 
 Para cada nombre recibido mediante `--models`, el programa carga:
 
@@ -98,7 +98,7 @@ A partir del modelo se recuperan:
 
 Esto permite utilizar modelos con diferentes variables objetivo y conjuntos de atributos en una misma ejecución.
 
-### 2.5. Formato de salida
+### 1.5. Formato de salida
 
 El programa genera un mensaje XML que contiene las predicciones de todos los modelos solicitados.
 
@@ -163,7 +163,7 @@ El entrenamiento incluye:
 6. Calibración de las probabilidades de predicción.
 7. Almacenamiento de los modelos y resultados.
    
-### 1.1. Parámetros de ejecución
+### 2.1. Parámetros de ejecución
 
 | Argumento | Valor por defecto | Descripción |
 |---|---|---|
@@ -177,7 +177,7 @@ El entrenamiento incluye:
 
 Los argumentos booleanos se activan incluyéndolos en el comando, sin necesidad de indicar un valor.
 
-### 1.2. Ejemplos de ejecución
+### 2.2. Ejemplos de ejecución
 
 **Entrenar un Random Forest con la configuración por defecto:**
 
@@ -203,7 +203,7 @@ python main.py \
     --log_comet
 ```
 
-### 1.3. Entrenamiento de múltiples configuraciones
+### 2.3. Entrenamiento de múltiples configuraciones
 
 El script `train_all.sh` permite ejecutar secuencialmente los entrenamientos para las siguientes configuraciones:
 
@@ -225,7 +225,7 @@ El script entrena los cuatro clasificadores para cada configuración, ejecutando
 
 Si alguno de los entrenamientos falla, la ejecución se detiene.
 
-### 1.4. Archivos generados
+### 2.4. Archivos generados
 
 Para cada clasificador y variable objetivo se generan los siguientes archivos:
 
@@ -240,7 +240,7 @@ El archivo de configuración YAML también puede conservarse como copia independ
 **Importante:** los nombres de los archivos se construyen utilizando el clasificador y la variable objetivo. Si se entrenan dos modelos con el mismo clasificador y target, sus archivos pueden sobrescribirse.
 
 
-### Preprocesamiento de los datos
+# Preprocesamiento de los datos
 
 ```python
 python main_preprocesar.py --path path/to/2da entrega 20260210/Planilla completa.xlsx
